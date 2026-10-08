@@ -1,0 +1,13 @@
+{
+  "key": "home",
+  "businessUnitKey": "test-bu",
+  "name": "Home",
+  "slug": "/",
+  "puckData": {
+    "content": [{ "type": "HeroBanner", "props": { "id": "hero-1", "title": "Hello" } }],
+    "root": { "props": {} }
+  },
+  "meta": { "title": "Home" },
+  "createdAt": "2026-01-01T00:00:00.000Z",
+  "updatedAt": "2026-01-01T00:00:00.000Z"
+}

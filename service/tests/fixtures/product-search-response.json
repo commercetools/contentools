@@ -1,0 +1,11 @@
+{
+  "total": 1,
+  "offset": 0,
+  "limit": 20,
+  "hits": [
+    {
+      "id": "p-1",
+      "productProjection": { "id": "p-1", "name": { "en": "Sample" }, "masterVariant": { "sku": "SKU-1" } }
+    }
+  ]
+}

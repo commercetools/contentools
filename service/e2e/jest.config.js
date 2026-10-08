@@ -9,11 +9,14 @@ module.exports = {
   displayName: 'e2e',
   testEnvironment: 'node',
   rootDir: __dirname,
-  testMatch: ['**/*.e2e.ts'],
+  // Only the guarded harness suites. The legacy black-box suites in this folder still need the old auth
+  // and are removed or rewritten by specs C/F.
+  testMatch: ['<rootDir>/smoke.e2e.ts', '<rootDir>/sandbox/**/*.e2e.ts'],
   moduleFileExtensions: ['ts', 'js'],
   transform: {
-    '^.+\\.ts$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.json' }],
+    '^.+\\.ts$': ['ts-jest', { tsconfig: '<rootDir>/../tsconfig.test.json' }],
   },
-  setupFilesAfterEnv: ['<rootDir>/setup.ts'],
+  setupFiles: ['<rootDir>/support/env-setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/support/after-all.ts'],
   testTimeout: 30000,
 };
