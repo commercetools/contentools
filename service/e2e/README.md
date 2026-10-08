@@ -1,6 +1,6 @@
-# E2E Tests for CMS Service
+# E2E Tests for Contentools Service
 
-End-to-end tests run against the CMS service HTTP API. They are specified from **route names/descriptions** (not implementation) and include happy and unhappy paths. Each test cleans up created data via DELETE endpoints.
+End-to-end tests run against the Contentools service HTTP API. They are specified from **route names/descriptions** (not implementation) and include happy and unhappy paths. Each test cleans up created data via DELETE endpoints.
 
 ## Running locally
 

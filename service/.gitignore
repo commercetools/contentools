@@ -1,4 +1,2 @@
-# Temporary bundler directories
-/temp/ 
 # Owner-local live e2e credentials (never committed)
 .env.e2e.local

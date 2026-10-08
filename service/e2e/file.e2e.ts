@@ -54,24 +54,4 @@ describe('File routes', () => {
       expect(res.status).toBe(401);
     });
   });
-
-  describe('POST /compile-upload', () => {
-    it('returns 400 or 500 when no code or key provided', async () => {
-      const jwt = await getJwt();
-      const { status } = await request('POST', '/compile-upload', {
-        jwt,
-        projectKey: projectKey(),
-        body: {},
-      });
-      expect([400, 500]).toContain(status);
-    });
-
-    it('returns 401 without JWT', async () => {
-      const { status } = await request('POST', '/compile-upload', {
-        projectKey: projectKey(),
-        body: { files: {}, key: 'test' },
-      });
-      expect(status).toBe(401);
-    });
-  });
 });

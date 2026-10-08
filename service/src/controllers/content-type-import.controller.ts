@@ -9,7 +9,7 @@ import { CONTENT_TYPE_CONTAINER } from '../constants';
 import { SecureTranspiler } from '../utils/secure-transpiler';
 import { AuthenticatedRequest } from '../types/service.types';
 import { logger } from '../utils/logger.utils';
-import { contentTypes as sampleContentTypes } from '../samples/CMS';
+import { contentTypes as sampleContentTypes } from '../samples/content-types';
 
 interface SampleContentTypeExport {
   metadata: Record<string, unknown> & { type?: string };
@@ -36,7 +36,7 @@ function typeToKey(type: string): string {
 }
 
 /**
- * Loops through content types from samples/CMS/index, transpiles code,
+ * Loops through content types from samples/content-types/index, transpiles code,
  * base64-encodes transpiled code and source text, and creates custom objects
  * using the derived key (metadata.type in kebab-case).
  */
