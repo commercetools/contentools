@@ -11,6 +11,7 @@
     "build:watch": "yarn workspaces foreach --all --parallel run build:watch",
     "typecheck": "yarn workspaces foreach --all run typecheck",
     "start:playground": "yarn workspace @commercetools-labs/puck-playground dev",
+    "test": "yarn workspaces foreach --all run test",
     "lint": "eslint \"packages/*/src/**/*.{ts,tsx}\""
   },
   "resolutions": {
@@ -18,6 +19,13 @@
     "@types/react-dom": "^19"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.10.0",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "jsdom": "^26.1.0",
+    "msw": "^2.10.5",
+    "vitest": "^3.2.7",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
     "eslint": "^8.57.1",

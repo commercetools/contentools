@@ -1,41 +1,40 @@
-# E2E Tests for Contentools Service
+# Contentools service: live sandbox e2e
 
-End-to-end tests run against the Contentools service HTTP API. They are specified from **route names/descriptions** (not implementation) and include happy and unhappy paths. Each test cleans up created data via DELETE endpoints.
+Opt-in tests that run the service logic against a REAL commercetools sandbox project. They are skipped unless every
+variable below is set, and they refuse to run unless the project is explicitly allow-listed.
 
-## Running locally
+**Never use a production project.** Use a throw-away sandbox only.
 
-1. **Start the service** (one of):
-   - From repo root: `cd service && yarn build && yarn start`
-   - Or with Docker: `docker-compose -f service/docker-compose.e2e.yml --env-file service/.env up -d` (then wait for the service to be ready)
+## Variables
 
-2. **Set env** (e.g. in `service/.env` or export). Prefer **E2E_**-prefixed names; non-prefixed are still read for backward compatibility:
-   - `E2E_BASE_URL` (or `BASE_URL`) – default `http://localhost:8080`
-   - `E2E_BUSINESS_UNIT_KEY` (or `BUSINESS_UNIT_KEY`) – tenant for path params
-   - `E2E_CTP_PROJECT_KEY`, `E2E_CTP_CLIENT_ID`, `E2E_CTP_CLIENT_SECRET` (or `CTP_*`) – for JWT via `POST /service/authenticate-project`
+| Variable | Meaning |
+| -------- | ------- |
+| `E2E_CTP_PROJECT_KEY` | sandbox project key |
+| `E2E_CTP_CLIENT_ID` | API client id (scopes: `manage_key_value_documents`, `view_products`) |
+| `E2E_CTP_CLIENT_SECRET` | API client secret (never printed, never committed) |
+| `E2E_CTP_REGION` | cloud identifier, e.g. `europe-west1.gcp` |
+| `E2E_CTP_SCOPE` | scope string for the client |
+| `E2E_BUSINESS_UNIT_KEY` | business unit key used by tests |
+| `E2E_ALLOW_PROJECT_KEY` | MUST equal `E2E_CTP_PROJECT_KEY`, else the run aborts (`refusing to run`) |
 
-3. **Run tests**:
-   ```bash
-   cd service && yarn test:e2e
-   ```
+Optional: `E2E_CTP_API_URL`, `E2E_CTP_AUTH_URL` (override hosts derived from the region), `E2E_RUN_ID`
+(default: time based), `E2E_ENV_FILE` (absolute path of an env file kept outside the repo).
 
-## CI (GitHub Actions)
+Put them in `service/.env.e2e` or `service/.env.e2e.local` (both git-ignored) or export them.
 
-The workflow in `.github/workflows/e2e.yml` builds the service Docker image, starts the container with env from secrets/vars, waits for the service to respond, then runs `yarn test:e2e`. Required repository vars/secrets align with the deploy workflow (Firestore, JWT, CTP_*, STORAGE_*, etc.).
+## Isolation and cleanup
 
-## Env reference
+* Every run gets its own containers `contentools-test-<runId>-<name>`; `env-setup.ts` points the container env vars there.
+* `afterAll` deletes everything in the run's containers.
+* If a run was killed, sweep leftovers: `node tools/sandbox-sweep.mjs` (repo root) deletes every custom object whose
+  container starts with `contentools-test-` and prints `deleted N`.
 
-All env variable names, defaults, and resolved values are defined in **`e2e/constants.ts`** (`ENV_KEYS`, `E2E_ENV`, `ensureE2EEnv`).
+## Running
 
-| Variable (E2E_ prefix)   | Required | Description                                      |
-|--------------------------|----------|--------------------------------------------------|
-| E2E_BASE_URL             | Yes      | Service base URL (e.g. `http://localhost:8080`)  |
-| E2E_BUSINESS_UNIT_KEY    | No       | Defaults to E2E_CTP_PROJECT_KEY                  |
-| E2E_CTP_PROJECT_KEY      | Yes      | CommerceTools project key (and x-project-key)    |
-| E2E_CTP_CLIENT_ID        | Yes      | For authenticate-project                        |
-| E2E_CTP_CLIENT_SECRET    | Yes      | For authenticate-project                        |
-| E2E_CTP_AUTH_URL         | No       | Optional override                                |
-| E2E_CTP_API_URL          | No       | Optional override                                |
-| E2E_CTP_SCOPE            | No       | Optional override                                |
-| E2E_CTP_REGION           | No       | Optional override                                |
+```bash
+cd service
+yarn test:e2e          # skipped (exit 0) when the variables are unset
+```
 
-Non-prefixed names (`BASE_URL`, `CTP_PROJECT_KEY`, etc.) are still read as fallback for local `.env`.
+The legacy black-box suites still in this folder are not selected by `jest.config.js`; they are removed or rewritten by
+the legacy-removal and content-API specs.

@@ -11,9 +11,10 @@
     "build": "rimraf ./build && tsc",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write '**/*.{js,ts}'",
-    "test": "echo 'No tests for now'",
-    "test:watch": "echo 'No tests for now'",
-    "test:e2e": "jest --config=e2e/jest.config.js --runInBand"
+    "test": "jest --config jest.config.cjs",
+    "test:watch": "jest --config jest.config.cjs --watch",
+    "test:e2e": "jest --config e2e/jest.config.js --runInBand",
+    "typecheck": "tsc -p tsconfig.test.json"
   },
   "author": "",
   "license": "MIT",
@@ -27,21 +28,24 @@
     "@types/node": "^18.7.18",
     "@types/node-fetch": "2.6.13",
     "@types/request": "^2.48.13",
+    "@types/supertest": "^6",
     "@types/validator": "^13.7.10",
     "@typescript-eslint/eslint-plugin": "^5.46.0",
     "@typescript-eslint/parser": "^5.46.0",
     "concurrently": "^8.2.0",
     "eslint": "^8.46.0",
     "jest": "^29.6.2",
+    "msw": "2.10.5",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.1",
     "rimraf": "5.0.5",
+    "supertest": "^7",
     "ts-jest": "^29.1.1",
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@babel/standalone": "^7.28.0",
     "@aws-sdk/client-s3": "^3.772.0",
+    "@babel/standalone": "^7.28.0",
     "@commercetools-backend/loggers": "^21.19.0",
     "@commercetools/platform-sdk": "^8.8.0",
     "@commercetools/sdk-client-v2": "^3.0.0",
@@ -61,6 +65,7 @@
   },
   "resolutions": {
     "form-data": "^3.0.4",
+    "@types/express": "5.0.1",
     "@types/express-serve-static-core": "5.0.6"
   },
   "packageManager": "yarn@1.22.22"
