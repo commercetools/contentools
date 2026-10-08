@@ -5,8 +5,8 @@
  */
 
 import React, { useEffect, useState, type ReactElement } from 'react';
-import { PuckApiProvider, usePuckApiContext } from '@commercetools-demo/puck-api';
-import { defaultRenderConfig } from '@commercetools-demo/puck-components';
+import { PuckApiProvider, usePuckApiContext } from '@commercetools-labs/puck-api';
+import { defaultRenderConfig } from '@commercetools-labs/puck-components';
 import {
   getPublishedPuckPageApi,
   getPreviewPuckPageApi,
@@ -14,8 +14,8 @@ import {
   getPublishedPuckContentApi,
   getPreviewPuckContentApi,
   queryPuckContentApi,
-} from '@commercetools-demo/puck-api';
-import type { PuckConfig, PuckData } from '@commercetools-demo/puck-types';
+} from '@commercetools-labs/puck-api';
+import type { PuckConfig, PuckData } from '@commercetools-labs/puck-types';
 import { PuckDataRenderer } from './PuckDataRenderer';
 
 const DEFAULT_CONFIG: PuckConfig = {

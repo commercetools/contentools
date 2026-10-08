@@ -30,8 +30,8 @@ import {
   stripPuckDataToTemplate,
   UnsavedChangesDialog,
   useDirtyState,
-} from '@commercetools-demo/puck-editor';
-import { PuckRenderer } from '@commercetools-demo/puck-renderer';
+} from '@commercetools-labs/puck-editor';
+import { PuckRenderer } from '@commercetools-labs/puck-renderer';
 import {
   VersionHistoryProvider,
   VersionHistoryButton,
@@ -39,7 +39,7 @@ import {
   VersionAwareFieldsPanel,
   useVersionHistoryPanel,
   useVersionDiff,
-} from '@commercetools-demo/puck-version-history';
+} from '@commercetools-labs/puck-version-history';
 import { EnsureIntlProvider } from './EnsureIntlProvider';
 import { EnsureNimbusProvider } from './EnsureNimbusProvider';
 import {
@@ -47,13 +47,13 @@ import {
   usePuckContents,
   usePuckContent,
   usePuckTemplates,
-} from '@commercetools-demo/puck-api';
+} from '@commercetools-labs/puck-api';
 import type {
   CreatePuckContentInput,
   PuckContentListItem,
   PuckContentVersionEntry,
   PuckData,
-} from '@commercetools-demo/puck-types';
+} from '@commercetools-labs/puck-types';
 import {
   Badge,
   Button,
@@ -553,9 +553,12 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
   const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
   const [templateSaving, setTemplateSaving] = useState(false);
 
-  const currentData: PuckData =
-    states.draft?.data ??
-    content?.data ?? { content: [], root: { props: {} } };
+  const draftData = states.draft?.data;
+  const contentData = content?.data;
+  const currentData: PuckData = useMemo(
+    () => draftData ?? contentData ?? { content: [], root: { props: {} } },
+    [draftData, contentData]
+  );
 
   const versionHistory = useVersionHistoryPanel({
     versions: versions as PuckContentVersionEntry[],

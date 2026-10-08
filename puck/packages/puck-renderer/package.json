@@ -1,23 +1,47 @@
 {
   "name": "@commercetools-labs/puck-renderer",
-  "version": "0.8.3",
+  "version": "1.0.0",
   "description": "Lightweight Puck page renderer for storefronts",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/commercetools/contentools.git",
+    "directory": "puck/packages/puck-renderer"
+  },
+  "bugs": {
+    "url": "https://github.com/commercetools/contentools/issues"
+  },
+  "homepage": "https://github.com/commercetools/contentools/tree/main/puck/packages/puck-renderer#readme",
+  "keywords": [
+    "commercetools",
+    "puck",
+    "page-builder",
+    "react"
+  ],
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     }
   },
   "files": [
     "dist",
-    "package.json"
+    "README.md"
   ],
   "publishConfig": {
     "access": "public"
+  },
+  "engines": {
+    "node": ">=22"
   },
   "scripts": {
     "build": "tsup",
@@ -25,9 +49,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@commercetools-demo/puck-api": "workspace:^",
-    "@commercetools-demo/puck-components": "workspace:^",
-    "@commercetools-demo/puck-types": "workspace:^",
+    "@commercetools-labs/puck-api": "workspace:^",
+    "@commercetools-labs/puck-components": "workspace:^",
+    "@commercetools-labs/puck-types": "workspace:^",
     "@measured/puck": "^0.18.2"
   },
   "peerDependencies": {
@@ -36,8 +60,8 @@
     "react-intl": ">=6.0.0"
   },
   "devDependencies": {
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "tsup": "^8.3.0",
     "typescript": "^5.7.2"
   }

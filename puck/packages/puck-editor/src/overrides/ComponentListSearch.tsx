@@ -19,7 +19,7 @@ import { Close } from '@commercetools/nimbus-icons';
 import {
   useVersionHistoryContext,
   VersionHistorySidebarContent,
-} from '@commercetools-demo/puck-version-history';
+} from '@commercetools-labs/puck-version-history';
 
 // ---------------------------------------------------------------------------
 // Component search context

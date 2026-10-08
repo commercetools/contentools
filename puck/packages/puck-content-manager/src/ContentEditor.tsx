@@ -12,8 +12,8 @@ import {
   PuckApiProvider,
   usePuckContent,
   usePuckTemplates,
-} from '@commercetools-demo/puck-api';
-import type { PuckContentVersionEntry, PuckData } from '@commercetools-demo/puck-types';
+} from '@commercetools-labs/puck-api';
+import type { PuckContentVersionEntry, PuckData } from '@commercetools-labs/puck-types';
 import { EnsureIntlProvider } from './EnsureIntlProvider';
 import { EnsureNimbusProvider } from './EnsureNimbusProvider';
 import {
@@ -25,7 +25,7 @@ import {
   nimbusFieldTypes,
   stripPuckDataToTemplate,
   useDirtyState,
-} from '@commercetools-demo/puck-editor';
+} from '@commercetools-labs/puck-editor';
 import {
   VersionHistoryProvider,
   VersionPreviewBanner,
@@ -33,7 +33,7 @@ import {
   VersionHistoryButton,
   useVersionHistoryPanel,
   useVersionDiff,
-} from '@commercetools-demo/puck-version-history';
+} from '@commercetools-labs/puck-version-history';
 import { LoadingSpinner, Stack, Text } from '@commercetools/nimbus';
 
 // ---------------------------------------------------------------------------
@@ -108,12 +108,12 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
   const [templateSaving, setTemplateSaving] = useState(false);
 
   // Current live data (draft preferred, fallback to content value)
-  const currentData: PuckData =
-    states.draft?.data ??
-    content?.data ?? {
-      content: [],
-      root: { props: {} },
-    };
+  const draftData = states.draft?.data;
+  const contentData = content?.data;
+  const currentData: PuckData = useMemo(
+    () => draftData ?? contentData ?? { content: [], root: { props: {} } },
+    [draftData, contentData]
+  );
 
   // Version history panel state
   const versionHistory = useVersionHistoryPanel({

@@ -17,7 +17,7 @@ export default defineConfig({
     'react',
     'react-dom',
     'react-router-dom',
-    '@commercetools-demo/puck-api',
-    '@commercetools-demo/puck-types',
+    '@commercetools-labs/puck-api',
+    '@commercetools-labs/puck-types',
   ],
 });

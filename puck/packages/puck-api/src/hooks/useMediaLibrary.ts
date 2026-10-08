@@ -8,7 +8,7 @@ import { useCallback, useState } from 'react';
 import type {
   MediaFile,
   MediaLibraryPagination,
-} from '@commercetools-demo/puck-types';
+} from '@commercetools-labs/puck-types';
 import {
   fetchMediaLibraryApi,
   uploadMediaFileApi,

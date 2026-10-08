@@ -18,8 +18,7 @@ export default defineConfig({
     'react-dom',
     'react-intl',
     '@measured/puck',
-    '@commercetools-demo/puck-api',
-    '@commercetools-demo/puck-types',
+    '@commercetools-labs/puck-api',
     // Conditionally require()s jsdom for SSR sanitization — resolve from
     // node_modules rather than bundling.
     'isomorphic-dompurify',

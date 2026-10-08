@@ -12,7 +12,7 @@ import type {
   PuckPageVersionEntry,
   PuckStateInfo,
   UpdatePuckPageInput,
-} from '@commercetools-demo/puck-types';
+} from '@commercetools-labs/puck-types';
 import {
   getPuckPageApi,
   updatePuckPageApi,

@@ -9,7 +9,7 @@
 //    Solid fills, no depth, no effects.
 //    Influenced by Windows 8 Metro + iOS 7.
 
-import type { ThemeTokens } from '@commercetools-demo/puck-types';
+import type { ThemeTokens } from '@commercetools-labs/puck-types';
 
 // ─────────────────────────────────────────────
 export const flatTheme: ThemeTokens = {

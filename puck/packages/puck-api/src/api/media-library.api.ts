@@ -4,7 +4,7 @@
  * Freely available, AS IS and UNSUPPORTED. See LICENSE.
  */
 
-import type { MediaLibraryResult } from '@commercetools-demo/puck-types';
+import type { MediaLibraryResult } from '@commercetools-labs/puck-types';
 import { httpClient } from './http-client';
 
 export const fetchMediaLibraryApi = async (

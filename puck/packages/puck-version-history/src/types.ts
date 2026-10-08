@@ -4,7 +4,7 @@
  * Freely available, AS IS and UNSUPPORTED. See LICENSE.
  */
 
-import type { PuckData } from '@commercetools-demo/puck-types';
+import type { PuckData } from '@commercetools-labs/puck-types';
 
 export interface ComponentDiff {
   id: string;

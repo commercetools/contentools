@@ -10,7 +10,7 @@ import type {
   PuckTemplateKind,
   PuckTemplateListItem,
   PuckTemplateResponse,
-} from '@commercetools-demo/puck-types';
+} from '@commercetools-labs/puck-types';
 import {
   createPuckTemplateApi,
   deletePuckTemplateApi,

@@ -7,7 +7,7 @@
 import type {
   PuckPageStateResponse,
   PuckPageVersionResponse,
-} from '@commercetools-demo/puck-types';
+} from '@commercetools-labs/puck-types';
 import { httpClient, readHeaders, writeHeaders } from './http-client';
 
 export const getPuckPageStatesApi = async (

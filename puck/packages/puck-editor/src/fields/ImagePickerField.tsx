@@ -7,16 +7,16 @@
 import React, {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
-import { useMediaLibrary } from '@commercetools-demo/puck-api';
-import type { MediaFile } from '@commercetools-demo/puck-types';
+import { useMediaLibrary } from '@commercetools-labs/puck-api';
+import type { MediaFile } from '@commercetools-labs/puck-types';
 import {
   Button,
   FormField,
-  Icon,
   IconButton,
   LoadingSpinner,
   Stack,
@@ -456,7 +456,10 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
   const [showUpload, setShowUpload] = useState(false);
   const [showLibrary, setShowLibrary] = useState(false);
 
-  const extensions = imagesOnly ? ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'] : [];
+  const extensions = useMemo(
+    () => (imagesOnly ? ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'] : []),
+    [imagesOnly]
+  );
 
   const openLibrary = useCallback(() => {
     void fetchMedia(extensions, 1, 20);

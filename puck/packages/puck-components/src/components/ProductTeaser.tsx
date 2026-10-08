@@ -7,9 +7,9 @@
 import React from 'react';
 import type { ComponentConfig } from '@measured/puck';
 import { FormattedMessage } from 'react-intl';
-import { useDatasource } from '@commercetools-demo/puck-api';
+import { useDatasource } from '@commercetools-labs/puck-api';
 import { RichTextContent } from './RichTextContent';
-import { resolveProductLink, type ProductLinkProps } from './cms/shared';
+import { resolveProductLink, type ProductLinkProps } from './blocks/shared';
 import type { DatasourceValue } from '../datasource.types';
 
 // ---------------------------------------------------------------------------
@@ -53,9 +53,7 @@ const formatPrice = (
 // Render — a proper React component so hooks work
 // ---------------------------------------------------------------------------
 
-export const renderProductTeaser: NonNullable<
-  ComponentConfig<ProductTeaserProps>['render']
-> = ({ datasource, richText, linkWith, baseUrl }) => {
+const ProductTeaserRender: React.FC<Parameters<NonNullable<ComponentConfig<ProductTeaserProps>['render']>>[0]> = ({ datasource, richText, linkWith, baseUrl }) => {
   // Skip the hook fetch when the server has already pre-resolved the data.
   const hasPreResolved = datasource?.resolvedData != null;
   const { data: fetchedData, loading, error } = useDatasource(
@@ -179,3 +177,7 @@ export const renderProductTeaser: NonNullable<
     </div>
   );
 };
+
+export const renderProductTeaser: NonNullable<ComponentConfig<ProductTeaserProps>['render']> = (props) => (
+  <ProductTeaserRender {...props} />
+);

@@ -5,7 +5,7 @@
  */
 
 import { useMemo } from 'react';
-import type { PuckData } from '@commercetools-demo/puck-types';
+import type { PuckData } from '@commercetools-labs/puck-types';
 import type { ComponentDiff, PuckDataDiff } from '../types';
 
 function diffProps(

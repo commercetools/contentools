@@ -6,7 +6,7 @@
 
 import React, { useState } from 'react';
 import { useIntl, type MessageDescriptor } from 'react-intl';
-import type { ThemeTokens } from '@commercetools-demo/puck-types';
+import type { ThemeTokens } from '@commercetools-labs/puck-types';
 import { Button, Stack } from '@commercetools/nimbus';
 import {
   themePresets,

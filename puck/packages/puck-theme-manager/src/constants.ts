@@ -4,7 +4,7 @@
  * Freely available, AS IS and UNSUPPORTED. See LICENSE.
  */
 
-import type { ThemeTokens } from '@commercetools-demo/puck-types';
+import type { ThemeTokens } from '@commercetools-labs/puck-types';
 
 export const DEFAULT_THEME: ThemeTokens = {
   colorPrimary: '#0f766e',

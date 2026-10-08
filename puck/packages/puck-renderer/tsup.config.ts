@@ -18,8 +18,8 @@ export default defineConfig({
     'react-dom',
     'react-intl',
     '@measured/puck',
-    '@commercetools-demo/puck-components',
-    '@commercetools-demo/puck-api',
-    '@commercetools-demo/puck-types',
+    '@commercetools-labs/puck-components',
+    '@commercetools-labs/puck-api',
+    '@commercetools-labs/puck-types',
   ],
 });

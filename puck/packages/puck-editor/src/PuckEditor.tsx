@@ -12,9 +12,9 @@ import {
   PuckApiProvider,
   usePuckPage,
   usePuckTemplates,
-} from '@commercetools-demo/puck-api';
-import type { PuckData } from '@commercetools-demo/puck-types';
-import type { PuckPageVersionEntry } from '@commercetools-demo/puck-types';
+} from '@commercetools-labs/puck-api';
+import type { PuckData } from '@commercetools-labs/puck-types';
+import type { PuckPageVersionEntry } from '@commercetools-labs/puck-types';
 import {
   VersionHistoryProvider,
   VersionPreviewBanner,
@@ -22,7 +22,7 @@ import {
   VersionHistoryButton,
   useVersionHistoryPanel,
   useVersionDiff,
-} from '@commercetools-demo/puck-version-history';
+} from '@commercetools-labs/puck-version-history';
 import { createDefaultPuckConfig } from './config/defaultPuckConfig';
 import { EditorToolbar } from './toolbar/EditorToolbar';
 import { CreateTemplateDialog } from './toolbar/CreateTemplateDialog';
@@ -97,12 +97,12 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
   const [templateSaving, setTemplateSaving] = useState(false);
 
   // Current live data (draft preferred, fallback to page value)
-  const currentData: PuckData =
-    states.draft?.puckData ??
-    page?.puckData ?? {
-      content: [],
-      root: { props: {} },
-    };
+  const draftData = states.draft?.puckData;
+  const pageData = page?.puckData;
+  const currentData: PuckData = useMemo(
+    () => draftData ?? pageData ?? { content: [], root: { props: {} } },
+    [draftData, pageData]
+  );
 
   // Version history panel state
   const versionHistory = useVersionHistoryPanel({

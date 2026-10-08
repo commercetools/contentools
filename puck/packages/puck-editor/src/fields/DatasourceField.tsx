@@ -8,10 +8,10 @@ import React, { useState } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { Button, FormField, Icon, Select, Stack, Text, TextInput } from '@commercetools/nimbus';
 import { Close, DragIndicator } from '@commercetools/nimbus-icons';
-import { useProductSearch } from '@commercetools-demo/puck-api';
+import { useProductSearch } from '@commercetools-labs/puck-api';
 // Datasource value types live in the Nimbus-free render package; re-export them
 // here so existing imports of `../fields/DatasourceField` keep working.
-import type { DatasourceType, DatasourceValue } from '@commercetools-demo/puck-components';
+import type { DatasourceType, DatasourceValue } from '@commercetools-labs/puck-components';
 
 // ---------------------------------------------------------------------------
 // Types

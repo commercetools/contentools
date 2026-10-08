@@ -9,7 +9,7 @@ import type {
   CreatePuckContentInput,
   PuckContentListItem,
   PuckContentResponse,
-} from '@commercetools-demo/puck-types';
+} from '@commercetools-labs/puck-types';
 import {
   createPuckContentApi,
   deletePuckContentApi,

@@ -6,7 +6,7 @@
 
 import type { ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
-import { renderRichText, type RichTextProps } from '@commercetools-demo/puck-components';
+import { renderRichText, type RichTextProps } from '@commercetools-labs/puck-components';
 import { RichTextField } from '../fields/RichTextField';
 import { createContentWidthField, createSpacingField } from '../fields/sizeFields';
 

@@ -6,7 +6,7 @@
 
 import type { ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
-import { renderHero, type HeroProps } from '@commercetools-demo/puck-components';
+import { renderHero, type HeroProps } from '@commercetools-labs/puck-components';
 import { createFontSizeField } from '../fields/fontSizeField';
 import { createHeroHeightField } from '../fields/sizeFields';
 

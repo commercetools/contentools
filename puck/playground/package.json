@@ -1,21 +1,23 @@
 {
   "name": "@commercetools-labs/puck-playground",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.36.0",
-    "@commercetools-demo/puck-api": "link:../packages/puck-api",
-    "@commercetools-demo/puck-content-manager": "link:../packages/puck-content-manager",
-    "@commercetools-demo/puck-editor": "link:../packages/puck-editor",
-    "@commercetools-demo/puck-page-manager": "link:../packages/puck-page-manager",
-    "@commercetools-demo/puck-renderer": "link:../packages/puck-renderer",
-    "@commercetools-demo/puck-types": "link:../packages/puck-types",
+    "@commercetools-labs/puck-api": "workspace:^",
+    "@commercetools-labs/puck-content-manager": "workspace:^",
+    "@commercetools-labs/puck-editor": "workspace:^",
+    "@commercetools-labs/puck-page-manager": "workspace:^",
+    "@commercetools-labs/puck-renderer": "workspace:^",
+    "@commercetools-labs/puck-theme-manager": "workspace:^",
+    "@commercetools-labs/puck-types": "workspace:^",
     "@commercetools/nimbus": "^3.2.0",
     "@commercetools/nimbus-icons": "^3.2.0",
     "@commercetools/nimbus-tokens": "^3.2.0",

@@ -5,10 +5,10 @@
  */
 
 import React, { useState } from 'react';
-import { PageManager } from '@commercetools-demo/puck-page-manager';
-import { ThemeManager } from '@commercetools-demo/puck-theme-manager';
-import { ContentManager } from '@commercetools-demo/puck-content-manager';
-import { PuckRenderer } from '@commercetools-demo/puck-renderer';
+import { PageManager } from '@commercetools-labs/puck-page-manager';
+import { ThemeManager } from '@commercetools-labs/puck-theme-manager';
+import { ContentManager } from '@commercetools-labs/puck-content-manager';
+import { PuckRenderer } from '@commercetools-labs/puck-renderer';
 
 // ---------------------------------------------------------------------------
 // Config from environment variables (.env file)

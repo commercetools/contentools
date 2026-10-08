@@ -6,7 +6,7 @@
 
 import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
-import { renderImage, type ImageProps } from '@commercetools-demo/puck-components';
+import { renderImage, type ImageProps } from '@commercetools-labs/puck-components';
 import { ImagePickerField } from '../fields/ImagePickerField';
 import { createWidthField, createImageHeightField, createRadiusField } from '../fields/sizeFields';
 

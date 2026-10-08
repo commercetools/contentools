@@ -10,7 +10,7 @@ import type {
   PuckPageResponse,
   PuckPageWithStatesResponse,
   UpdatePuckPageInput,
-} from '@commercetools-demo/puck-types';
+} from '@commercetools-labs/puck-types';
 import { httpClient, readHeaders, writeHeaders } from './http-client';
 
 export const listPuckPagesApi = async (

@@ -6,7 +6,7 @@
 
 import type { ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
-import { renderButton, type ButtonProps } from '@commercetools-demo/puck-components';
+import { renderButton, type ButtonProps } from '@commercetools-labs/puck-components';
 import { createFontSizeField } from '../fields/fontSizeField';
 
 export type { ButtonProps };

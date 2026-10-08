@@ -7,8 +7,8 @@
 import React from 'react';
 import { Render } from '@measured/puck';
 import type { Config, Data } from '@measured/puck';
-import type { PuckData, PuckConfig } from '@commercetools-demo/puck-types';
-import { defaultRenderConfig } from '@commercetools-demo/puck-components';
+import type { PuckData, PuckConfig } from '@commercetools-labs/puck-types';
+import { defaultRenderConfig } from '@commercetools-labs/puck-components';
 import { EnsureIntlProvider } from './EnsureIntlProvider';
 
 export interface PuckDataRendererProps {

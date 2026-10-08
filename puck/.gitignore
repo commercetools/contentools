@@ -4,3 +4,9 @@ dist/
 .yarn/install-state.gz
 *.log
 .DS_Store
+.env
+.env.*
+!.env.example
+coverage/
+*.tgz
+packages/*/LICENSE

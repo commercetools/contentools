@@ -9,7 +9,7 @@ import type {
   CreatePuckPageInput,
   PuckPageListItem,
   PuckPageResponse,
-} from '@commercetools-demo/puck-types';
+} from '@commercetools-labs/puck-types';
 import {
   createPuckPageApi,
   deletePuckPageApi,

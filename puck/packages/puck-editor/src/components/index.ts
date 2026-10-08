@@ -32,5 +32,5 @@ export type { SpacerProps } from './Spacer';
 export { createProductTeaserConfig } from './ProductTeaser';
 export type { ProductTeaserProps } from './ProductTeaser';
 
-// CMS components (from /service/src/samples/CMS)
-export * from './cms';
+// Content blocks
+export * from './blocks';
