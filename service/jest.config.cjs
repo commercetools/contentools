@@ -10,7 +10,7 @@ module.exports = {
   testEnvironment: 'node', // NOT jsdom: msw 2 needs Node's fetch/Request globals
   roots: ['<rootDir>/tests'],
   testPathIgnorePatterns: ['/node_modules/', '/src/_pending/'],
-  testMatch: ['**/tests/{unit,integration}/**/*.test.ts'],
+  testMatch: ['**/tests/{unit,integration,media}/**/*.test.ts'],
   setupFiles: ['<rootDir>/tests/support/env.ts'], // runs BEFORE test files import the app
   setupFilesAfterEnv: ['<rootDir>/tests/support/msw-setup.ts'],
   transform: { '^.+\\.ts$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.test.json' }] },

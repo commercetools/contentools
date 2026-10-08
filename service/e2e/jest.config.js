@@ -11,7 +11,7 @@ module.exports = {
   rootDir: __dirname,
   // Only the guarded harness suites. The legacy black-box suites in this folder still need the old auth
   // and are removed or rewritten by specs C/F.
-  testMatch: ['<rootDir>/smoke.e2e.ts', '<rootDir>/sandbox/**/*.e2e.ts'],
+  testMatch: ['<rootDir>/smoke.e2e.ts', '<rootDir>/sandbox/**/*.e2e.ts', '<rootDir>/media/**/*.e2e.ts'],
   moduleFileExtensions: ['ts', 'js'],
   transform: {
     '^.+\\.ts$': ['ts-jest', { tsconfig: '<rootDir>/../tsconfig.test.json' }],

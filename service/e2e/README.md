@@ -38,3 +38,25 @@ yarn test:e2e          # skipped (exit 0) when the variables are unset
 
 The legacy black-box suites still in this folder are not selected by `jest.config.js`; they are removed or rewritten by
 the legacy-removal and content-API specs.
+
+## Media live check (`yarn test:e2e:media`)
+
+Independent of the commercetools sandbox. Skipped unless `E2E_MEDIA_PROVIDER` is set (`gcp`, `aws` or `cloudinary`).
+Provider keys use the `MEDIA_*` names with an `E2E_` prefix (for example `E2E_MEDIA_GCP_BUCKET`,
+`E2E_MEDIA_GCP_SERVICE_ACCOUNT_KEY_B64`, `E2E_MEDIA_PUBLIC_BASE_URL`). The suite forces the path prefix
+`contentools-test/media`, uploads two PNGs under a throwaway business unit, fetches the public URL, checks newest-first
+listing and cursor paging, and removes what it wrote.
+
+Free emulator for GCS (no Dockerfile or compose file is kept in the repo; run the image directly):
+
+```bash
+docker run -d --name contentools-test-fake-gcs -p 4443:4443 fsouza/fake-gcs-server -scheme http -port 4443 -public-host localhost:4443
+curl -s -X POST 'localhost:4443/storage/v1/b?project=test' -H 'content-type: application/json' -d '{"name":"media-test"}'
+STORAGE_EMULATOR_HOST=http://localhost:4443 E2E_MEDIA_PROVIDER=gcp E2E_MEDIA_GCP_BUCKET=media-test \
+  E2E_MEDIA_GCP_SERVICE_ACCOUNT_KEY_B64=$(printf '{"client_email":"a@b.test","private_key":"x"}' | base64) \
+  E2E_MEDIA_PUBLIC_BASE_URL=http://localhost:4443/media-test yarn test:e2e:media
+docker rm -f contentools-test-fake-gcs
+```
+
+Provider status: `gcp` is the only provider meant to be verified live. `aws`: unit-tested with a mocked SDK, unverified live.
+`cloudinary`: unit-tested with a mocked SDK, unverified live.

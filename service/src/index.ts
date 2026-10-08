@@ -8,6 +8,7 @@ import { ConfigurationError, readConfiguration } from './config/env';
 import type { Configuration } from './config/env';
 import { createApp } from './app';
 import { logAuthDiagnostics } from './auth/diagnostics';
+import { loadMediaConfig, MediaConfigError } from './media';
 import { getLogger } from './utils/logger.utils';
 
 function loadConfiguration(): Configuration {
@@ -23,8 +24,23 @@ function loadConfiguration(): Configuration {
   }
 }
 
+function validateMediaConfiguration(): void {
+  try {
+    loadMediaConfig(process.env);
+  } catch (error) {
+    if (error instanceof MediaConfigError) {
+      process.stderr.write(
+        `${JSON.stringify({ level: 'error', message: `MediaConfigError: ${error.message}` })}\n`
+      );
+      process.exit(1);
+    }
+    throw error;
+  }
+}
+
 function main(): void {
   const config = loadConfiguration();
+  validateMediaConfiguration();
   const logger = getLogger();
   logAuthDiagnostics(logger, config);
   const server = createApp(config).listen(config.port, () =>

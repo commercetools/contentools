@@ -11,7 +11,6 @@ service/src/_pending/controllers/datasource-resolution.route.ts  # F
 service/src/_pending/routes/configuration.route.ts  # F
 service/src/_pending/routes/content-type.route.ts  # F
 service/src/_pending/routes/datasource.route.ts  # F
-service/src/_pending/routes/file.route.ts  # G
 service/src/_pending/routes/puck-content.route.ts  # F
 service/src/_pending/routes/puck-page.route.ts  # F
 service/src/_pending/routes/puck-template.route.ts  # F
