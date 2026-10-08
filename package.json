@@ -14,6 +14,7 @@
     "test:e2e": "node tools/run-all.mjs test:e2e",
     "verify": "node tools/run-all.mjs lint typecheck test build",
     "headers": "node tools/labs-publish.mjs ossify --apply",
+    "dev:fake-ct": "node --experimental-strip-types tools/fake-ct/server.mjs",
     "check:spdx": "node tools/check-spdx-headers.mjs",
     "test:tools": "node --test \"tools/test/*.test.mjs\"",
     "gate": "node tools/labs-publish.mjs gate"
