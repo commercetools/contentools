@@ -19,8 +19,8 @@
   "ImagePicker.libraryTitle": "Select from Media Library",
   "ImagePicker.noFilesFound": "No files found.",
   "ImagePicker.prevPage": "← Prev",
-  "ImagePicker.pageIndicator": "{current} / {total}",
   "ImagePicker.nextPage": "Next →",
   "ImagePicker.nothingSelected": "Nothing selected",
-  "ImagePicker.select": "Select"
+  "ImagePicker.select": "Select",
+  "ImagePicker.mediaNotConfigured": "Media storage is not configured for this installation. Ask an administrator to configure a media provider."
 }

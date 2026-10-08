@@ -12,7 +12,6 @@ import {
   system as nimbusSystem,
 } from '@commercetools/nimbus';
 
-
 const SCOPED_SYSTEM_KEY = Symbol.for(
   '@commercetools-labs/puck:nimbus-scoped-system'
 );
@@ -27,15 +26,15 @@ const scopedSystem: ReturnType<typeof createSystem> =
   (globalScope[SCOPED_SYSTEM_KEY] = createSystem({
     // `_config` is the fully-merged Nimbus + Chakra config used to build the
     // stock system; reusing it keeps all Nimbus theming intact.
-    ...(nimbusSystem as unknown as { _config: Record<string, unknown> })._config,
+    ...(nimbusSystem as unknown as { _config: Record<string, unknown> })
+      ._config,
     preflight: false,
     globalCss: {},
   }));
 
-export const EnsureNimbusProvider: React.FC<PropsWithChildren<{ locale?: string }>> = ({
-  locale = 'en',
-  children,
-}) => (
+export const EnsureNimbusProvider: React.FC<
+  PropsWithChildren<{ locale?: string }>
+> = ({ locale = 'en', children }) => (
   <ChakraProvider value={scopedSystem}>
     <NimbusI18nProvider locale={locale}>
       <_RegionProvider>{children}</_RegionProvider>

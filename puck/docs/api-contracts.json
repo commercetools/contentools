@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "description": "Contract documentation for every mutating FE→backend API call in @commercetools-labs/puck-* packages. Each entry traces the payload from UI component through hook/transformer to the final fetch body, and compares it against the backend route's expected schema. Entries with compatible=false are the only ones requiring a contract fix.",
+  "description": "Contract documentation for every mutating FE→backend API call in @commercetools-labs/puck-* packages. Each entry traces the payload from UI component through hook/transformer to the final fetch body, and compares it against the backend route's expected schema. Entries with compatible=false are the only ones requiring a contract fix. The auth field mirrors PUCK_AUTH_POLICY in puck-api: public (no credentials needed), protected (the client refuses to send without a token, auth-header provider or fetcher), mode-dependent (public for published reads, protected for preview) or attach (credentials are sent when present and the service decides).",
   "entries": [
     {
       "apiFunction": "createPuckContentApi",
@@ -30,7 +30,9 @@
           "contentType": "string (required, trimmed)",
           "data": {
             "content": "[] (empty array on creation)",
-            "root": { "props": {} }
+            "root": {
+              "props": {}
+            }
           }
         }
       },
@@ -47,7 +49,8 @@
         "controllerType": "Pick<PuckContentValue, 'name' | 'contentType'> & Partial<Pick<PuckContentValue, 'data' | 'meta'>>",
         "controllerFile": "service/src/controllers/puck-content.controller.ts:149"
       },
-      "compatible": true
+      "compatible": true,
+      "auth": "protected"
     },
     {
       "apiFunction": "updatePuckContentApi",
@@ -80,7 +83,9 @@
         "value": {
           "data": {
             "content": "PuckComponentData[] (current editor state)",
-            "root": { "props": "Record<string, unknown>" },
+            "root": {
+              "props": "Record<string, unknown>"
+            },
             "zones": "Record<string, PuckComponentData[]> (optional)"
           },
           "meta": "PuckContentMeta (optional, only present when explicitly passed)"
@@ -100,7 +105,8 @@
         "controllerFile": "service/src/controllers/puck-content.controller.ts:191",
         "note": "Backend spreads input into existing value (...existing.value, ...input) so omitting name/contentType is intentional partial-update behavior"
       },
-      "compatible": true
+      "compatible": true,
+      "auth": "protected"
     },
     {
       "apiFunction": "createPuckPageApi",
@@ -143,7 +149,8 @@
         "controllerType": "Pick<PuckPageValue, 'name' | 'slug'> & Partial<Pick<PuckPageValue, 'puckData' | 'meta'>>",
         "controllerFile": "service/src/controllers/puck-page.controller.ts:227"
       },
-      "compatible": true
+      "compatible": true,
+      "auth": "protected"
     },
     {
       "apiFunction": "updatePuckPageApi (saveDraft path)",
@@ -176,7 +183,9 @@
         "value": {
           "puckData": {
             "content": "PuckComponentData[] (current editor state)",
-            "root": { "props": "Record<string, unknown>" },
+            "root": {
+              "props": "Record<string, unknown>"
+            },
             "zones": "Record<string, PuckComponentData[]> (optional)"
           }
         }
@@ -195,7 +204,8 @@
         "controllerFile": "service/src/controllers/puck-page.controller.ts:274",
         "note": "Backend spreads input into existing value so omitting name/slug is intentional partial-update behavior"
       },
-      "compatible": true
+      "compatible": true,
+      "auth": "protected"
     },
     {
       "apiFunction": "updatePuckPageApi (updateMeta path)",
@@ -234,7 +244,8 @@
         "controllerType": "Partial<Pick<PuckPageValue, 'name' | 'slug' | 'puckData' | 'meta'>>",
         "controllerFile": "service/src/controllers/puck-page.controller.ts:274"
       },
-      "compatible": true
+      "compatible": true,
+      "auth": "protected"
     },
     {
       "apiFunction": "publishPuckContentApi",
@@ -273,7 +284,8 @@
           }
         }
       },
-      "compatible": true
+      "compatible": true,
+      "auth": "protected"
     },
     {
       "apiFunction": "publishPuckPageApi",
@@ -312,7 +324,8 @@
           }
         }
       },
-      "compatible": true
+      "compatible": true,
+      "auth": "protected"
     },
     {
       "apiFunction": "revertPuckContentDraftApi",
@@ -340,7 +353,8 @@
           "body": null
         }
       },
-      "compatible": true
+      "compatible": true,
+      "auth": "protected"
     },
     {
       "apiFunction": "revertPuckPageDraftApi",
@@ -368,7 +382,8 @@
           "body": null
         }
       },
-      "compatible": true
+      "compatible": true,
+      "auth": "protected"
     },
     {
       "apiFunction": "uploadMediaFileApi",
@@ -411,7 +426,8 @@
           }
         }
       },
-      "compatible": true
+      "compatible": true,
+      "auth": "protected"
     },
     {
       "apiFunction": "queryPuckContentApi",
@@ -422,7 +438,7 @@
         {
           "fn": "PuckRenderer (useEffect)",
           "file": "puck/packages/puck-renderer/src/PuckRenderer.tsx",
-          "description": "Calls queryPuckContentApi(baseURL, projectKey, businessUnitKey, contentType, mode)"
+          "description": "Calls queryPuckContentApi(client, { query }, mode)"
         },
         {
           "fn": "queryPuckContentApi",
@@ -439,7 +455,8 @@
           "query": "string (required — throws 400 if missing)"
         }
       },
-      "compatible": true
+      "compatible": true,
+      "auth": "mode-dependent"
     },
     {
       "apiFunction": "queryPuckPageApi",
@@ -450,7 +467,7 @@
         {
           "fn": "PuckRenderer (useEffect)",
           "file": "puck/packages/puck-renderer/src/PuckRenderer.tsx",
-          "description": "Calls queryPuckPageApi(baseURL, projectKey, businessUnitKey, slug, mode)"
+          "description": "Calls queryPuckPageApi(client, { query }, mode)"
         },
         {
           "fn": "queryPuckPageApi",
@@ -467,7 +484,8 @@
           "query": "string (required — throws 400 if missing)"
         }
       },
-      "compatible": true
+      "compatible": true,
+      "auth": "mode-dependent"
     },
     {
       "apiFunction": "resolveDatasourceApi",
@@ -492,20 +510,29 @@
         }
       ],
       "fePayload": {
-        "_variant_productBySku": { "sku": "string (e.g. 'ABC-123')" },
-        "_variant_productsBySku": { "skus": "string (comma-separated, e.g. 'ABC-123,DEF-456')" }
+        "_variant_productBySku": {
+          "sku": "string (e.g. 'ABC-123')"
+        },
+        "_variant_productsBySku": {
+          "skus": "string (comma-separated, e.g. 'ABC-123,DEF-456')"
+        }
       },
       "backendExpected": {
         "route": "service/src/routes/datasource.route.ts:98",
         "schema": {
           "params": {
-            "_variant_productBySku": { "sku": "string" },
-            "_variant_productsBySku": { "skus": "string (comma-separated)" }
+            "_variant_productBySku": {
+              "sku": "string"
+            },
+            "_variant_productsBySku": {
+              "skus": "string (comma-separated)"
+            }
           }
         },
         "note": "Backend does `const { params } = req.body` — the params object must be nested under a 'params' key"
       },
-      "compatible": true
+      "compatible": true,
+      "auth": "attach"
     }
   ]
 }

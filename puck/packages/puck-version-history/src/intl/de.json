@@ -1,0 +1,21 @@
+{
+  "VersionHistory.statusAdded": "Hinzugefügt",
+  "VersionHistory.statusRemoved": "ENTFERNT",
+  "VersionHistory.statusChanged": "Geändert",
+  "VersionHistory.noDifferences": "Keine Unterschiede zur aktuellen Version",
+  "VersionHistory.changesVsCurrent": "Änderungen gegenüber aktuell",
+  "VersionHistory.rootLabel": "Wurzel",
+  "VersionHistory.currentBadge": "aktuell",
+  "VersionHistory.hideHistory": "Versionsverlauf ausblenden",
+  "VersionHistory.showHistory": "Versionsverlauf anzeigen",
+  "VersionHistory.noSavedVersions": "Noch keine gespeicherten Versionen",
+  "VersionHistory.savedVersions": "Gespeicherte Versionen",
+  "VersionHistory.applying": "Bewerben…",
+  "VersionHistory.apply": "Anwenden",
+  "VersionHistory.revert": "Zurücksetzen",
+  "VersionHistory.previewingVersion": "Vorschau: {timestamp}",
+  "VersionHistory.applyThisVersion": "Wenden Sie diese Version an",
+  "VersionHistory.backToCurrent": "Zurück zum Aktuellen",
+  "VersionHistory.fieldsChanged": "Von dieser Version geänderte Felder:",
+  "VersionHistory.rootFieldsChanged": "Stammfelder geändert:"
+}

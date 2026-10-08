@@ -363,5 +363,6 @@
   "Editor.size.generic.small": "Small",
   "Editor.size.generic.medium": "Medium",
   "Editor.size.generic.large": "Large",
-  "Editor.size.generic.xlarge": "Extra large"
+  "Editor.size.generic.xlarge": "Extra large",
+  "Editor.mediaNotConfigured": "Media storage is not configured for this installation. Ask an administrator to configure a media provider."
 }

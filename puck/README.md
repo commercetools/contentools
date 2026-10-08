@@ -100,14 +100,17 @@ before importing Tailwind:
 Common configuration passed to every manager:
 
 ```tsx
-const config = {
-  baseURL: 'https://your-service.example.com',
-  projectKey: 'your-project-key',
+const connection = {
+  baseURL: 'https://your-service.example.com/service',
   businessUnitKey: 'your-business-unit-key',
-  jwtToken: 'your-jwt-token',
-  locale: 'en-US', // optional; sets the UI language (en/es) + locale-aware calls (e.g. product search)
+  jwtToken: 'optional-token', // or getAuthHeaders / fetcher, see "Authentication"
+  locale: 'en-US', // optional; sets the UI language (en/es/de) + locale-aware calls (e.g. product search)
 };
 ```
+
+The connection is the same for every component (`PuckConnection` from
+`@commercetools-labs/puck-types`). There is no project key: one service serves one
+commercetools project, and `businessUnitKey` only scopes the content.
 
 ### Page manager
 
@@ -117,16 +120,17 @@ import { PageManager } from '@commercetools-labs/puck-page-manager';
 export function PagesRoute() {
   return (
     <PageManager
-      {...config}
+      {...connection}
       parentUrl="/pages" // route path this manager is mounted at (router basename)
     />
   );
 }
 ```
 
-Props: `parentUrl` (required), `baseURL`, `projectKey`, `businessUnitKey`,
-`jwtToken`, `locale?`, `config?` (custom Puck `Config`), `backButton?`,
-`messageOverrides?` (see [Localization](#localization-i18n)).
+Props: `parentUrl` (required), the connection (`baseURL`, `businessUnitKey`,
+`locale?`, `jwtToken?`, `getAuthHeaders?`, `fetcher?`), `config?` (custom Puck
+`Config`), `backButton?`, `messageOverrides?` (see
+[Localization](#localization-i18n)).
 
 ### Content manager
 
@@ -134,7 +138,7 @@ Props: `parentUrl` (required), `baseURL`, `projectKey`, `businessUnitKey`,
 import { ContentManager } from '@commercetools-labs/puck-content-manager';
 
 export function ContentRoute() {
-  return <ContentManager {...config} parentUrl="/content" defaultContentType="hero" />;
+  return <ContentManager {...connection} parentUrl="/content" defaultContentType="hero" />;
 }
 ```
 
@@ -146,12 +150,12 @@ Props: same as `PageManager`, plus `defaultContentType?`.
 import { ThemeManager } from '@commercetools-labs/puck-theme-manager';
 
 export function ThemeRoute() {
-  return <ThemeManager {...config} />;
+  return <ThemeManager {...connection} />;
 }
 ```
 
-Props: `baseURL`, `projectKey`, `businessUnitKey`, `jwtToken`, `locale?`,
-`backButton?`, `messageOverrides?` (see [Localization](#localization-i18n)).
+Props: the connection, `backButton?`, `messageOverrides?` (see
+[Localization](#localization-i18n)).
 
 ### Renderer (storefront)
 
@@ -161,22 +165,20 @@ fetches the data itself:
 ```tsx
 import { PuckRenderer } from '@commercetools-labs/puck-renderer';
 
-// Render a page by key (or by slug)
+// Render a page by key (or by slug). Published content needs no token.
 <PuckRenderer
   type="page"
-  baseURL={config.baseURL}
-  projectKey={config.projectKey}
-  businessUnitKey={config.businessUnitKey}
+  baseURL={connection.baseURL}
+  businessUnitKey={connection.businessUnitKey}
   pageKey="home-page"      // or: slug="/home"
-  mode="published"          // or "preview"
+  mode="published"          // or "preview" (needs jwtToken, getAuthHeaders or fetcher)
 />
 
 // Render a content item
 <PuckRenderer
   type="content"
-  baseURL={config.baseURL}
-  projectKey={config.projectKey}
-  businessUnitKey={config.businessUnitKey}
+  baseURL={connection.baseURL}
+  businessUnitKey={connection.businessUnitKey}
   contentKey="hero-banner"  // or: query="hero" (content type)
   mode="published"
 />
@@ -190,8 +192,9 @@ import { PuckDataRenderer } from '@commercetools-labs/puck-renderer';
 <PuckDataRenderer data={puckData} />;
 ```
 
-`PuckRenderer`'s `baseURL`/`projectKey`/`businessUnitKey` are optional if a
-`PuckApiProvider` is already mounted higher in the tree.
+`PuckRenderer`'s `baseURL`/`businessUnitKey` are optional if a
+`PuckApiProvider` is already mounted higher in the tree. Without either it shows
+a message instead of throwing.
 
 #### Theming rendered rich text
 
@@ -237,7 +240,7 @@ function PagesRoute() {
     };
   }, [intl]);
 
-  return <PageManager {...config} parentUrl="/pages" config={puckConfig} />;
+  return <PageManager {...connection} parentUrl="/pages" config={puckConfig} />;
 }
 ```
 
@@ -250,15 +253,100 @@ The **same `config` must be used** in the manager (authoring) and the renderer
 
 ---
 
+## Authentication
+
+Every component takes the same three optional ways to authenticate. Reads of
+published content and the theme are public; everything else (editing, preview,
+lists, media, product search) needs credentials.
+
+1. **Static token.** `jwtToken: '...'` is sent as `Authorization: Bearer <token>`.
+   Use a service token on a server or in local development only; never ship a
+   long-lived token to a browser.
+2. **Refreshing credentials.** `getAuthHeaders: async () => ({ Authorization: ... })`
+   runs before every request and wins over `jwtToken`, so a rotated token applies to
+   the next call without remounting anything.
+3. **Transport override (Merchant Center).** `fetcher: (request) => Promise<response>`
+   replaces `fetch`. Inside the Merchant Center a custom application cannot hold a
+   token; the host sends requests through the forward-to proxy, which adds the
+   credentials itself. This adapter is implemented by the Contentools admin app
+   (sketch below); the packages only guarantee that the fetcher receives the
+   absolute URL, method, headers and body (JSON string or `FormData`) and returns
+   anything shaped like a `Response`.
+
+```tsx
+import type { PuckFetcher } from '@commercetools-labs/puck-types';
+
+// Implemented by the Contentools admin app (Merchant Center application kit).
+const fetcher: PuckFetcher = async ({ url, method, headers, body }) =>
+  executeHttpClientRequest(
+    async ({ credentials, headers: mcHeaders }) => {
+      const res = await fetch(buildApiUrl('/proxy/forward-to'), {
+        method,
+        credentials,
+        headers: {
+          ...mcHeaders,
+          // custom headers for the backend are prefixed
+          ...Object.fromEntries(
+            Object.entries(headers).map(([k, v]) => [`x-forward-header-${k.toLowerCase()}`, v])
+          ),
+        },
+        body: body as BodyInit | undefined,
+      });
+      return { data: res, statusCode: res.status, getHeader: (n) => res.headers.get(n) };
+    },
+    { forwardToConfig: { uri: url, audiencePolicy: 'forward-url-origin', version: 2 } }
+  );
+```
+
+Anything shaped like `fetch` adapts in one line with `fetcherFromFetch(fetch)`
+(exported from `puck-api`).
+
+**Public rendering and preview.** `PuckRenderer` and `PuckDataRenderer` work
+without any provider. Published product blocks use the `resolvedData` the service
+embeds in the page, so a storefront needs no token to render published pages.
+`mode="preview"` without an auth source shows "Preview requires authentication"
+and sends no request. Product blocks that were never resolved stay empty unless
+the connection sets `publicDatasourceResolve` (mirror of the service flag
+`PUBLIC_DATASOURCE_RESOLVE`) or has credentials.
+
+**Errors.** Calls reject with `PuckHttpError` (`status`, `body`, `serverMessage`,
+`code`, `correlationId`). `PuckAuthError` extends it for 401 and 403 and carries
+`authCode`: `PUCK_AUTH_REQUIRED` (no auth source configured, nothing was sent) or
+`PUCK_AUTH_REJECTED` (the service said no).
+
+**Server side rendering.** `createPuckClient` and `loadPuckData` are React-free:
+
+```ts
+import { createPuckClient } from '@commercetools-labs/puck-api';
+import { loadPuckData } from '@commercetools-labs/puck-renderer';
+
+const client = createPuckClient({
+  baseURL: process.env.CONTENTOOLS_URL!,
+  businessUnitKey: 'main-store',
+  jwtToken: process.env.SERVICE_API_TOKEN, // server only: enables preview and datasource resolve
+});
+const puckData = await loadPuckData(client, { type: 'page', slug: '/home', mode: 'published' });
+// then: <PuckDataRenderer data={puckData} />
+```
+
+**Semantic versioning.** After 1.0.0 a change to `PuckConnection`,
+`PuckClient.request`, `PuckFetcher`/`PuckResponse`, `PuckAuthError`, the exported
+raw API functions or the keys of `PUCK_AUTH_POLICY` is a major change; adding
+optional fields or new functions is minor. Moving from the earlier packages with
+a project key is described in [docs/migration-1.0.md](docs/migration-1.0.md).
+
+---
+
 ## Localization (i18n)
 
 All manager UIs are localized with **react-intl**. Shipped languages: English
-(`en`) and Spanish (`es`). The `locale` prop selects the language; a full locale
-falls back to its base language (`en-US` → `en`, `es-PE` → `es`, anything else →
-`en`):
+(`en`), Spanish (`es`) and German (`de`). The Spanish and German catalogs are
+machine translated (see below) and have not been reviewed by a native speaker. The
+`locale` prop selects the language; a full locale falls back to its base language
+(`en-US` → `en`, `es-PE` → `es`, `de-DE` → `de`, anything else → `en`):
 
 ```tsx
-<PageManager {...config} parentUrl="/pages" locale="es-PE" />
+<PageManager {...connection} parentUrl="/pages" locale="es-PE" />
 ```
 
 **Overrides.** Every manager accepts `messageOverrides` — a flat
@@ -266,7 +354,7 @@ falls back to its base language (`en-US` → `en`, `es-PE` → `es`, anything el
 
 ```tsx
 <PageManager
-  {...config}
+  {...connection}
   parentUrl="/pages"
   messageOverrides={{ 'PageManager.pagesTitle': 'My Pages' }}
 />
@@ -277,7 +365,7 @@ falls back to its base language (`en-US` → `en`, `es-PE` → `es`, anything el
 its own provider and merges the package catalogs on top.
 
 **Regenerating catalogs (maintainers).** Each package owns its catalog under
-`src/intl/` (`en.json` is the source of truth; `es.json` and other locales are
+`src/intl/` (`en.json` is the source of truth; `es.json`, `de.json` and other locales are
 generated, not hand-written). From the repo root:
 
 ```bash
@@ -310,12 +398,18 @@ container constants.
 
 ## Reference app
 
-`playground/` is a Vite + React + TypeScript app that mounts all managers.
-Copy `.env.example` to `.env`, fill in your credentials, then:
+`playground/` is a Vite + React + TypeScript app that mounts all managers and the
+renderer. It runs against the bundled mock service (no real backend needed):
 
 ```bash
 yarn install
-yarn start:playground   # http://localhost:5174
+cp playground/.env.example playground/.env
+yarn workspace @commercetools-labs/puck-playground mock   # mock service on http://localhost:8080/service
+yarn start:playground                                      # http://localhost:5174
 ```
 
-Its `src/App.tsx` is a concise, working example of mounting every component.
+`VITE_AUTH_MODE` switches between `token` (static token), `fetcher` (simulates the
+Merchant Center proxy transport) and `none` (anonymous: only published rendering
+works). The mock accepts the token `dev-token` (`MOCK_SERVICE_TOKEN` changes it);
+`MOCK_MEDIA=none` makes the media endpoints answer 501. Its `src/App.tsx` is a
+concise, working example of mounting every component.
