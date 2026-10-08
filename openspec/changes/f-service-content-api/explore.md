@@ -114,3 +114,9 @@ The samples folder name in the source is `samples/CMS/` (27 files): renamed by D
 jest + supertest + msw using D's stateful `tests/support/fake-ct.ts` (custom objects, `where` evaluator) and E's `tests/support/mc.ts`; auth via the static `SERVICE_API_TOKEN` (header `Authorization: Bearer test-service-token-...`) except
 one MC-token happy path. Existing e2e expectations from `service/e2e/puck-page.e2e.ts` (source) are mirrored: POST without `value` -> 400; GET unknown key -> 404 (source accepted 404 or 500); published of unpublished page -> 404; query without `query` -> 400.
 A route-inventory test asserts that the Express router contains exactly the 73 routes of section 2 with the public/protected split from E.
+
+## 7. Results recorded during implementation
+
+* Left for spec G in `service/src/_pending/`: `routes/file.route.ts`, `controllers/file-controller.ts`, `controllers/file-controllers/{aws,cloudinary,gcp}-file-controller.ts`.
+* Q-F3 (object size) on the sandbox: a page with a 900 KB `puckData` was created and saved six times (version object holds five full copies, about 4.5 MB); every call answered 2xx. No size limit was hit at that scale.
+* Live check: `limit`, `offset` and `sort=id asc` are accepted by the real API (25 templates listed); Product Search answered 200 on the sandbox.

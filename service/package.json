@@ -19,7 +19,8 @@
     "format": "prettier --write \"{src,tests}/**/*.ts\"",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:e2e": "jest --config e2e/jest.config.js --runInBand"
+    "test:e2e": "jest --config e2e/jest.config.js --runInBand",
+    "test:live": "jest -c jest.live.config.cjs"
   },
   "dependencies": {
     "@babel/standalone": "^7.28.0",
