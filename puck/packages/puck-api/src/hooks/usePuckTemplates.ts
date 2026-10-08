@@ -37,8 +37,7 @@ export interface UsePuckTemplatesReturn {
 export const usePuckTemplates = (
   kind?: PuckTemplateKind
 ): UsePuckTemplatesReturn => {
-  const { baseURL, projectKey, businessUnitKey, jwtToken } =
-    usePuckApiContext();
+  const { client, baseURL, businessUnitKey } = usePuckApiContext();
 
   const [templates, setTemplates] = useState<PuckTemplateListItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -48,53 +47,35 @@ export const usePuckTemplates = (
     setLoading(true);
     setError(null);
     try {
-      const data = await listPuckTemplatesApi(
-        baseURL,
-        projectKey,
-        businessUnitKey,
-        kind
-      );
+      const data = await listPuckTemplatesApi(client, kind);
       setTemplates(data);
     } catch (err) {
       setError((err as Error).message);
     } finally {
       setLoading(false);
     }
-  }, [baseURL, projectKey, businessUnitKey, kind]);
+  }, [client, kind]);
 
+  // baseURL / businessUnitKey are not read by `refresh` (the client is stable) but a change must refetch.
   useEffect(() => {
     void refresh();
-  }, [refresh]);
+  }, [refresh, baseURL, businessUnitKey]);
 
   const createTemplate = useCallback(
     async (input: CreatePuckTemplateInput): Promise<PuckTemplateResponse> => {
-      if (!jwtToken) throw new Error('jwtToken is required to create a template');
-      const created = await createPuckTemplateApi(
-        baseURL,
-        projectKey,
-        jwtToken,
-        businessUnitKey,
-        { value: input }
-      );
+      const created = await createPuckTemplateApi(client, { value: input });
       await refresh();
       return created;
     },
-    [baseURL, projectKey, jwtToken, businessUnitKey, refresh]
+    [client, refresh]
   );
 
   const deleteTemplate = useCallback(
     async (key: string): Promise<void> => {
-      if (!jwtToken) throw new Error('jwtToken is required to delete a template');
-      await deletePuckTemplateApi(
-        baseURL,
-        projectKey,
-        jwtToken,
-        businessUnitKey,
-        key
-      );
+      await deletePuckTemplateApi(client, key);
       await refresh();
     },
-    [baseURL, projectKey, jwtToken, businessUnitKey, refresh]
+    [client, refresh]
   );
 
   return { templates, loading, error, refresh, createTemplate, deleteTemplate };

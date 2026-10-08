@@ -22,7 +22,9 @@ export interface UsePuckContentsReturn {
   loading: boolean;
   error: string | null;
   fetchContents: (contentType?: string) => Promise<void>;
-  createContent: (input: CreatePuckContentInput) => Promise<PuckContentResponse>;
+  createContent: (
+    input: CreatePuckContentInput
+  ) => Promise<PuckContentResponse>;
   deleteContent: (key: string) => Promise<void>;
   refresh: () => Promise<void>;
 }
@@ -30,8 +32,7 @@ export interface UsePuckContentsReturn {
 export const usePuckContents = (
   defaultContentType?: string
 ): UsePuckContentsReturn => {
-  const { baseURL, projectKey, businessUnitKey, jwtToken } =
-    usePuckApiContext();
+  const { client, baseURL, businessUnitKey } = usePuckApiContext();
 
   const [contents, setContents] = useState<PuckContentListItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -46,12 +47,7 @@ export const usePuckContents = (
       setError(null);
       setLastContentType(contentType);
       try {
-        const data = await listPuckContentsApi(
-          baseURL,
-          projectKey,
-          businessUnitKey,
-          contentType
-        );
+        const data = await listPuckContentsApi(client, contentType);
         setContents(data);
       } catch (err) {
         setError((err as Error).message);
@@ -59,46 +55,33 @@ export const usePuckContents = (
         setLoading(false);
       }
     },
-    [baseURL, projectKey, businessUnitKey]
+    [client]
   );
 
   const refresh = useCallback(async (): Promise<void> => {
     await fetchContents(lastContentType);
   }, [fetchContents, lastContentType]);
 
+  // baseURL / businessUnitKey are not read by `fetchContents` (the client is stable) but a change must refetch.
   useEffect(() => {
     void fetchContents(defaultContentType);
-  }, [fetchContents, defaultContentType]);
+  }, [fetchContents, defaultContentType, baseURL, businessUnitKey]);
 
   const createContent = useCallback(
     async (input: CreatePuckContentInput): Promise<PuckContentResponse> => {
-      if (!jwtToken) throw new Error('jwtToken is required to create content');
-      const created = await createPuckContentApi(
-        baseURL,
-        projectKey,
-        jwtToken,
-        businessUnitKey,
-        { value: input }
-      );
+      const created = await createPuckContentApi(client, { value: input });
       await refresh();
       return created;
     },
-    [baseURL, projectKey, jwtToken, businessUnitKey, refresh]
+    [client, refresh]
   );
 
   const deleteContent = useCallback(
     async (key: string): Promise<void> => {
-      if (!jwtToken) throw new Error('jwtToken is required to delete content');
-      await deletePuckContentApi(
-        baseURL,
-        projectKey,
-        jwtToken,
-        businessUnitKey,
-        key
-      );
+      await deletePuckContentApi(client, key);
       await refresh();
     },
-    [baseURL, projectKey, jwtToken, businessUnitKey, refresh]
+    [client, refresh]
   );
 
   return {

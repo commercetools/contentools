@@ -24,8 +24,7 @@ export interface UsePuckConfigurationReturn {
 }
 
 export const usePuckConfiguration = (): UsePuckConfigurationReturn => {
-  const { baseURL, projectKey, businessUnitKey, jwtToken } =
-    usePuckApiContext();
+  const { client, baseURL, businessUnitKey } = usePuckApiContext();
 
   const [theme, setTheme] = useState<ThemeTokens | null>(null);
   const [loading, setLoading] = useState(false);
@@ -37,29 +36,29 @@ export const usePuckConfiguration = (): UsePuckConfigurationReturn => {
     setLoading(true);
     setError(null);
     try {
-      const data = await getThemeApi(baseURL, projectKey, businessUnitKey);
+      const data = await getThemeApi(client);
       setTheme(data);
     } catch (err) {
       setError((err as Error).message);
     } finally {
       setLoading(false);
     }
-  }, [baseURL, projectKey, businessUnitKey]);
+  }, [client]);
 
+  // baseURL / businessUnitKey are not read by `fetchTheme` (the client is stable) but a change must refetch.
   useEffect(() => {
     void fetchTheme();
-  }, [fetchTheme]);
+  }, [fetchTheme, baseURL, businessUnitKey]);
 
   const saveTheme = useCallback(
     async (value: ThemeTokens) => {
-      if (!jwtToken) throw new Error('jwtToken is required to save theme');
       setLoading(true);
       setError(null);
       try {
         const saved =
           theme === null
-            ? await createThemeApi(baseURL, projectKey, jwtToken, businessUnitKey, value)
-            : await updateThemeApi(baseURL, projectKey, jwtToken, businessUnitKey, value);
+            ? await createThemeApi(client, value)
+            : await updateThemeApi(client, value);
         setTheme(saved);
       } catch (err) {
         setError((err as Error).message);
@@ -68,22 +67,15 @@ export const usePuckConfiguration = (): UsePuckConfigurationReturn => {
         setLoading(false);
       }
     },
-    [baseURL, projectKey, jwtToken, businessUnitKey, theme]
+    [client, theme]
   );
 
   const updateTheme = useCallback(
     async (value: ThemeTokens) => {
-      if (!jwtToken) throw new Error('jwtToken is required to update theme');
       setLoading(true);
       setError(null);
       try {
-        const updated = await updateThemeApi(
-          baseURL,
-          projectKey,
-          jwtToken,
-          businessUnitKey,
-          value
-        );
+        const updated = await updateThemeApi(client, value);
         setTheme(updated);
       } catch (err) {
         setError((err as Error).message);
@@ -92,8 +84,16 @@ export const usePuckConfiguration = (): UsePuckConfigurationReturn => {
         setLoading(false);
       }
     },
-    [baseURL, projectKey, jwtToken, businessUnitKey]
+    [client]
   );
 
-  return { theme, loading, error, fetchTheme, saveTheme, updateTheme, clearError };
+  return {
+    theme,
+    loading,
+    error,
+    fetchTheme,
+    saveTheme,
+    updateTheme,
+    clearError,
+  };
 };

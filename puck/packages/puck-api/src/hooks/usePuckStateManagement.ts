@@ -32,8 +32,7 @@ export interface UsePuckStateManagementReturn {
 export const usePuckStateManagement = (
   pageKey: string
 ): UsePuckStateManagementReturn => {
-  const { baseURL, projectKey, businessUnitKey, jwtToken } =
-    usePuckApiContext();
+  const { client, baseURL, businessUnitKey } = usePuckApiContext();
 
   const [states, setStates] = useState<PuckStateInfo>({});
   const [loading, setLoading] = useState(false);
@@ -43,51 +42,36 @@ export const usePuckStateManagement = (
     setLoading(true);
     setError(null);
     try {
-      const data = await getPuckPageStatesApi(
-        baseURL,
-        projectKey,
-        businessUnitKey,
-        pageKey
-      );
+      const data = await getPuckPageStatesApi(client, pageKey);
       setStates(data.states);
     } catch (err) {
       setError((err as Error).message);
     } finally {
       setLoading(false);
     }
-  }, [baseURL, projectKey, businessUnitKey, pageKey]);
+  }, [client, pageKey]);
 
+  // baseURL / businessUnitKey are not read by `fetchStates` (the client is stable) but a change must refetch.
   useEffect(() => {
     void fetchStates();
-  }, [fetchStates]);
+  }, [fetchStates, baseURL, businessUnitKey]);
 
   const publish = useCallback(
     async (clearDraft = false): Promise<void> => {
-      if (!jwtToken) throw new Error('jwtToken is required to publish');
       const state: PuckPageState = await publishPuckPageApi(
-        baseURL,
-        projectKey,
-        jwtToken,
-        businessUnitKey,
+        client,
         pageKey,
         clearDraft
       );
       setStates(state.states);
     },
-    [baseURL, projectKey, jwtToken, businessUnitKey, pageKey]
+    [client, pageKey]
   );
 
   const revertToPublished = useCallback(async (): Promise<void> => {
-    if (!jwtToken) throw new Error('jwtToken is required to revert');
-    const state: PuckPageState = await revertPuckPageDraftApi(
-      baseURL,
-      projectKey,
-      jwtToken,
-      businessUnitKey,
-      pageKey
-    );
+    const state: PuckPageState = await revertPuckPageDraftApi(client, pageKey);
     setStates(state.states);
-  }, [baseURL, projectKey, jwtToken, businessUnitKey, pageKey]);
+  }, [client, pageKey]);
 
   return { states, loading, error, fetchStates, publish, revertToPublished };
 };

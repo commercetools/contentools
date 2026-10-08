@@ -4,53 +4,52 @@
  * Freely available, AS IS and UNSUPPORTED. See LICENSE.
  */
 
-import type { MediaLibraryResult } from '@commercetools-labs/puck-types';
-import { httpClient } from './http-client';
+import type {
+  MediaLibraryResult,
+  MediaUploadResult,
+} from '@commercetools-labs/puck-types';
+import type { PuckClient } from '../client/client';
 
-export const fetchMediaLibraryApi = async (
-  baseURL: string,
-  projectKey: string,
-  businessUnitKey: string,
-  jwtToken?: string,
-  extensions: string[] = [],
-  page = 1,
-  limit = 20
-): Promise<MediaLibraryResult> => {
-  const params = new URLSearchParams();
-  if (extensions.length > 0) params.set('extensions', extensions.join(','));
-  params.set('page', String(page));
-  params.set('limit', String(limit));
+export interface FetchMediaLibraryOptions {
+  extensions?: string[];
+  limit?: number;
+  /** Opaque cursor from a previous page (`pagination.nextCursor`). */
+  cursor?: string;
+}
 
-  const headers: Record<string, string> = { 'x-project-key': projectKey };
-  if (jwtToken) headers['Authorization'] = `Bearer ${jwtToken}`;
-
-  return httpClient<MediaLibraryResult>(
-    `${baseURL}/${businessUnitKey}/media-library?${params}`,
-    { headers }
+export const fetchMediaLibraryApi = (
+  client: PuckClient,
+  options: FetchMediaLibraryOptions = {}
+) => {
+  const { extensions = [], limit, cursor } = options;
+  return client.request<MediaLibraryResult>(
+    'fetchMediaLibraryApi',
+    `/${client.businessUnitKey}/media-library`,
+    {
+      query: {
+        extensions: extensions.length > 0 ? extensions.join(',') : undefined,
+        limit,
+        cursor,
+      },
+    }
   );
 };
 
-export const uploadMediaFileApi = async (
-  baseURL: string,
-  projectKey: string,
-  businessUnitKey: string,
-  jwtToken: string,
+export const uploadMediaFileApi = (
+  client: PuckClient,
   file: File,
   title?: string,
   description?: string
-): Promise<{ url: string }> => {
+) => {
   const formData = new FormData();
   formData.append('file', file);
   if (title) formData.append('title', title);
   if (description) formData.append('description', description);
 
-  // No Content-Type header — browser sets multipart/form-data boundary automatically
-  return httpClient<{ url: string }>(
-    `${baseURL}/${businessUnitKey}/upload-file`,
-    {
-      method: 'POST',
-      headers: { 'x-project-key': projectKey, Authorization: `Bearer ${jwtToken}` },
-      body: formData,
-    }
+  // No Content-Type header: the transport sets the multipart boundary.
+  return client.request<MediaUploadResult>(
+    'uploadMediaFileApi',
+    `/${client.businessUnitKey}/upload-file`,
+    { method: 'POST', body: formData }
   );
 };

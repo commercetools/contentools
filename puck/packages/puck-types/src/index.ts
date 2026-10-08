@@ -50,7 +50,18 @@ export type {
 export type { ThemeTokens, ImportResult } from './theme-types';
 
 export type {
+  PuckHttpMethod,
+  PuckRequest,
+  PuckResponse,
+  PuckFetcher,
+  PuckAuthHeaders,
+  PuckGetAuthHeaders,
+  PuckConnection,
+} from './connection.types';
+
+export type {
   MediaFile,
+  MediaUploadResult,
   MediaLibraryPagination,
   MediaLibraryResult,
   CtCustomObject,

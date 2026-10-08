@@ -13,15 +13,13 @@ import type {
   PuckStateInfo,
   UpdatePuckPageInput,
 } from '@commercetools-labs/puck-types';
-import {
-  getPuckPageApi,
-  updatePuckPageApi,
-} from '../api/puck-pages.api';
+import { getPuckPageApi, updatePuckPageApi } from '../api/puck-pages.api';
 import {
   getPuckPageVersionsApi,
   publishPuckPageApi,
   revertPuckPageDraftApi,
 } from '../api/puck-states.api';
+import { authRequiredError } from '../client/errors';
 import { usePuckApiContext } from '../context/PuckApiContext';
 
 export interface UsePuckPageReturn {
@@ -41,7 +39,7 @@ export interface UsePuckPageReturn {
 }
 
 export const usePuckPage = (pageKey: string): UsePuckPageReturn => {
-  const { baseURL, projectKey, businessUnitKey, jwtToken } =
+  const { client, baseURL, businessUnitKey, canAuthenticate } =
     usePuckApiContext();
 
   const [page, setPage] = useState<PuckPageValue | null>(null);
@@ -59,12 +57,7 @@ export const usePuckPage = (pageKey: string): UsePuckPageReturn => {
     setLoading(true);
     setError(null);
     try {
-      const data = await getPuckPageApi(
-        baseURL,
-        projectKey,
-        businessUnitKey,
-        pageKey
-      );
+      const data = await getPuckPageApi(client, pageKey);
       setPage(data.value);
       setStates(data.states);
       setIsDirty(false);
@@ -73,11 +66,12 @@ export const usePuckPage = (pageKey: string): UsePuckPageReturn => {
     } finally {
       setLoading(false);
     }
-  }, [baseURL, projectKey, businessUnitKey, pageKey]);
+  }, [client, pageKey]);
 
+  // baseURL / businessUnitKey are not read by `reload` (the client is stable) but a change must refetch.
   useEffect(() => {
     void reload();
-  }, [reload]);
+  }, [reload, baseURL, businessUnitKey]);
 
   // Cleanup debounce on unmount
   useEffect(() => {
@@ -88,7 +82,11 @@ export const usePuckPage = (pageKey: string): UsePuckPageReturn => {
 
   const saveDraft = useCallback(
     async (puckData: PuckData): Promise<void> => {
-      if (!jwtToken) throw new Error('jwtToken is required to save');
+      if (!canAuthenticate)
+        throw authRequiredError(
+          `${client.baseURL}/${client.businessUnitKey}/puck-pages/${pageKey}`,
+          'PUT'
+        );
       setIsDirty(true);
 
       // Cancel pending debounce
@@ -98,14 +96,9 @@ export const usePuckPage = (pageKey: string): UsePuckPageReturn => {
         saveTimerRef.current = setTimeout(async () => {
           setSaving(true);
           try {
-            const updated = await updatePuckPageApi(
-              baseURL,
-              projectKey,
-              jwtToken,
-              businessUnitKey,
-              pageKey,
-              { value: { puckData } }
-            );
+            const updated = await updatePuckPageApi(client, pageKey, {
+              value: { puckData },
+            });
             setPage(updated.value);
             // Keep the draft state in sync with the freshly-saved value so
             // derived `currentData` (states.draft ?? page) never goes stale.
@@ -121,22 +114,16 @@ export const usePuckPage = (pageKey: string): UsePuckPageReturn => {
         }, 1500);
       });
     },
-    [baseURL, projectKey, jwtToken, businessUnitKey, pageKey]
+    [client, canAuthenticate, pageKey]
   );
 
   const updateMeta = useCallback(
     async (input: Omit<UpdatePuckPageInput, 'puckData'>): Promise<void> => {
-      if (!jwtToken) throw new Error('jwtToken is required to update');
       setSaving(true);
       try {
-        const updated = await updatePuckPageApi(
-          baseURL,
-          projectKey,
-          jwtToken,
-          businessUnitKey,
-          pageKey,
-          { value: input }
-        );
+        const updated = await updatePuckPageApi(client, pageKey, {
+          value: input,
+        });
         setPage(updated.value);
         setStates((prev) => ({ ...prev, draft: updated.value }));
       } catch (err) {
@@ -146,19 +133,15 @@ export const usePuckPage = (pageKey: string): UsePuckPageReturn => {
         setSaving(false);
       }
     },
-    [baseURL, projectKey, jwtToken, businessUnitKey, pageKey]
+    [client, pageKey]
   );
 
   const publish = useCallback(
     async (clearDraft = false): Promise<void> => {
-      if (!jwtToken) throw new Error('jwtToken is required to publish');
       setSaving(true);
       try {
         const state: PuckPageState = await publishPuckPageApi(
-          baseURL,
-          projectKey,
-          jwtToken,
-          businessUnitKey,
+          client,
           pageKey,
           clearDraft
         );
@@ -170,18 +153,14 @@ export const usePuckPage = (pageKey: string): UsePuckPageReturn => {
         setSaving(false);
       }
     },
-    [baseURL, projectKey, jwtToken, businessUnitKey, pageKey]
+    [client, pageKey]
   );
 
   const revertToPublished = useCallback(async (): Promise<void> => {
-    if (!jwtToken) throw new Error('jwtToken is required to revert');
     setSaving(true);
     try {
       const state: PuckPageState = await revertPuckPageDraftApi(
-        baseURL,
-        projectKey,
-        jwtToken,
-        businessUnitKey,
+        client,
         pageKey
       );
       setStates(state.states);
@@ -193,21 +172,16 @@ export const usePuckPage = (pageKey: string): UsePuckPageReturn => {
     } finally {
       setSaving(false);
     }
-  }, [baseURL, projectKey, jwtToken, businessUnitKey, pageKey]);
+  }, [client, pageKey]);
 
   const loadVersions = useCallback(async (): Promise<void> => {
     try {
-      const versionData = await getPuckPageVersionsApi(
-        baseURL,
-        projectKey,
-        businessUnitKey,
-        pageKey
-      );
+      const versionData = await getPuckPageVersionsApi(client, pageKey);
       setVersions(versionData.versions);
     } catch (err) {
       setError((err as Error).message);
     }
-  }, [baseURL, projectKey, businessUnitKey, pageKey]);
+  }, [client, pageKey]);
 
   return {
     page,

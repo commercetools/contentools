@@ -5,10 +5,26 @@
  */
 
 // Context & Provider
-export { PuckApiContext, usePuckApiContext } from './context/PuckApiContext';
+export {
+  PuckApiContext,
+  usePuckApiContext,
+  usePuckApiContextOptional,
+  usePuckClient,
+} from './context/PuckApiContext';
 export { PuckApiProvider } from './context/PuckApiProvider';
 export type { PuckApiProviderProps } from './context/PuckApiProvider';
 export type { PuckApiContextValue } from './context/PuckApiContext';
+
+// Client (React-free: usable in SSR and server code)
+export * from './client';
+export type {
+  PuckConnection,
+  PuckFetcher,
+  PuckRequest,
+  PuckResponse,
+  PuckGetAuthHeaders,
+  PuckAuthHeaders,
+} from '@commercetools-labs/puck-types';
 
 // Media library API
 export {

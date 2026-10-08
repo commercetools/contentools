@@ -27,8 +27,7 @@ export interface UsePuckPagesReturn {
 }
 
 export const usePuckPages = (): UsePuckPagesReturn => {
-  const { baseURL, projectKey, businessUnitKey, jwtToken } =
-    usePuckApiContext();
+  const { client, baseURL, businessUnitKey } = usePuckApiContext();
 
   const [pages, setPages] = useState<PuckPageListItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -38,48 +37,35 @@ export const usePuckPages = (): UsePuckPagesReturn => {
     setLoading(true);
     setError(null);
     try {
-      const data = await listPuckPagesApi(baseURL, projectKey, businessUnitKey);
+      const data = await listPuckPagesApi(client);
       setPages(data);
     } catch (err) {
       setError((err as Error).message);
     } finally {
       setLoading(false);
     }
-  }, [baseURL, projectKey, businessUnitKey]);
+  }, [client]);
 
+  // baseURL / businessUnitKey are not read by `refresh` (the client is stable) but a change must refetch.
   useEffect(() => {
     void refresh();
-  }, [refresh]);
+  }, [refresh, baseURL, businessUnitKey]);
 
   const createPage = useCallback(
     async (input: CreatePuckPageInput): Promise<PuckPageResponse> => {
-      if (!jwtToken) throw new Error('jwtToken is required to create a page');
-      const created = await createPuckPageApi(
-        baseURL,
-        projectKey,
-        jwtToken,
-        businessUnitKey,
-        { value: input }
-      );
+      const created = await createPuckPageApi(client, { value: input });
       await refresh();
       return created;
     },
-    [baseURL, projectKey, jwtToken, businessUnitKey, refresh]
+    [client, refresh]
   );
 
   const deletePage = useCallback(
     async (key: string): Promise<void> => {
-      if (!jwtToken) throw new Error('jwtToken is required to delete a page');
-      await deletePuckPageApi(
-        baseURL,
-        projectKey,
-        jwtToken,
-        businessUnitKey,
-        key
-      );
+      await deletePuckPageApi(client, key);
       await refresh();
     },
-    [baseURL, projectKey, jwtToken, businessUnitKey, refresh]
+    [client, refresh]
   );
 
   return { pages, loading, error, refresh, createPage, deletePage };

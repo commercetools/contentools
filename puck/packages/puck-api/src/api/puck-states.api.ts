@@ -8,59 +8,35 @@ import type {
   PuckPageStateResponse,
   PuckPageVersionResponse,
 } from '@commercetools-labs/puck-types';
-import { httpClient, readHeaders, writeHeaders } from './http-client';
+import type { PuckClient } from '../client/client';
+import { enc } from '../client/path';
 
-export const getPuckPageStatesApi = async (
-  baseURL: string,
-  projectKey: string,
-  businessUnitKey: string,
-  key: string
-): Promise<PuckPageStateResponse> => {
-  return httpClient<PuckPageStateResponse>(
-    `${baseURL}/${businessUnitKey}/puck-pages/${key}/states`,
-    { headers: readHeaders(projectKey) }
+export const getPuckPageStatesApi = (client: PuckClient, key: string) =>
+  client.request<PuckPageStateResponse>(
+    'getPuckPageStatesApi',
+    `/${client.businessUnitKey}/puck-pages/${enc(key)}/states`
   );
-};
 
-export const publishPuckPageApi = async (
-  baseURL: string,
-  projectKey: string,
-  jwtToken: string,
-  businessUnitKey: string,
+export const publishPuckPageApi = (
+  client: PuckClient,
   key: string,
   clearDraft = false
-): Promise<PuckPageStateResponse> => {
-  const url = new URL(
-    `${baseURL}/${businessUnitKey}/puck-pages/${key}/states/published`
+) =>
+  client.request<PuckPageStateResponse>(
+    'publishPuckPageApi',
+    `/${client.businessUnitKey}/puck-pages/${enc(key)}/states/published`,
+    { method: 'PUT', query: { clearDraft: clearDraft ? 'true' : undefined } }
   );
-  if (clearDraft) url.searchParams.set('clearDraft', 'true');
-  return httpClient<PuckPageStateResponse>(url.toString(), {
-    method: 'PUT',
-    headers: writeHeaders(projectKey, jwtToken),
-  });
-};
 
-export const revertPuckPageDraftApi = async (
-  baseURL: string,
-  projectKey: string,
-  jwtToken: string,
-  businessUnitKey: string,
-  key: string
-): Promise<PuckPageStateResponse> => {
-  return httpClient<PuckPageStateResponse>(
-    `${baseURL}/${businessUnitKey}/puck-pages/${key}/states/draft`,
-    { method: 'DELETE', headers: writeHeaders(projectKey, jwtToken) }
+export const revertPuckPageDraftApi = (client: PuckClient, key: string) =>
+  client.request<PuckPageStateResponse>(
+    'revertPuckPageDraftApi',
+    `/${client.businessUnitKey}/puck-pages/${enc(key)}/states/draft`,
+    { method: 'DELETE' }
   );
-};
 
-export const getPuckPageVersionsApi = async (
-  baseURL: string,
-  projectKey: string,
-  businessUnitKey: string,
-  key: string
-): Promise<PuckPageVersionResponse> => {
-  return httpClient<PuckPageVersionResponse>(
-    `${baseURL}/${businessUnitKey}/puck-pages/${key}/versions`,
-    { headers: readHeaders(projectKey) }
+export const getPuckPageVersionsApi = (client: PuckClient, key: string) =>
+  client.request<PuckPageVersionResponse>(
+    'getPuckPageVersionsApi',
+    `/${client.businessUnitKey}/puck-pages/${enc(key)}/versions`
   );
-};

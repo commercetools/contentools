@@ -680,6 +680,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@commercetools-labs/puck-image-picker@workspace:packages/puck-image-picker"
   dependencies:
+    "@commercetools-labs/puck-api": "workspace:^"
+    "@commercetools-labs/puck-types": "workspace:^"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
     tsup: "npm:^8.3.0"

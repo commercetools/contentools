@@ -10,47 +10,36 @@ import type {
   PuckTemplateListResponse,
   PuckTemplateResponse,
 } from '@commercetools-labs/puck-types';
-import { httpClient, readHeaders, writeHeaders } from './http-client';
+import type { PuckClient } from '../client/client';
+import { enc } from '../client/path';
 
-export const listPuckTemplatesApi = async (
-  baseURL: string,
-  projectKey: string,
-  businessUnitKey: string,
+export const listPuckTemplatesApi = (
+  client: PuckClient,
   kind?: PuckTemplateKind
-): Promise<PuckTemplateListResponse> => {
-  const query = kind ? `?kind=${encodeURIComponent(kind)}` : '';
-  return httpClient<PuckTemplateListResponse>(
-    `${baseURL}/${businessUnitKey}/puck-templates${query}`,
-    { headers: readHeaders(projectKey) }
+) =>
+  client.request<PuckTemplateListResponse>(
+    'listPuckTemplatesApi',
+    `/${client.businessUnitKey}/puck-templates`,
+    { query: { kind } }
   );
-};
 
-export const createPuckTemplateApi = async (
-  baseURL: string,
-  projectKey: string,
-  jwtToken: string,
-  businessUnitKey: string,
+export const createPuckTemplateApi = (
+  client: PuckClient,
   body: { value: CreatePuckTemplateInput }
-): Promise<PuckTemplateResponse> => {
-  return httpClient<PuckTemplateResponse>(
-    `${baseURL}/${businessUnitKey}/puck-templates`,
-    {
-      method: 'POST',
-      headers: writeHeaders(projectKey, jwtToken),
-      body: JSON.stringify(body),
-    }
+) =>
+  client.request<PuckTemplateResponse>(
+    'createPuckTemplateApi',
+    `/${client.businessUnitKey}/puck-templates`,
+    { method: 'POST', body }
   );
-};
 
 export const deletePuckTemplateApi = async (
-  baseURL: string,
-  projectKey: string,
-  jwtToken: string,
-  businessUnitKey: string,
+  client: PuckClient,
   key: string
 ): Promise<void> => {
-  await httpClient<void>(
-    `${baseURL}/${businessUnitKey}/puck-templates/${key}`,
-    { method: 'DELETE', headers: writeHeaders(projectKey, jwtToken) }
+  await client.request<void>(
+    'deletePuckTemplateApi',
+    `/${client.businessUnitKey}/puck-templates/${enc(key)}`,
+    { method: 'DELETE' }
   );
 };

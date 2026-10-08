@@ -5,7 +5,10 @@
  */
 
 import { useEffect, useState } from 'react';
-import { searchProductsApi, type ProductSearchResult } from '../api/products.api';
+import {
+  searchProductsApi,
+  type ProductSearchResult,
+} from '../api/products.api';
 import { usePuckApiContext } from '../context/PuckApiContext';
 
 export interface UseProductSearchReturn {
@@ -25,7 +28,7 @@ export const useProductSearch = (
   query: string,
   locale?: string
 ): UseProductSearchReturn => {
-  const { baseURL, projectKey, locale: contextLocale } = usePuckApiContext();
+  const { client, baseURL, locale: contextLocale } = usePuckApiContext();
   const effectiveLocale = locale ?? contextLocale ?? 'en-US';
 
   const [results, setResults] = useState<ProductSearchResult[]>([]);
@@ -47,7 +50,7 @@ export const useProductSearch = (
     setError(null);
 
     const handle = setTimeout(() => {
-      searchProductsApi(baseURL, projectKey, term, { limit: 20, locale: effectiveLocale })
+      searchProductsApi(client, term, { limit: 20, locale: effectiveLocale })
         .then((res) => {
           if (cancelled) return;
           setResults(res ?? []);
@@ -64,7 +67,7 @@ export const useProductSearch = (
       cancelled = true;
       clearTimeout(handle);
     };
-  }, [term, baseURL, projectKey, effectiveLocale]);
+  }, [term, client, baseURL, effectiveLocale]);
 
   return { results, loading, error };
 };

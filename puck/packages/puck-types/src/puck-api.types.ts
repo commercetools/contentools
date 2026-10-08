@@ -31,15 +31,27 @@ export interface MediaFile {
   title?: string;
   description?: string;
   isImage: boolean;
-  createdAt: Date | string;
+  /** Storage key of the object (media backend specific). */
+  key?: string;
+  contentType?: string;
+  createdAt?: Date | string;
   size?: number;
 }
 
+/** Response of the upload endpoint (public URLs only). */
+export interface MediaUploadResult {
+  url: string;
+  key: string;
+  name: string;
+  size: number;
+  contentType: string;
+}
+
+/** Cursor pagination: cursors are opaque and forward-only. */
 export interface MediaLibraryPagination {
-  totalItems: number;
-  totalPages: number;
-  currentPage: number;
   limit: number;
+  nextCursor: string | null;
+  hasMore: boolean;
 }
 
 export interface MediaLibraryResult {
