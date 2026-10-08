@@ -4,6 +4,6 @@
  * Freely available, AS IS and UNSUPPORTED. See LICENSE.
  */
 
-import ContentToolsAgent from './agent';
+import ContentoolsAgent from './agent';
 export type { AvailableNamespaces } from '../types/tools';
-export { ContentToolsAgent };
+export { ContentoolsAgent };

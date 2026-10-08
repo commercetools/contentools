@@ -7,7 +7,7 @@
 import type { AuthConfig } from '../types/auth';
 import { createFunctionMap } from './functions';
 
-class ContentToolsAPI {
+class ContentoolsAPI {
   private baseUrl: string;
   private projectKey: string;
   private businessUnitKey: string | undefined;
@@ -42,4 +42,4 @@ class ContentToolsAPI {
   }
 }
 
-export default ContentToolsAPI;
+export default ContentoolsAPI;

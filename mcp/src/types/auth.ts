@@ -5,7 +5,7 @@
  */
 
 /**
- * Authentication and context for the Content Tools API.
+ * Authentication and context for the Contentools API.
  * All API calls use baseUrl with x-project-key and optionally Authorization: Bearer jwtToken.
  */
 export type AuthConfig = {

@@ -6,7 +6,7 @@
  */
 
 /**
- * Content Tools MCP server – run with:
+ * Contentools MCP server – run with:
  *   pnpm run mcp   (not for MCP Inspector – use the bin below)
  *   node bin/run-mcp.cjs   (for MCP Inspector; no yarn banner on stdout)
  *   npx tsx src/modelcontextprotocol/index.ts
@@ -18,7 +18,7 @@
  *   --jwtToken=TOKEN  JWT_TOKEN (optional, for mutate routes)
  */
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { createContentToolsMcpServer } from './agent.js';
+import { createContentoolsMcpServer } from './agent.js';
 import type { AuthConfig } from '../types/auth.js';
 
 function parseArgs(args: string[]): Record<string, string | undefined> {
@@ -46,7 +46,7 @@ function getAuthConfig(): AuthConfig {
 
   if (!baseUrl || !projectKey) {
     console.error(
-      'Content Tools MCP: missing required config. Set --baseUrl and --projectKey (or BASE_URL and PROJECT_KEY).'
+      'Contentools MCP: missing required config. Set --baseUrl and --projectKey (or BASE_URL and PROJECT_KEY).'
     );
     process.exit(1);
   }
@@ -61,13 +61,13 @@ function getAuthConfig(): AuthConfig {
 
 async function main() {
   const authConfig = getAuthConfig();
-  const server = createContentToolsMcpServer(authConfig);
+  const server = createContentoolsMcpServer(authConfig);
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('Content Tools MCP server running on stdio');
+  console.error('Contentools MCP server running on stdio');
 }
 
 main().catch((err) => {
-  console.error('Content Tools MCP error:', err);
+  console.error('Contentools MCP error:', err);
   process.exit(1);
 });

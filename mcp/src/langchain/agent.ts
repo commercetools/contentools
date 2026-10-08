@@ -5,13 +5,13 @@
  */
 
 import type { DynamicStructuredTool } from '@langchain/core/tools';
-import ContentToolsAPI from '../shared/api';
+import ContentoolsAPI from '../shared/api';
 import { allTools } from '../shared/tools';
 import type { AuthConfig } from '../types/auth';
-import ContentToolsTool from './tool';
+import ContentoolsTool from './tool';
 
-class ContentToolsAgent {
-  private _api: ContentToolsAPI;
+class ContentoolsAgent {
+  private _api: ContentoolsAPI;
   tools: DynamicStructuredTool[];
 
   constructor({
@@ -19,10 +19,10 @@ class ContentToolsAgent {
   }: {
     authConfig: AuthConfig;
   }) {
-    this._api = new ContentToolsAPI(authConfig);
+    this._api = new ContentoolsAPI(authConfig);
 
     this.tools = allTools.map((t) =>
-      ContentToolsTool(this._api, t.method, t.description, t.parameters)
+      ContentoolsTool(this._api, t.method, t.description, t.parameters)
     );
   }
 
@@ -31,4 +31,4 @@ class ContentToolsAgent {
   }
 }
 
-export default ContentToolsAgent;
+export default ContentoolsAgent;

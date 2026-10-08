@@ -6,11 +6,11 @@
 
 import { tool } from 'ai';
 import type { z } from 'zod';
-import ContentToolsAPI from '../shared/api';
+import ContentoolsAPI from '../shared/api';
 import { formatToolOutput } from '../shared/format';
 
-export default function ContentToolsTool(
-  api: ContentToolsAPI,
+export default function ContentoolsTool(
+  api: ContentoolsAPI,
   method: string,
   description: string,
   schema: z.ZodObject<z.ZodRawShape>
