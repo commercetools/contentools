@@ -1,3 +1,9 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
+ * Freely available, AS IS and UNSUPPORTED. See LICENSE.
+ */
+
 import { request } from './helpers/http';
 import { getJwt, getProjectKey, getBusinessUnitKey } from './setup';
 import { E2E_ENV } from './constants';

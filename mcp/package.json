@@ -1,5 +1,5 @@
 {
-  "name": "@commercetools-demo/contenttools-mcp",
+  "name": "@commercetools-labs/contenttools-mcp",
   "version": "1.1.7",
   "description": "Content Tools MCP - AI/LangChain/Mastra tools for the CMS service API",
   "type": "module",

@@ -1,5 +1,5 @@
 {
-  "name": "@commercetools-demo/puck-version-history",
+  "name": "@commercetools-labs/puck-version-history",
   "version": "0.8.1",
   "description": "Version history panel and hooks for Puck editor integrations",
   "main": "dist/index.js",

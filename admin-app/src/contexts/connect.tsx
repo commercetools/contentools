@@ -1,3 +1,9 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
+ * Freely available, AS IS and UNSUPPORTED. See LICENSE.
+ */
+
 import React, { createContext, ReactNode, useContext, useEffect } from 'react';
 import { useAuth } from './auth';
 import { useSharedCredentialsFetcher } from '../hooks/use-shared-custom-object-storage';

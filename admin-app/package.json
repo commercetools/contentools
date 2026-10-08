@@ -1,5 +1,5 @@
 {
-  "name": "contentools-custom-application-wrapper",
+  "name": "@commercetools-labs/contentools-custom-application-wrapper",
   "version": "1.0.0",
   "description": "",
   "private": true,

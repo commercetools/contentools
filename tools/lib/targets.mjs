@@ -1,3 +1,9 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
+ * Freely available, AS IS and UNSUPPORTED. See LICENSE.
+ */
+
 /** The four buildable trees. `pm` picks the package manager used to run their scripts (owner decision: all Yarn). */
 export const TARGETS = [
   { name: 'puck', dir: 'puck', pm: 'yarn' },       // Yarn 4 workspace, published to npm

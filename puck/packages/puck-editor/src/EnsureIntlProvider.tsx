@@ -1,3 +1,9 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
+ * Freely available, AS IS and UNSUPPORTED. See LICENSE.
+ */
+
 import React, { useContext, type PropsWithChildren } from 'react';
 import { IntlContext, IntlProvider, ReactIntlErrorCode } from 'react-intl';
 import { intlCatalogs as versionHistoryCatalogs } from '@commercetools-demo/puck-version-history';

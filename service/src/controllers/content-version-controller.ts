@@ -1,3 +1,9 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
+ * Freely available, AS IS and UNSUPPORTED. See LICENSE.
+ */
+
 import { v4 as uuidv4 } from 'uuid';
 import { CustomObjectController } from './custom-object.controller';
 import CustomError from '../errors/custom.error';

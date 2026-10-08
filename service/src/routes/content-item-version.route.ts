@@ -1,3 +1,9 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
+ * Freely available, AS IS and UNSUPPORTED. See LICENSE.
+ */
+
 import { NextFunction, Request, Response, Router } from 'express';
 import { withDependencies as withContentVersionDependencies } from '../controllers/content-version-controller';
 import { logger } from '../utils/logger.utils';

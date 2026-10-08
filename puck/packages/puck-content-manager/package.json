@@ -1,5 +1,5 @@
 {
-  "name": "@commercetools-demo/puck-content-manager",
+  "name": "@commercetools-labs/puck-content-manager",
   "version": "0.8.1",
   "description": "UI components for managing standalone Puck content items",
   "main": "dist/index.js",

@@ -1,3 +1,9 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
+ * Freely available, AS IS and UNSUPPORTED. See LICENSE.
+ */
+
 /**
  * Resolved context for a single request: projectKey, businessUnitKey, jwtToken
  * from authConfig + configuration.context + per-call arg overrides.

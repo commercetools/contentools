@@ -1,3 +1,9 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
+ * Freely available, AS IS and UNSUPPORTED. See LICENSE.
+ */
+
 export default {
   id: 'type-d2e3f4a5-b6c7-4d5e-9f0a-1b2c3d4e5f6a',
   key: 'type-d2e3f4a5-b6c7-4d5e-9f0a-1b2c3d4e5f6a',

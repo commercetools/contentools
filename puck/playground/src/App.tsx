@@ -1,3 +1,9 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
+ * Freely available, AS IS and UNSUPPORTED. See LICENSE.
+ */
+
 import React, { useState } from 'react';
 import { PageManager } from '@commercetools-demo/puck-page-manager';
 import { ThemeManager } from '@commercetools-demo/puck-theme-manager';

@@ -1,3 +1,9 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
+ * Freely available, AS IS and UNSUPPORTED. See LICENSE.
+ */
+
 export function assert(condition: unknown, message: string): asserts condition {
   if (!condition) {
     throw new Error(`Assertion failed: ${message}`);

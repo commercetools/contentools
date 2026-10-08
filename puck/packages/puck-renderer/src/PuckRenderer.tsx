@@ -1,3 +1,9 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
+ * Freely available, AS IS and UNSUPPORTED. See LICENSE.
+ */
+
 import React, { useEffect, useState, type ReactElement } from 'react';
 import { PuckApiProvider, usePuckApiContext } from '@commercetools-demo/puck-api';
 import { defaultRenderConfig } from '@commercetools-demo/puck-components';

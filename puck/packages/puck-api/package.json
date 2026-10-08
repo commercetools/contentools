@@ -1,5 +1,5 @@
 {
-  "name": "@commercetools-demo/puck-api",
+  "name": "@commercetools-labs/puck-api",
   "version": "0.8.1",
   "description": "API client and React hooks for the Puck CMS integration",
   "main": "dist/index.js",

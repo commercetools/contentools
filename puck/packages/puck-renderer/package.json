@@ -1,5 +1,5 @@
 {
-  "name": "@commercetools-demo/puck-renderer",
+  "name": "@commercetools-labs/puck-renderer",
   "version": "0.8.3",
   "description": "Lightweight Puck page renderer for storefronts",
   "main": "dist/index.js",

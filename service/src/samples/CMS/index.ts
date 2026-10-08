@@ -1,3 +1,9 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
+ * Freely available, AS IS and UNSUPPORTED. See LICENSE.
+ */
+
 import categoryGrid from './category-grid';
 import categoryHero from './category-hero';
 import checkoutPromoBanner from './checkout-promo-banner';

@@ -1,5 +1,5 @@
 {
-  "name": "service-typescript",
+  "name": "@commercetools-labs/service-typescript",
   "description": "",
   "version": "0.7.0",
   "main": "index.js",

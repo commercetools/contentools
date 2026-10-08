@@ -1,3 +1,9 @@
+/*
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
+ * Freely available, AS IS and UNSUPPORTED. See LICENSE.
+ */
+
 // Shared RENDER helpers used across CMS Puck components (Nimbus-free).
 // The editor-side field factory (createProductLinkFields) lives in
 // puck-editor's own cms/shared.ts, which re-exports the data/types from here.
