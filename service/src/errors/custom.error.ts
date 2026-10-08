@@ -15,12 +15,13 @@ class CustomError extends Error {
   message: string;
   errors?: ErrorItem[];
   code?: string;
+  headers?: Record<string, string>;
 
   constructor(
     statusCode: number | string,
     message: string,
     errors?: ErrorItem[],
-    code?: string
+    extra?: string | { headers?: Record<string, string>; code?: string }
   ) {
     super(message);
     this.statusCode = statusCode;
@@ -28,8 +29,12 @@ class CustomError extends Error {
     if (errors) {
       this.errors = errors;
     }
-    if (code) {
-      this.code = code;
+    const options = typeof extra === 'string' ? { code: extra } : extra;
+    if (options?.code) {
+      this.code = options.code;
+    }
+    if (options?.headers) {
+      this.headers = options.headers;
     }
   }
 }

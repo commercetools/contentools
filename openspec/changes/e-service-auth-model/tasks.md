@@ -30,10 +30,10 @@ No `console.*`, no `any`, no commented-out code, never the word "cms". The contr
 
 **Pre-conditions.** Spec D archived. `yarn test` in `service/` is green.
 
-- [ ] 1.1 Run `cd <root>/service && yarn test && ls src/config src/middleware src/observability src/routes tests/support`.
+- [x] 1.1 Run `cd <root>/service && yarn test && ls src/config src/middleware src/observability src/routes tests/support`.
   Expected: tests pass; listing shows `env.ts`, `observability/request-context.ts`, `error.middleware.ts`, `service.route.ts`, `health.route.ts`, `fake-ct.ts`, `env.ts`. If `src/_pending` still contains `jwt.middleware.ts` equivalents, ignore them (they are not compiled).
   Done when: all green and files present.
-- [ ] 1.2 `grep -rn "createSessionAuthVerifier" node_modules/@commercetools-backend/express/dist/declarations/src/index.d.ts` prints a line (the package is installed by D). If missing: `yarn add @commercetools-backend/express@^27.13.0 cors@^2.8.5` and `yarn add -D jose@^5.10.0 msw@2.10.5 @types/cors`.
+- [x] 1.2 `grep -rn "createSessionAuthVerifier" node_modules/@commercetools-backend/express/dist/declarations/src/index.d.ts` prints a line (the package is installed by D). If missing: `yarn add @commercetools-backend/express@^27.13.0 cors@^2.8.5` and `yarn add -D jose@^5.10.0 msw@2.10.5 @types/cors`.
   Done when: grep prints the export.
 
 ---
@@ -44,7 +44,7 @@ No `console.*`, no `any`, no commented-out code, never the word "cms". The contr
 
 **Pre-conditions.** Group 1.
 
-- [ ] 2.1 Create `src/auth/cloud-identifier.ts`:
+- [x] 2.1 Create `src/auth/cloud-identifier.ts`:
 
 ```ts
 export const CLOUD_IDENTIFIERS = ['gcp-au', 'gcp-eu', 'gcp-us', 'aws-eu', 'aws-us'] as const;
@@ -64,7 +64,7 @@ export function deriveCloudIdentifier(apiUrl: string): CloudIdentifier | undefin
 }
 ```
   Source of the table: docs "merchant-center-api" cloud identifiers (`gcp-au` -> `mc-api.australia-southeast1.gcp...`, etc.). Unit test `tests/unit/cloud-identifier.test.ts`: the 5 hosts map correctly; `https://api.test.local` -> `undefined`; garbage -> `undefined`.
-- [ ] 2.2 Extend `src/config/env.ts` (D). Add to the zod `schema` object:
+- [x] 2.2 Extend `src/config/env.ts` (D). Add to the zod `schema` object:
 
 ```ts
 CONNECT_SERVICE_URL: z.string().url().optional(),
@@ -89,14 +89,14 @@ auth: {
 ```
   Mapping rules in `readConfiguration`: `audienceOrigin = new URL(CONNECT_SERVICE_URL).origin`; `issuer = CLOUD_IDENTIFIER ?? deriveCloudIdentifier(CTP_API_URL)`; `mc` is set only when both exist. `CORS_ALLOWED_ORIGINS`: `undefined|''` -> `[]`; exactly `*` -> `'all'`; else split on `,`, trim, each entry must satisfy `new URL(entry).origin === entry` (rejects `localhost:5173`, trailing slash, paths) else push a problem `CORS_ALLOWED_ORIGINS: "<entry>" is not an origin (scheme://host[:port], no trailing slash)`. Note: echoing the entry is fine (origins are not secrets); never echo `SERVICE_API_TOKEN`.
   Empty-string env vars are already treated as unset by D's filter.
-- [ ] 2.3 Extend `tests/support/env.ts` (D) with (these match the msw handlers of the test kit):
+- [x] 2.3 Extend `tests/support/env.ts` (D) with (these match the msw handlers of the test kit):
 
 ```ts
 process.env.CONNECT_SERVICE_URL = 'https://service.test.local/service';
 process.env.CLOUD_IDENTIFIER = 'gcp-eu';
 process.env.SERVICE_API_TOKEN = 'test-service-token-0123456789-abcdefghij';
 ```
-- [ ] 2.4 Add `tests/unit/auth-config.test.ts`: (a) valid -> `auth.mc = {issuer:'gcp-eu', audienceOrigin:'https://service.test.local'}`; (b) no `CONNECT_SERVICE_URL` -> `auth.mc` undefined; (c) no `CLOUD_IDENTIFIER` but `CTP_API_URL=https://api.europe-west1.gcp.commercetools.com` -> issuer `gcp-eu`; (d) `SERVICE_API_TOKEN='short'` and `'aaa.bbb.ccc'` -> `ConfigurationError` mentioning `SERVICE_API_TOKEN` and NOT containing the value; (e) CORS list parse: `'http://localhost:5173, https://shop.example'` -> two origins; `'*'` -> `'all'`; `'localhost:5173'` and `'https://a.example/'` rejected; (f) `MC_REQUIRED_PERMISSION='manage'` rejected, `'canManageContentools'` accepted.
+- [x] 2.4 Add `tests/unit/auth-config.test.ts`: (a) valid -> `auth.mc = {issuer:'gcp-eu', audienceOrigin:'https://service.test.local'}`; (b) no `CONNECT_SERVICE_URL` -> `auth.mc` undefined; (c) no `CLOUD_IDENTIFIER` but `CTP_API_URL=https://api.europe-west1.gcp.commercetools.com` -> issuer `gcp-eu`; (d) `SERVICE_API_TOKEN='short'` and `'aaa.bbb.ccc'` -> `ConfigurationError` mentioning `SERVICE_API_TOKEN` and NOT containing the value; (e) CORS list parse: `'http://localhost:5173, https://shop.example'` -> two origins; `'*'` -> `'all'`; `'localhost:5173'` and `'https://a.example/'` rejected; (f) `MC_REQUIRED_PERMISSION='manage'` rejected, `'canManageContentools'` accepted.
   Run `yarn jest tests/unit/auth-config.test.ts tests/unit/cloud-identifier.test.ts tests/unit/config.test.ts` -> all pass.
 
 **Pitfalls.** zod 4 `z.enum(values, { message })` is the 4.x signature; if the installed zod complains use `{ error: ... }`. Do not default `CORS_ALLOWED_ORIGINS` to anything.
@@ -111,7 +111,7 @@ process.env.SERVICE_API_TOKEN = 'test-service-token-0123456789-abcdefghij';
 
 **Pre-conditions.** Group 2.
 
-- [ ] 3.1 `src/errors/custom.error.ts`: add an optional 4th constructor parameter `extra?: { headers?: Record<string, string>; code?: string }` stored as `headers` and `code` properties. Result:
+- [x] 3.1 `src/errors/custom.error.ts`: add an optional 4th constructor parameter `extra?: { headers?: Record<string, string>; code?: string }` stored as `headers` and `code` properties. Result:
 
 ```ts
 constructor(statusCode: number | string, message: string, errors?: ErrorItem[], extra?: { headers?: Record<string, string>; code?: string }) {
@@ -123,8 +123,8 @@ constructor(statusCode: number | string, message: string, errors?: ErrorItem[], 
 }
 ```
   (`code` is the stable machine-readable identifier of the error contract; spec G uses it for `MEDIA_NOT_CONFIGURED` and spec J keys on the HTTP status first and `code` best-effort.) All `new CustomError(..., undefined, { 'WWW-Authenticate': ... })` calls in group 4 therefore read `new CustomError(401, 'msg', undefined, { headers: { 'WWW-Authenticate': REALM } })`: use that form.
-- [ ] 3.2 `src/middleware/error.middleware.ts`: in `errorMiddleware`, before `res.status(...)`, apply `if (error instanceof CustomError && error.headers) for (const [k, v] of Object.entries(error.headers)) res.setHeader(k, v);` and include `...(error instanceof CustomError && error.code ? { code: error.code } : {})` in the JSON body. Unit test (new `tests/unit/error-headers.test.ts`, 3-line express app): a thrown `new CustomError(401,'x',undefined,{headers:{'WWW-Authenticate':'Bearer realm="contentools"'},code:'SOME_CODE'})` returns that header and body `code: 'SOME_CODE'`.
-- [ ] 3.3 `src/auth/principal.ts`:
+- [x] 3.2 `src/middleware/error.middleware.ts`: in `errorMiddleware`, before `res.status(...)`, apply `if (error instanceof CustomError && error.headers) for (const [k, v] of Object.entries(error.headers)) res.setHeader(k, v);` and include `...(error instanceof CustomError && error.code ? { code: error.code } : {})` in the JSON body. Unit test (new `tests/unit/error-headers.test.ts`, 3-line express app): a thrown `new CustomError(401,'x',undefined,{headers:{'WWW-Authenticate':'Bearer realm="contentools"'},code:'SOME_CODE'})` returns that header and body `code: 'SOME_CODE'`.
+- [x] 3.3 `src/auth/principal.ts`:
 
 ```ts
 export type Principal =
@@ -150,7 +150,7 @@ export {};
 
 **Pre-conditions.** Groups 2-3.
 
-- [ ] 4.1 `src/auth/service-token.ts`:
+- [x] 4.1 `src/auth/service-token.ts`:
 
 ```ts
 import { createHash, timingSafeEqual } from 'node:crypto';
@@ -159,7 +159,7 @@ export const matchesServiceToken = (presented: string, expected: string): boolea
   timingSafeEqual(digest(presented), digest(expected));
 ```
   (Equal-length digests make `timingSafeEqual` safe for any input length.) Unit test: equal -> true; different -> false; different length -> false (no throw); empty -> false.
-- [ ] 4.2 `src/auth/mc-verifier.ts`:
+- [x] 4.2 `src/auth/mc-verifier.ts`:
 
 ```ts
 import { createSessionAuthVerifier } from '@commercetools-backend/express';
@@ -199,7 +199,7 @@ export function createMcVerifier(opts: { issuer: CloudIdentifier; audienceOrigin
 ```
   Note: the library mutates the object you pass (writes `.session`), so a fresh object per attempt. `originalUrl` includes the query string; the library drops it when computing the audience (verified in explore).
   Done when: `yarn typecheck` passes.
-- [ ] 4.3 `src/auth/authenticate.ts`:
+- [x] 4.3 `src/auth/authenticate.ts`:
 
 ```ts
 import type { Request } from 'express';
@@ -250,7 +250,7 @@ export function createAuthenticator(config: Configuration) {
 ```
   `MC_REQUIRED_PERMISSION` lives inside `auth.mc` in the config (D design), so it only applies to MC principals; the static token is not subject to it.
   Done when: typecheck passes.
-- [ ] 4.4 `src/middleware/auth.middleware.ts`:
+- [x] 4.4 `src/middleware/auth.middleware.ts`:
 
 ```ts
 import type { RequestHandler } from 'express';
@@ -269,7 +269,7 @@ export const requireAuth: RequestHandler = async (req, _res, next) => {
 };
 ```
   Express 4 does not catch rejected promises: the `try/catch` + `next(error)` is mandatory.
-- [ ] 4.5 Startup diagnostics in `src/index.ts` (D): after the logger is created log `logger.info('authentication', { merchantCenter: Boolean(config.auth.mc), serviceToken: Boolean(config.auth.serviceToken), requiredPermission: config.auth.mc?.requiredPermission ?? null })`; if `!config.auth.mc` log `logger.warn('Merchant Center token verification is disabled: set CONNECT_SERVICE_URL (provided by Connect) and make CLOUD_IDENTIFIER resolvable')`; if neither mc nor serviceToken: `logger.warn('No credential kind is enabled: every protected route will answer 401')`. Put this in a function `logAuthDiagnostics(logger, config)` exported from `src/auth/diagnostics.ts` and unit test it with a fake logger object (`{info: jest.fn(), warn: jest.fn()}`) for the 3 cases.
+- [x] 4.5 Startup diagnostics in `src/index.ts` (D): after the logger is created log `logger.info('authentication', { merchantCenter: Boolean(config.auth.mc), serviceToken: Boolean(config.auth.serviceToken), requiredPermission: config.auth.mc?.requiredPermission ?? null })`; if `!config.auth.mc` log `logger.warn('Merchant Center token verification is disabled: set CONNECT_SERVICE_URL (provided by Connect) and make CLOUD_IDENTIFIER resolvable')`; if neither mc nor serviceToken: `logger.warn('No credential kind is enabled: every protected route will answer 401')`. Put this in a function `logAuthDiagnostics(logger, config)` exported from `src/auth/diagnostics.ts` and unit test it with a fake logger object (`{info: jest.fn(), warn: jest.fn()}`) for the 3 cases.
 
 **Pitfalls.** (1) `req.headers.authorization` can only be `string | undefined` in Node. (2) Never log the credential, headers or `req.originalUrl` with query (it can contain secrets) at this level: only reason codes. (3) The library needs `x-mc-api-cloud-identifier`: in tests add it (kit does).
 
@@ -283,7 +283,7 @@ export const requireAuth: RequestHandler = async (req, _res, next) => {
 
 **Pre-conditions.** Group 4.
 
-- [ ] 5.1 `src/middleware/cors.middleware.ts`:
+- [x] 5.1 `src/middleware/cors.middleware.ts`:
 
 ```ts
 import cors from 'cors';
@@ -304,8 +304,8 @@ export function createCorsMiddleware(origins: Configuration['auth']['corsOrigins
 ```
   Experiment result to expect (explore section 3): allowed origin -> `Access-Control-Allow-Origin` + `Vary: Origin`; denied -> no CORS headers, no error.
   With `'all'` the value echoed is the request origin (cors does that for `true`), not `*`; acceptable because credentials are off.
-- [ ] 5.2 `src/app.ts` (D): add `app.use(createCorsMiddleware(getConfiguration().auth.corsOrigins));` after `accessLog` and before `express.json`. This is the first place `createApp()` reads configuration: change the signature to `createApp(config: Configuration = getConfiguration())` and use `config` everywhere. `index.ts` passes the config it already read.
-- [ ] 5.3 `src/routes/service.route.ts` (D) becomes the single place where the policy is visible:
+- [x] 5.2 `src/app.ts` (D): add `app.use(createCorsMiddleware(getConfiguration().auth.corsOrigins));` after `accessLog` and before `express.json`. This is the first place `createApp()` reads configuration: change the signature to `createApp(config: Configuration = getConfiguration())` and use `config` everywhere. `index.ts` passes the config it already read.
+- [x] 5.3 `src/routes/service.route.ts` (D) becomes the single place where the policy is visible:
 
 ```ts
 const serviceRouter = Router();
@@ -324,7 +324,7 @@ export default serviceRouter;
   The comment lines above are the only comments allowed (they are documentation of the access policy, not dead code); keep them short. Export also `export { requireAuth }`? Not needed.
   Done when: typecheck passes.
 
-- [ ] 5.4 `src/middleware/public-resolve.middleware.ts` (used by spec F's public datasource router; E builds and tests it with a probe route):
+- [x] 5.4 `src/middleware/public-resolve.middleware.ts` (used by spec F's public datasource router; E builds and tests it with a probe route):
 
 ```ts
 import type { RequestHandler } from 'express';
@@ -366,7 +366,7 @@ export const publicResolveGuard: RequestHandler = (req, res, next) => {
 
 **Pre-conditions.** Groups 2-5; `jose` and `msw@2.10.5` installed.
 
-- [ ] 6.1 `tests/support/mc.ts`:
+- [x] 6.1 `tests/support/mc.ts`:
 
 ```ts
 import { http, HttpResponse, type RequestHandler } from 'msw';
@@ -414,7 +414,7 @@ export async function createMcKit() {
 ```
   (Complete the unsigned `alg: none` case in the test file with `new UnsecuredJWT({}).setIssuer(...)...encode()` from `jose`.)
   Done when: it compiles.
-- [ ] 6.2 `tests/support/probe-app.ts`: builds the minimal app used by the auth tests:
+- [x] 6.2 `tests/support/probe-app.ts`: builds the minimal app used by the auth tests:
 
 ```ts
 export function createProbeApp() {
@@ -442,7 +442,7 @@ export function createProbeApp() {
 
 **Pre-conditions.** Group 6.
 
-- [ ] 7.1 `tests/integration/auth-matrix.test.ts`. Structure:
+- [x] 7.1 `tests/integration/auth-matrix.test.ts`. Structure:
 
 ```ts
 const server = setupServer(); let kit: Awaited<ReturnType<typeof createMcKit>>; let app: Express;
@@ -476,17 +476,17 @@ beforeEach(() => { app = createProbeApp(); });
   Acceptance rows: valid v2 token -> 200/201 and body `principal` = `{kind:'merchant-center', userId:'user-1', projectKey:'test-project', permissions:[]}`; valid token with `x-mc-api-forward-to-version: v1` and `issuer: MC_LEGACY_ISSUER` -> 200; valid token with query string `?x=1` -> 200; valid token for audience `${AUDIENCE_ORIGIN}/service/protected-probe` (full-path policy) -> 200; correct `SERVICE_API_TOKEN` -> 200 with `{kind:'service-token'}`.
   Extra assertions: (a) for every 401 row collect `res.body` minus `correlationId`: all deep-equal (no oracle); (b) spy on `process.stdout.write` and assert the token string is never present in the captured output; (c) a log line with `"reason"` exists for at least `expired`.
   Run: `yarn jest tests/integration/auth-matrix.test.ts` -> expected about 40 tests passing (18 rows x 2 methods + acceptance).
-- [ ] 7.2 `tests/integration/auth-policy.test.ts`:
+- [x] 7.2 `tests/integration/auth-policy.test.ts`:
   * public route ignores a garbage credential: `GET /service/public-probe` with `Authorization: Bearer garbage` -> 200 `{access:'public'}`; `GET /service/health` same.
   * gate default: a route registered after `requireAuth` (the probe) without credentials -> 401 (scenario "New route is protected by default").
   * `MC_REQUIRED_PERMISSION`: set `process.env.MC_REQUIRED_PERMISSION='canManageContentools'` before `createProbeApp()`; token without claim -> 403; with `['canViewContentools']` -> 403; with `['canManageContentools']` -> 200; the service token is unaffected (200). Delete the env var in `afterEach`.
   * `SERVICE_API_TOKEN` unset (delete env, rebuild app): opaque bearer -> 401; MC token still 200.
   * MC disabled (delete `CONNECT_SERVICE_URL`): MC token -> 401, service token -> 200.
   Run `yarn jest tests/integration/auth-policy.test.ts` -> pass.
-- [ ] 7.3 `tests/integration/cors.test.ts`: with `process.env.CORS_ALLOWED_ORIGINS='http://localhost:5173'`: allowed simple request has ACAO, `vary: origin`, `access-control-expose-headers` contains `X-Correlation-ID`; denied origin -> status 200 from the public probe and `access-control-allow-origin` undefined; preflight allowed `OPTIONS /service/protected-probe` with `Access-Control-Request-Method: PUT` and `Access-Control-Request-Headers: authorization,content-type` -> 204, `access-control-allow-methods` `GET,POST,PUT,DELETE,OPTIONS`, `access-control-allow-headers` lists `Authorization` and NOT `x-project-key`, `access-control-max-age` `600`, no `access-control-allow-credentials`, and NO 401 despite no credentials; unset variable -> no CORS headers even for `Origin: http://localhost:5173`; `'*'` -> ACAO echoed for any origin; no `Origin` header -> normal response.
+- [x] 7.3 `tests/integration/cors.test.ts`: with `process.env.CORS_ALLOWED_ORIGINS='http://localhost:5173'`: allowed simple request has ACAO, `vary: origin`, `access-control-expose-headers` contains `X-Correlation-ID`; denied origin -> status 200 from the public probe and `access-control-allow-origin` undefined; preflight allowed `OPTIONS /service/protected-probe` with `Access-Control-Request-Method: PUT` and `Access-Control-Request-Headers: authorization,content-type` -> 204, `access-control-allow-methods` `GET,POST,PUT,DELETE,OPTIONS`, `access-control-allow-headers` lists `Authorization` and NOT `x-project-key`, `access-control-max-age` `600`, no `access-control-allow-credentials`, and NO 401 despite no credentials; unset variable -> no CORS headers even for `Origin: http://localhost:5173`; `'*'` -> ACAO echoed for any origin; no `Origin` header -> normal response.
   Run `yarn jest tests/integration/cors.test.ts` -> pass.
-- [ ] 7.4 `tests/unit/service-token.test.ts` (4.1) and `tests/unit/diagnostics.test.ts` (4.5) written/passing.
-- [ ] 7.5 Whole suite: `yarn test && yarn lint && yarn typecheck && yarn build` -> all green.
+- [x] 7.4 `tests/unit/service-token.test.ts` (4.1) and `tests/unit/diagnostics.test.ts` (4.5) written/passing.
+- [x] 7.5 Whole suite: `yarn test && yarn lint && yarn typecheck && yarn build` -> all green.
 
 **Pitfalls.** (1) Each test file that uses msw must call `listenQuietly(server)` (ignores `127.0.0.1`). (2) `jose` token `expiresIn` as a number is an absolute epoch second in `setExpirationTime`; for "expired" pass a past epoch. (3) The library caches JWKS clients per issuer URL for the process lifetime: in the JWKS-failure rows use a fresh `kid`-less flow; if a previous test cached the key, the failure row would still pass verification. If you see `jwks-500` returning 200, put the failure rows in their own test file (separate jest module registry = fresh cache). (4) Reset env mutations in `afterEach`.
 
@@ -496,12 +496,12 @@ beforeEach(() => { app = createProbeApp(); });
 
 ## 8. Manual and live verification
 
-- [ ] 8.1 Static-token smoke (no MC needed). Create `service/.env` from `.env.example`, add `SERVICE_API_TOKEN=$(openssl rand -hex 24)` (48 hex chars) and `CORS_ALLOWED_ORIGINS=http://localhost:5173`; run `yarn build && node --env-file=.env build/index.js`. Expected log lines: `authentication {"merchantCenter":false,"serviceToken":true,...}` and a `warn` that MC verification is disabled.
+- [x] 8.1 Static-token smoke (no MC needed). Create `service/.env` from `.env.example`, add `SERVICE_API_TOKEN=$(openssl rand -hex 24)` (48 hex chars) and `CORS_ALLOWED_ORIGINS=http://localhost:5173`; run `yarn build && node --env-file=.env build/index.js`. Expected log lines: `authentication {"merchantCenter":false,"serviceToken":true,...}` and a `warn` that MC verification is disabled.
   `curl -s -o /dev/null -w "%{http_code}\n" localhost:8080/service/health` -> `200`;
   `curl -s -o /dev/null -w "%{http_code}\n" localhost:8080/service/anything-protected` -> `404` (no route yet: F adds them; before F this only proves unknown paths stay 404 and the gate does not crash);
   `curl -si -X OPTIONS -H "Origin: http://localhost:5173" -H "Access-Control-Request-Method: PUT" localhost:8080/service/x | head -12` -> `204` with the allow headers. Then `rm .env`.
   (After F lands, the same `curl` with and without `-H "Authorization: Bearer $SERVICE_API_TOKEN"` against `GET /service/default/puck-pages` must give `200` / `401`; F's verification repeats it.)
-- [ ] 8.2 Real Merchant Center check (owner-assisted, manual step M-04): deferred to spec K/Q because it needs the deployed or tunnelled service URL and a logged-in MC session. Record in `manual.md`; nothing to do here.
+- [x] 8.2 Real Merchant Center check (owner-assisted, manual step M-04): deferred to spec K/Q because it needs the deployed or tunnelled service URL and a logged-in MC session. Record in `manual.md`; nothing to do here.
 
 ---
 

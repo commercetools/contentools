@@ -5,6 +5,11 @@
  */
 
 import { z } from 'zod';
+import {
+  CLOUD_IDENTIFIERS,
+  deriveCloudIdentifier,
+  type CloudIdentifier,
+} from '../auth/cloud-identifier';
 
 export class ConfigurationError extends Error {
   constructor(public readonly problems: string[]) {
@@ -61,10 +66,40 @@ const contentSchema = z.object({
     .default(''),
 });
 
+const authSchema = z.object({
+  CONNECT_SERVICE_URL: z.string().url().optional(),
+  CLOUD_IDENTIFIER: z
+    .enum(CLOUD_IDENTIFIERS, {
+      error: 'must be one of gcp-au|gcp-eu|gcp-us|aws-eu|aws-us',
+    })
+    .optional(),
+  SERVICE_API_TOKEN: z
+    .string()
+    .min(32, 'must be at least 32 characters')
+    .refine(
+      (v) => !/^[\w-]+\.[\w-]+\.[\w-]+$/.test(v),
+      'must not look like a JWT (three dot-separated parts)'
+    )
+    .optional(),
+  CORS_ALLOWED_ORIGINS: z.string().optional(),
+  MC_REQUIRED_PERMISSION: z
+    .string()
+    .regex(/^can[A-Za-z0-9]+$/, 'must look like canManageSomething')
+    .optional(),
+  PUBLIC_DATASOURCE_RESOLVE: z.enum(['true', 'false']).default('false'),
+  PUBLIC_RESOLVE_MAX_PER_MINUTE: z.coerce
+    .number({ error: 'must be an integer between 1 and 100000' })
+    .int('must be an integer between 1 and 100000')
+    .min(1, 'must be an integer between 1 and 100000')
+    .max(100000, 'must be an integer between 1 and 100000')
+    .default(120),
+});
+
 const schema = z.object({
   ...ctpSchema.shape,
   ...runtimeSchema.shape,
   ...contentSchema.shape,
+  ...authSchema.shape,
 });
 
 export type LogLevel = 'error' | 'warn' | 'info' | 'debug';
@@ -83,6 +118,42 @@ export interface Configuration {
     clientSecret: string;
     scopes: string[];
   };
+  auth: {
+    /** undefined when Merchant Center tokens cannot be verified (no CONNECT_SERVICE_URL or unknown region) */
+    mc?: {
+      issuer: CloudIdentifier;
+      audienceOrigin: string;
+      requiredPermission?: string;
+    };
+    serviceToken?: string;
+    corsOrigins: string[] | 'all';
+    /** opt-in public built-in datasource resolve */
+    publicResolve: { enabled: boolean; maxPerMinute: number };
+  };
+}
+
+function parseCorsOrigins(
+  raw: string | undefined,
+  problems: string[]
+): string[] | 'all' {
+  if (raw === undefined || raw.trim() === '') return [];
+  if (raw.trim() === '*') return 'all';
+  const origins: string[] = [];
+  const entries = raw
+    .split(',')
+    .map((e) => e.trim())
+    .filter(Boolean);
+  for (const entry of entries) {
+    const origin = URL.canParse(entry) ? new URL(entry).origin : undefined;
+    if (origin === undefined || origin !== entry) {
+      problems.push(
+        `CORS_ALLOWED_ORIGINS: "${entry}" is not an origin (scheme://host[:port], no trailing slash)`
+      );
+    } else {
+      origins.push(entry);
+    }
+  }
+  return origins;
 }
 
 export type Env = Record<string, string | undefined>;
@@ -98,6 +169,10 @@ export function readConfiguration(env: Env = process.env): Configuration {
     );
   }
   const v = parsed.data;
+  const corsProblems: string[] = [];
+  const corsOrigins = parseCorsOrigins(v.CORS_ALLOWED_ORIGINS, corsProblems);
+  if (corsProblems.length > 0) throw new ConfigurationError(corsProblems);
+  const issuer = v.CLOUD_IDENTIFIER ?? deriveCloudIdentifier(v.CTP_API_URL);
   return {
     nodeEnv: v.NODE_ENV,
     port: v.PORT,
@@ -111,6 +186,25 @@ export function readConfiguration(env: Env = process.env): Configuration {
       clientId: v.CTP_CLIENT_ID,
       clientSecret: v.CTP_CLIENT_SECRET,
       scopes: v.CTP_SCOPE.split(/\s+/).filter(Boolean),
+    },
+    auth: {
+      ...(v.CONNECT_SERVICE_URL && issuer
+        ? {
+            mc: {
+              issuer,
+              audienceOrigin: new URL(v.CONNECT_SERVICE_URL).origin,
+              ...(v.MC_REQUIRED_PERMISSION && {
+                requiredPermission: v.MC_REQUIRED_PERMISSION,
+              }),
+            },
+          }
+        : {}),
+      ...(v.SERVICE_API_TOKEN && { serviceToken: v.SERVICE_API_TOKEN }),
+      corsOrigins,
+      publicResolve: {
+        enabled: v.PUBLIC_DATASOURCE_RESOLVE === 'true',
+        maxPerMinute: v.PUBLIC_RESOLVE_MAX_PER_MINUTE,
+      },
     },
   };
 }

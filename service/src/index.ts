@@ -7,6 +7,7 @@
 import { ConfigurationError, readConfiguration } from './config/env';
 import type { Configuration } from './config/env';
 import { createApp } from './app';
+import { logAuthDiagnostics } from './auth/diagnostics';
 import { getLogger } from './utils/logger.utils';
 
 function loadConfiguration(): Configuration {
@@ -25,7 +26,8 @@ function loadConfiguration(): Configuration {
 function main(): void {
   const config = loadConfiguration();
   const logger = getLogger();
-  const server = createApp().listen(config.port, () =>
+  logAuthDiagnostics(logger, config);
+  const server = createApp(config).listen(config.port, () =>
     logger.info('service listening', {
       port: config.port,
       projectKey: config.ctp.projectKey,

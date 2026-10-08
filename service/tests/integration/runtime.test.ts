@@ -54,7 +54,11 @@ describe('service runtime', () => {
   ];
 
   it.each(removedPaths)('has no %s endpoint', async (path) => {
-    const res = await request(makeApp()).post(path);
+    const app = makeApp();
+    expect((await request(app).post(path)).status).toBe(401);
+    const res = await request(app)
+      .post(path)
+      .set('Authorization', `Bearer ${process.env.SERVICE_API_TOKEN}`);
     expect(res.status).toBe(404);
     expect(res.body.message).toBe('Path not found.');
   });

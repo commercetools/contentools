@@ -15,6 +15,8 @@ Object.assign(process.env, {
   CTP_API_URL: 'https://api.ct.test',
   CTP_AUTH_URL: 'https://auth.ct.test',
   CTP_REGION: 'europe-west1.gcp',
-  SERVICE_API_TOKEN: 'test-service-token',
+  CONNECT_SERVICE_URL: 'https://service.test.local/service',
+  CLOUD_IDENTIFIER: 'gcp-eu',
+  SERVICE_API_TOKEN: 'test-service-token-0123456789-abcdefghij',
   MAX_VERSIONS: '3',
 });

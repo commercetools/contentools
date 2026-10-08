@@ -75,6 +75,11 @@ export const errorMiddleware: ErrorRequestHandler = (
   }
   const dev = process.env.NODE_ENV === 'development';
   const { status, message, code, errors } = normalize(error);
+  if (error instanceof CustomError && error.headers) {
+    for (const [name, value] of Object.entries(error.headers)) {
+      res.setHeader(name, value);
+    }
+  }
   if (status >= 500) {
     getLogger().error('request failed', { status, err: describe(error) });
   } else {
