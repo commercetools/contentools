@@ -1,2 +1,8 @@
+node_modules
+build
+.env
+.env.*
+!.env.example
+coverage
 # Owner-local live e2e credentials (never committed)
 .env.e2e.local

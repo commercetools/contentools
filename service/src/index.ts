@@ -4,19 +4,40 @@
  * Freely available, AS IS and UNSUPPORTED. See LICENSE.
  */
 
-import * as dotenv from 'dotenv';
-dotenv.config();
+import { ConfigurationError, readConfiguration } from './config/env';
+import type { Configuration } from './config/env';
+import { createApp } from './app';
+import { getLogger } from './utils/logger.utils';
 
-// Import logger
-import { logger } from './utils/logger.utils';
+function loadConfiguration(): Configuration {
+  try {
+    return readConfiguration();
+  } catch (error) {
+    const message =
+      error instanceof ConfigurationError
+        ? error.message
+        : 'Configuration failed';
+    process.stderr.write(`${JSON.stringify({ level: 'error', message })}\n`);
+    process.exit(1);
+  }
+}
 
-import app from './app';
+function main(): void {
+  const config = loadConfiguration();
+  const logger = getLogger();
+  const server = createApp().listen(config.port, () =>
+    logger.info('service listening', {
+      port: config.port,
+      projectKey: config.ctp.projectKey,
+    })
+  );
+  const shutdown = (signal: string): void => {
+    logger.info('shutting down', { signal });
+    server.close(() => process.exit(0));
+    setTimeout(() => process.exit(1), 10_000).unref();
+  };
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
+}
 
-const PORT = 8080;
-
-// Listen the application
-const server = app.listen(PORT, () => {
-  logger.info(`⚡️ Service application listening on port ${PORT}`);
-});
-
-export default server;
+main();

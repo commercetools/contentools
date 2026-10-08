@@ -11,7 +11,7 @@ Precondition: playbook 02 created the page "E2E Home". Resize first: `mcp__chrom
 6. mcp__chrome-devtools__take_snapshot        -> assert the dropped component's text/fields now appear in the canvas
 7. mcp__chrome-devtools__click uid=<Publish button>
 8. mcp__chrome-devtools__list_network_requests -> assert PUT .../puck-pages/<key>/states/published = 200,
-                                                  no 4xx/5xx, no x-project-key header
+                                                  no 4xx/5xx, no project-scoping header
 9. mcp__chrome-devtools__list_console_messages -> assert no entry of type error
 10. mcp__chrome-devtools__take_screenshot     filePath=plans/evidence/<spec-id>/03-published.png
 ```

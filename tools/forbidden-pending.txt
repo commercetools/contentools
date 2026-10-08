@@ -1,31 +1,5 @@
 # Spec O requires this file to be empty.
 # Files still containing tenant/store terms, owned by a later spec. Format: <path or dir/>  # owner spec
-service/.env.example  # D
-service/package.json  # D
-service/src/app.ts  # D
-service/src/controllers/auth.controller.ts  # D
-service/src/controllers/datasource-resolution.route.ts  # D
-service/src/middleware/jwt.middleware.ts  # D
-service/src/middleware/project-key.middleware.ts  # D
-service/src/middleware/project.middleware.ts  # D
-service/src/routes/auth.route.ts  # D
-service/src/routes/configuration.route.ts  # D
-service/src/routes/content-type.route.ts  # D
-service/src/routes/datasource.route.ts  # D
-service/src/routes/file.route.ts  # D
-service/src/routes/puck-content.route.ts  # D
-service/src/routes/puck-page.route.ts  # D
-service/src/routes/puck-template.route.ts  # D
-service/src/types/service.types.ts  # D
-service/src/utils/firestore.utils.ts  # D
-service/e2e/README.md  # B/F
-service/e2e/setup.ts  # B/F
-service/e2e/helpers/http.ts  # B/F
-service/e2e/configuration.e2e.ts  # B/F
-service/e2e/datasource.e2e.ts  # B/F
-service/e2e/file.e2e.ts  # B/F
-service/e2e/puck-content.e2e.ts  # B/F
-service/e2e/puck-page.e2e.ts  # B/F
 puck/packages/puck-api/src/api/configuration.api.ts  # J
 puck/packages/puck-api/src/api/http-client.ts  # J
 puck/packages/puck-api/src/api/media-library.api.ts  # J
@@ -33,3 +7,11 @@ puck/packages/puck-image-picker/src/api/media-library.api.ts  # J
 admin-app/  # K
 mcp/src/shared/functions.ts  # M
 mcp/src/types/auth.ts  # M
+service/src/_pending/controllers/datasource-resolution.route.ts  # F
+service/src/_pending/routes/configuration.route.ts  # F
+service/src/_pending/routes/content-type.route.ts  # F
+service/src/_pending/routes/datasource.route.ts  # F
+service/src/_pending/routes/file.route.ts  # G
+service/src/_pending/routes/puck-content.route.ts  # F
+service/src/_pending/routes/puck-page.route.ts  # F
+service/src/_pending/routes/puck-template.route.ts  # F

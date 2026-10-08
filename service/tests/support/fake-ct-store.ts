@@ -191,9 +191,9 @@ export function route(store: FakeStore, method: string, pathname: string, search
       let all = [...store.objects.values()].filter((o) => (container === undefined || o.container === container) && pred(o));
       const sort = search.get('sort');
       if (sort) {
-        const m = sort.trim().match(/^(createdAt|lastModifiedAt)(?:\s+(asc|desc))?$/);
+        const m = sort.trim().match(/^(id|createdAt|lastModifiedAt)(?:\s+(asc|desc))?$/);
         if (!m) return ctError(400, 'InvalidInput', `fake-ct: unsupported sort: ${sort}`);
-        const f = m[1] as 'createdAt' | 'lastModifiedAt';
+        const f = m[1] as 'id' | 'createdAt' | 'lastModifiedAt';
         const dir = m[2] === 'desc' ? -1 : 1;
         all = all.sort((a, b) => (a[f] < b[f] ? -1 : a[f] > b[f] ? 1 : 0) * dir);
       }

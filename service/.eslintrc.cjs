@@ -6,6 +6,7 @@
 
 module.exports = {
   root: true,
+  ignorePatterns: ['build', 'src/_pending', 'node_modules'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 2020,
@@ -18,6 +19,12 @@ module.exports = {
     'no-console': 'error',
     'no-const-assign': 'error',
   },
+  overrides: [
+    {
+      files: ['e2e/**/*.ts', 'tests/**/*.ts'],
+      rules: { 'no-console': 'off', '@typescript-eslint/no-explicit-any': 'off', 'no-undef': 'off' },
+    },
+  ],
   env: {
     es6: true,
     jest: true,
