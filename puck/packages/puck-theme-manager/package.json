@@ -1,0 +1,51 @@
+{
+  "name": "@commercetools-demo/puck-theme-manager",
+  "version": "0.8.1",
+  "description": "Theme manager and content type import components for Puck CMS",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@commercetools-demo/puck-api": "workspace:^",
+    "@commercetools-demo/puck-types": "workspace:^"
+  },
+  "peerDependencies": {
+    "@chakra-ui/react": "^3.36.0",
+    "@commercetools/nimbus": "^3.2.0",
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0",
+    "react-intl": ">=6.0.0",
+    "react-router-dom": ">=5.0.0 <6"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/react-router-dom": "^5",
+    "tsup": "^8.3.0",
+    "typescript": "^5.7.2"
+  },
+  "resolutions": {
+    "@types/react-router": "<6",
+    "@types/react-router-dom": "<6",
+    "react-router-dom": "<6"
+  }
+}

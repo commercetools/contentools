@@ -1,0 +1,48 @@
+{
+  "name": "@commercetools-labs/puck-playground",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^3.36.0",
+    "@commercetools-demo/puck-api": "link:../packages/puck-api",
+    "@commercetools-demo/puck-content-manager": "link:../packages/puck-content-manager",
+    "@commercetools-demo/puck-editor": "link:../packages/puck-editor",
+    "@commercetools-demo/puck-page-manager": "link:../packages/puck-page-manager",
+    "@commercetools-demo/puck-renderer": "link:../packages/puck-renderer",
+    "@commercetools-demo/puck-types": "link:../packages/puck-types",
+    "@commercetools/nimbus": "^3.2.0",
+    "@commercetools/nimbus-icons": "^3.2.0",
+    "@commercetools/nimbus-tokens": "^3.2.0",
+    "@emotion/react": "^11.14.0",
+    "@measured/puck": "^0.18.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-intl": "^10.1.1",
+    "react-router-dom": "^5",
+    "slate": "^0.123.0",
+    "slate-dom": "^0.123.0",
+    "slate-history": "^0.115.0",
+    "slate-hyperscript": "^0.115.0",
+    "slate-react": "^0.123.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^4",
+    "typescript": "^5.7.2",
+    "vite": "^6.4.3"
+  },
+  "resolutions": {
+    "@types/react-router": "<6",
+    "@types/react-router-dom": "<6",
+    "react-router-dom": "<6"
+  }
+}

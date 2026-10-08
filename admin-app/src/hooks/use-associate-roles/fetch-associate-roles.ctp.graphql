@@ -1,0 +1,8 @@
+query FetchAssociateRoles($limit: Int) {
+  associateRoles(limit: $limit) {
+    results {
+      key
+      name
+    }
+  }
+}

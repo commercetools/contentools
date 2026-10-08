@@ -1,0 +1,8 @@
+query FetchStores($limit: Int, $language: Locale) {
+  stores(limit: $limit) {
+    results {
+      key
+      name (locale: $language)
+    }
+  }
+}

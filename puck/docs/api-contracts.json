@@ -1,0 +1,512 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "description": "Contract documentation for every mutating FE→backend API call in @puck/ packages. Each entry traces the payload from UI component through hook/transformer to the final fetch body, and compares it against the backend route's expected schema. Entries with compatible=false are the only ones requiring a contract fix.",
+  "entries": [
+    {
+      "apiFunction": "createPuckContentApi",
+      "file": "puck/packages/puck-api/src/api/puck-contents.api.ts",
+      "method": "POST",
+      "endpoint": "/:businessUnitKey/puck-contents",
+      "transformationChain": [
+        {
+          "fn": "ContentManager (dialog submit)",
+          "file": "puck/packages/puck-content-manager/src/ContentManager.tsx",
+          "description": "Builds CreatePuckContentInput: { name: createName.trim(), contentType: createType.trim(), data: { content: [], root: { props: {} } } }"
+        },
+        {
+          "fn": "createContent (usePuckContents)",
+          "file": "puck/packages/puck-api/src/hooks/usePuckContents.ts",
+          "description": "Passes input unchanged to createPuckContentApi"
+        },
+        {
+          "fn": "createPuckContentApi",
+          "file": "puck/packages/puck-api/src/api/puck-contents.api.ts",
+          "description": "Wraps input: body = JSON.stringify({ value: input })"
+        }
+      ],
+      "fePayload": {
+        "value": {
+          "name": "string (required, trimmed)",
+          "contentType": "string (required, trimmed)",
+          "data": {
+            "content": "[] (empty array on creation)",
+            "root": { "props": {} }
+          }
+        }
+      },
+      "backendExpected": {
+        "route": "service/src/routes/puck-content.route.ts:72",
+        "schema": {
+          "value": {
+            "name": "string (required — controller throws 400 if missing)",
+            "contentType": "string (required — controller throws 400 if missing)",
+            "data": "PuckData (optional, defaults to {})",
+            "meta": "PuckContentMeta (optional)"
+          }
+        },
+        "controllerType": "Pick<PuckContentValue, 'name' | 'contentType'> & Partial<Pick<PuckContentValue, 'data' | 'meta'>>",
+        "controllerFile": "service/src/controllers/puck-content.controller.ts:149"
+      },
+      "compatible": true
+    },
+    {
+      "apiFunction": "updatePuckContentApi",
+      "file": "puck/packages/puck-api/src/api/puck-contents.api.ts",
+      "method": "PUT",
+      "endpoint": "/:businessUnitKey/puck-contents/:key",
+      "transformationChain": [
+        {
+          "fn": "onChange (Puck editor)",
+          "file": "puck/packages/puck-content-manager/src/ContentEditor.tsx",
+          "description": "Stores Puck Data object in latestDataRef.current on every editor change"
+        },
+        {
+          "fn": "handleSave",
+          "file": "puck/packages/puck-content-manager/src/ContentEditor.tsx",
+          "description": "Calls saveDraft(latestDataRef.current as PuckData)"
+        },
+        {
+          "fn": "saveDraft (usePuckContent)",
+          "file": "puck/packages/puck-api/src/hooks/usePuckContent.ts:83",
+          "description": "Debounces 1500ms, then builds input: { data, ...(meta !== undefined ? { meta } : {}) } — only data and optionally meta, no name/contentType"
+        },
+        {
+          "fn": "updatePuckContentApi",
+          "file": "puck/packages/puck-api/src/api/puck-contents.api.ts",
+          "description": "Wraps input: body = JSON.stringify({ value: input })"
+        }
+      ],
+      "fePayload": {
+        "value": {
+          "data": {
+            "content": "PuckComponentData[] (current editor state)",
+            "root": { "props": "Record<string, unknown>" },
+            "zones": "Record<string, PuckComponentData[]> (optional)"
+          },
+          "meta": "PuckContentMeta (optional, only present when explicitly passed)"
+        }
+      },
+      "backendExpected": {
+        "route": "service/src/routes/puck-content.route.ts:101",
+        "schema": {
+          "value": {
+            "name": "string (optional patch)",
+            "contentType": "string (optional patch)",
+            "data": "PuckData (optional patch)",
+            "meta": "PuckContentMeta (optional patch)"
+          }
+        },
+        "controllerType": "Partial<Pick<PuckContentValue, 'name' | 'contentType' | 'data' | 'meta'>>",
+        "controllerFile": "service/src/controllers/puck-content.controller.ts:191",
+        "note": "Backend spreads input into existing value (...existing.value, ...input) so omitting name/contentType is intentional partial-update behavior"
+      },
+      "compatible": true
+    },
+    {
+      "apiFunction": "createPuckPageApi",
+      "file": "puck/packages/puck-api/src/api/puck-pages.api.ts",
+      "method": "POST",
+      "endpoint": "/:businessUnitKey/puck-pages",
+      "transformationChain": [
+        {
+          "fn": "PageManager (dialog submit)",
+          "file": "puck/packages/puck-page-manager/src/PageManager.tsx",
+          "description": "Builds CreatePuckPageInput: { name: newName.trim(), slug: slug.startsWith('/') ? slug : '/' + slug }"
+        },
+        {
+          "fn": "createPage (usePuckPages)",
+          "file": "puck/packages/puck-api/src/hooks/usePuckPages.ts",
+          "description": "Passes input unchanged to createPuckPageApi"
+        },
+        {
+          "fn": "createPuckPageApi",
+          "file": "puck/packages/puck-api/src/api/puck-pages.api.ts",
+          "description": "Wraps input: body = JSON.stringify({ value: input })"
+        }
+      ],
+      "fePayload": {
+        "value": {
+          "name": "string (required, trimmed)",
+          "slug": "string (required, trimmed, leading '/' enforced by PageManager)"
+        }
+      },
+      "backendExpected": {
+        "route": "service/src/routes/puck-page.route.ts:67",
+        "schema": {
+          "value": {
+            "name": "string (required — controller throws 400 if missing)",
+            "slug": "string (required — controller throws 400 if missing)",
+            "puckData": "PuckData (optional, defaults to { content: [], root: { props: {} } })",
+            "meta": "PuckPageMeta (optional)"
+          }
+        },
+        "controllerType": "Pick<PuckPageValue, 'name' | 'slug'> & Partial<Pick<PuckPageValue, 'puckData' | 'meta'>>",
+        "controllerFile": "service/src/controllers/puck-page.controller.ts:227"
+      },
+      "compatible": true
+    },
+    {
+      "apiFunction": "updatePuckPageApi (saveDraft path)",
+      "file": "puck/packages/puck-api/src/api/puck-pages.api.ts",
+      "method": "PUT",
+      "endpoint": "/:businessUnitKey/puck-pages/:key",
+      "transformationChain": [
+        {
+          "fn": "onChange (Puck editor)",
+          "file": "puck/packages/puck-editor/src/PuckEditor.tsx",
+          "description": "Stores Puck Data in latestDataRef.current on every editor change"
+        },
+        {
+          "fn": "handleSave",
+          "file": "puck/packages/puck-editor/src/PuckEditor.tsx",
+          "description": "Calls saveDraft(latestDataRef.current as PuckData)"
+        },
+        {
+          "fn": "saveDraft (usePuckPage)",
+          "file": "puck/packages/puck-api/src/hooks/usePuckPage.ts:83",
+          "description": "Debounces 1500ms, then builds input: { puckData } — note: field name is 'puckData', not 'data'"
+        },
+        {
+          "fn": "updatePuckPageApi",
+          "file": "puck/packages/puck-api/src/api/puck-pages.api.ts",
+          "description": "Wraps input: body = JSON.stringify({ value: input })"
+        }
+      ],
+      "fePayload": {
+        "value": {
+          "puckData": {
+            "content": "PuckComponentData[] (current editor state)",
+            "root": { "props": "Record<string, unknown>" },
+            "zones": "Record<string, PuckComponentData[]> (optional)"
+          }
+        }
+      },
+      "backendExpected": {
+        "route": "service/src/routes/puck-page.route.ts:96",
+        "schema": {
+          "value": {
+            "name": "string (optional patch)",
+            "slug": "string (optional patch)",
+            "puckData": "PuckData (optional patch)",
+            "meta": "PuckPageMeta (optional patch)"
+          }
+        },
+        "controllerType": "Partial<Pick<PuckPageValue, 'name' | 'slug' | 'puckData' | 'meta'>>",
+        "controllerFile": "service/src/controllers/puck-page.controller.ts:274",
+        "note": "Backend spreads input into existing value so omitting name/slug is intentional partial-update behavior"
+      },
+      "compatible": true
+    },
+    {
+      "apiFunction": "updatePuckPageApi (updateMeta path)",
+      "file": "puck/packages/puck-api/src/api/puck-pages.api.ts",
+      "method": "PUT",
+      "endpoint": "/:businessUnitKey/puck-pages/:key",
+      "transformationChain": [
+        {
+          "fn": "updateMeta (usePuckPage)",
+          "file": "puck/packages/puck-api/src/hooks/usePuckPage.ts:118",
+          "description": "Receives Omit<UpdatePuckPageInput, 'puckData'> — name, slug, and/or meta — passes directly to updatePuckPageApi"
+        },
+        {
+          "fn": "updatePuckPageApi",
+          "file": "puck/packages/puck-api/src/api/puck-pages.api.ts",
+          "description": "Wraps input: body = JSON.stringify({ value: input })"
+        }
+      ],
+      "fePayload": {
+        "value": {
+          "name": "string (optional)",
+          "slug": "string (optional)",
+          "meta": "PuckPageMeta (optional)"
+        }
+      },
+      "backendExpected": {
+        "route": "service/src/routes/puck-page.route.ts:96",
+        "schema": {
+          "value": {
+            "name": "string (optional patch)",
+            "slug": "string (optional patch)",
+            "puckData": "PuckData (optional patch)",
+            "meta": "PuckPageMeta (optional patch)"
+          }
+        },
+        "controllerType": "Partial<Pick<PuckPageValue, 'name' | 'slug' | 'puckData' | 'meta'>>",
+        "controllerFile": "service/src/controllers/puck-page.controller.ts:274"
+      },
+      "compatible": true
+    },
+    {
+      "apiFunction": "publishPuckContentApi",
+      "file": "puck/packages/puck-api/src/api/puck-content-states.api.ts",
+      "method": "PUT",
+      "endpoint": "/:businessUnitKey/puck-contents/:key/states/published",
+      "transformationChain": [
+        {
+          "fn": "handlePublish",
+          "file": "puck/packages/puck-content-manager/src/ContentEditor.tsx",
+          "description": "First calls saveDraft(activeData), then calls publish(false) — clearDraft=false"
+        },
+        {
+          "fn": "publish (usePuckContent)",
+          "file": "puck/packages/puck-api/src/hooks/usePuckContent.ts:120",
+          "description": "Passes clearDraft boolean to publishPuckContentApi"
+        },
+        {
+          "fn": "publishPuckContentApi",
+          "file": "puck/packages/puck-api/src/api/puck-content-states.api.ts",
+          "description": "No body. Appends ?clearDraft=true if clearDraft=true, otherwise no query param"
+        }
+      ],
+      "fePayload": {
+        "body": null,
+        "queryParams": {
+          "clearDraft": "boolean (omitted when false, 'true' when true)"
+        }
+      },
+      "backendExpected": {
+        "route": "service/src/routes/puck-content.route.ts (puck-content states endpoint)",
+        "schema": {
+          "body": null,
+          "queryParams": {
+            "clearDraft": "'true' | undefined"
+          }
+        }
+      },
+      "compatible": true
+    },
+    {
+      "apiFunction": "publishPuckPageApi",
+      "file": "puck/packages/puck-api/src/api/puck-states.api.ts",
+      "method": "PUT",
+      "endpoint": "/:businessUnitKey/puck-pages/:key/states/published",
+      "transformationChain": [
+        {
+          "fn": "handlePublish (PuckEditor or EditorToolbar)",
+          "file": "puck/packages/puck-editor/src/PuckEditor.tsx",
+          "description": "First calls saveDraft(activeData), then calls publish(false)"
+        },
+        {
+          "fn": "publish (usePuckPage)",
+          "file": "puck/packages/puck-api/src/hooks/usePuckPage.ts:142",
+          "description": "Passes clearDraft boolean to publishPuckPageApi"
+        },
+        {
+          "fn": "publishPuckPageApi",
+          "file": "puck/packages/puck-api/src/api/puck-states.api.ts",
+          "description": "No body. Appends ?clearDraft=true if clearDraft=true"
+        }
+      ],
+      "fePayload": {
+        "body": null,
+        "queryParams": {
+          "clearDraft": "boolean (omitted when false, 'true' when true)"
+        }
+      },
+      "backendExpected": {
+        "route": "service/src/routes/puck-page.route.ts:268",
+        "schema": {
+          "body": null,
+          "queryParams": {
+            "clearDraft": "'true' | undefined"
+          }
+        }
+      },
+      "compatible": true
+    },
+    {
+      "apiFunction": "revertPuckContentDraftApi",
+      "file": "puck/packages/puck-api/src/api/puck-content-states.api.ts",
+      "method": "DELETE",
+      "endpoint": "/:businessUnitKey/puck-contents/:key/states/draft",
+      "transformationChain": [
+        {
+          "fn": "handleRevert",
+          "file": "puck/packages/puck-content-manager/src/ContentEditor.tsx",
+          "description": "Calls revertToPublished() directly"
+        },
+        {
+          "fn": "revertToPublished (usePuckContent)",
+          "file": "puck/packages/puck-api/src/hooks/usePuckContent.ts:144",
+          "description": "Calls revertPuckContentDraftApi with no body"
+        }
+      ],
+      "fePayload": {
+        "body": null
+      },
+      "backendExpected": {
+        "route": "service/src/routes/puck-content.route.ts (states/draft DELETE)",
+        "schema": {
+          "body": null
+        }
+      },
+      "compatible": true
+    },
+    {
+      "apiFunction": "revertPuckPageDraftApi",
+      "file": "puck/packages/puck-api/src/api/puck-states.api.ts",
+      "method": "DELETE",
+      "endpoint": "/:businessUnitKey/puck-pages/:key/states/draft",
+      "transformationChain": [
+        {
+          "fn": "handleRevert",
+          "file": "puck/packages/puck-editor/src/PuckEditor.tsx",
+          "description": "Calls revertToPublished() directly"
+        },
+        {
+          "fn": "revertToPublished (usePuckPage)",
+          "file": "puck/packages/puck-api/src/hooks/usePuckPage.ts:166",
+          "description": "Calls revertPuckPageDraftApi with no body"
+        }
+      ],
+      "fePayload": {
+        "body": null
+      },
+      "backendExpected": {
+        "route": "service/src/routes/puck-page.route.ts:294",
+        "schema": {
+          "body": null
+        }
+      },
+      "compatible": true
+    },
+    {
+      "apiFunction": "uploadMediaFileApi",
+      "file": "puck/packages/puck-api/src/api/media-library.api.ts",
+      "method": "POST",
+      "endpoint": "/:businessUnitKey/upload-file",
+      "transformationChain": [
+        {
+          "fn": "handleUpload",
+          "file": "puck/packages/puck-editor/src/fields/ImagePickerField.tsx",
+          "description": "User selects file in upload modal; calls uploadFile(file, title, description)"
+        },
+        {
+          "fn": "uploadFile (useMediaLibrary)",
+          "file": "puck/packages/puck-api/src/hooks/useMediaLibrary.ts",
+          "description": "Constructs FormData: appends 'file' (File), optionally 'title' (string), optionally 'description' (string)"
+        },
+        {
+          "fn": "uploadMediaFileApi",
+          "file": "puck/packages/puck-api/src/api/media-library.api.ts",
+          "description": "Sends FormData directly (Content-Type: multipart/form-data set by browser)"
+        }
+      ],
+      "fePayload": {
+        "contentType": "multipart/form-data",
+        "fields": {
+          "file": "File (binary, required)",
+          "title": "string (optional)",
+          "description": "string (optional)"
+        }
+      },
+      "backendExpected": {
+        "route": "service/src/routes/file.route.ts:17",
+        "schema": {
+          "contentType": "multipart/form-data",
+          "fields": {
+            "file": "File (required — multer upload.single('file'), throws 400 if missing)",
+            "title": "string (optional, from req.body.title)",
+            "description": "string (optional, from req.body.description)"
+          }
+        }
+      },
+      "compatible": true
+    },
+    {
+      "apiFunction": "queryPuckContentApi",
+      "file": "puck/packages/puck-api/src/api/puck-contents.api.ts",
+      "method": "POST",
+      "endpoint": "/:businessUnitKey/:mode/puck-contents/query",
+      "transformationChain": [
+        {
+          "fn": "PuckRenderer (useEffect)",
+          "file": "puck/packages/puck-renderer/src/PuckRenderer.tsx",
+          "description": "Calls queryPuckContentApi(baseURL, projectKey, businessUnitKey, contentType, mode)"
+        },
+        {
+          "fn": "queryPuckContentApi",
+          "file": "puck/packages/puck-api/src/api/puck-contents.api.ts",
+          "description": "Builds body: { query: `contentType = \"${contentType}\"` }"
+        }
+      ],
+      "fePayload": {
+        "query": "string — CTP predicate, e.g. \"contentType = \\\"hero\\\"\""
+      },
+      "backendExpected": {
+        "route": "service/src/routes/puck-content.route.ts:196",
+        "schema": {
+          "query": "string (required — throws 400 if missing)"
+        }
+      },
+      "compatible": true
+    },
+    {
+      "apiFunction": "queryPuckPageApi",
+      "file": "puck/packages/puck-api/src/api/puck-pages.api.ts",
+      "method": "POST",
+      "endpoint": "/:businessUnitKey/:mode/puck-pages/query",
+      "transformationChain": [
+        {
+          "fn": "PuckRenderer (useEffect)",
+          "file": "puck/packages/puck-renderer/src/PuckRenderer.tsx",
+          "description": "Calls queryPuckPageApi(baseURL, projectKey, businessUnitKey, slug, mode)"
+        },
+        {
+          "fn": "queryPuckPageApi",
+          "file": "puck/packages/puck-api/src/api/puck-pages.api.ts",
+          "description": "Builds body: { query: `slug = \"${slug}\"` }"
+        }
+      ],
+      "fePayload": {
+        "query": "string — CTP predicate, e.g. \"slug = \\\"/home\\\"\""
+      },
+      "backendExpected": {
+        "route": "service/src/routes/puck-page.route.ts:191",
+        "schema": {
+          "query": "string (required — throws 400 if missing)"
+        }
+      },
+      "compatible": true
+    },
+    {
+      "apiFunction": "resolveDatasourceApi",
+      "file": "puck/packages/puck-api/src/api/datasource.api.ts",
+      "method": "POST",
+      "endpoint": "/datasource/:key/test",
+      "transformationChain": [
+        {
+          "fn": "ProductBanner / ProductSlider / RelatedProductsSlider / CrossSellBlock / ProductTeaser",
+          "file": "puck/packages/puck-editor/src/components/",
+          "description": "Passes product.type and product.skus to useDatasource(type, skus)"
+        },
+        {
+          "fn": "useDatasource",
+          "file": "puck/packages/puck-api/src/hooks/useDatasource.ts:34",
+          "description": "Builds params: type==='product-by-sku' → { sku: skus[0] }; else → { skus: skus.join(',') }"
+        },
+        {
+          "fn": "resolveDatasourceApi",
+          "file": "puck/packages/puck-api/src/api/datasource.api.ts:22",
+          "description": "BUG: body = JSON.stringify(params) — sends the params object DIRECTLY as the body root"
+        }
+      ],
+      "fePayload": {
+        "_variant_productBySku": { "sku": "string (e.g. 'ABC-123')" },
+        "_variant_productsBySku": { "skus": "string (comma-separated, e.g. 'ABC-123,DEF-456')" }
+      },
+      "backendExpected": {
+        "route": "service/src/routes/datasource.route.ts:98",
+        "schema": {
+          "params": {
+            "_variant_productBySku": { "sku": "string" },
+            "_variant_productsBySku": { "skus": "string (comma-separated)" }
+          }
+        },
+        "note": "Backend does `const { params } = req.body` — the params object must be nested under a 'params' key"
+      },
+      "compatible": false,
+      "incompatibilityNote": "FE sends the params object as the body root (e.g. { \"sku\": \"ABC\" }). Backend destructures `const { params } = req.body`, so it always receives params=undefined and datasource resolution silently returns wrong data. Fix: wrap in resolveDatasourceApi — body should be JSON.stringify({ params }) instead of JSON.stringify(params)."
+    }
+  ]
+}

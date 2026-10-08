@@ -1,0 +1,8 @@
+query FetchBusinessUnits($limit: Int) {
+  businessUnits(limit: $limit) {
+    results {
+      key
+      name
+    }
+  }
+}

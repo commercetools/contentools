@@ -1,0 +1,38 @@
+{
+  "name": "@commercetools-demo/puck-api",
+  "version": "0.8.1",
+  "description": "API client and React hooks for the Puck CMS integration",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@commercetools-demo/puck-types": "workspace:^"
+  },
+  "peerDependencies": {
+    "react": ">=19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18",
+    "tsup": "^8.3.0",
+    "typescript": "^5.7.2"
+  }
+}
