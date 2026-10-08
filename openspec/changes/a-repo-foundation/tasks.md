@@ -12,7 +12,7 @@
 
 Context: nothing is copied until we know the tools exist and the source is clean. Pre-conditions: no other spec is required (A is first). Needed: Node 22, `tar`, `git`, `corepack`.
 
-- [ ] 1.1 Check tools. Run:
+- [x] 1.1 Check tools. Run:
   ```bash
   node -v        # expect v22.x
   git --version
@@ -21,9 +21,9 @@ Context: nothing is copied until we know the tools exist and the source is clean
   ls ~/.claude/plugins/cache/presales-plugin/presales/*/skills/commercetools-labs-publish/scripts/ossify.mjs
   ```
   Done when: Node is v22+, and the `ossify.mjs` path prints (if not, see manual.md M-A2).
-- [ ] 1.2 Check the SOURCE is clean and note its commit. Run `git -C /Users/behnam/code/cms status --short` (expect empty output) and `git -C /Users/behnam/code/cms rev-parse HEAD`; write the hash into `$SCRATCH/source-head.txt`.
+- [x] 1.2 Check the SOURCE is clean and note its commit. Run `git -C /Users/behnam/code/cms status --short` (expect empty output) and `git -C /Users/behnam/code/cms rev-parse HEAD`; write the hash into `$SCRATCH/source-head.txt`.
   Done when: status is empty (if not: STOP and tell the owner; uncommitted source edits would be missed by a tracked-file copy).
-- [ ] 1.3 Check the TARGET is as expected. Run `ls -A /Users/behnam/code/commercetools-labs/contentools` (expect only `README.md openspec plans`, possibly `.claude`).
+- [x] 1.3 Check the TARGET is as expected. Run `ls -A /Users/behnam/code/commercetools-labs/contentools` (expect only `README.md openspec plans`, possibly `.claude`).
   Done when: no `service`, `admin-app`, `mcp`, `puck`, `tools`, `package.json` exist yet. If they do, this spec is already (partly) applied: compare with Section 7 before continuing.
 
 Pitfalls: do not run `yarn install` in the SOURCE; do not `cd` into the SOURCE and run scripts there.
@@ -33,11 +33,11 @@ Rollback: nothing changed yet.
 
 Context: create the folders and the small root files. Pre-condition: Section 1 done.
 
-- [ ] 2.1 Create folders: `mkdir -p tools/lib tools/test docs && touch docs/.gitkeep`.
+- [x] 2.1 Create folders: `mkdir -p tools/lib tools/test docs && touch docs/.gitkeep`.
   Done when: `ls -d tools docs` prints two paths.
-- [ ] 2.2 Create `.nvmrc` with the single line `22` (`printf '22\n' > .nvmrc`).
+- [x] 2.2 Create `.nvmrc` with the single line `22` (`printf '22\n' > .nvmrc`).
   Done when: `cat .nvmrc` prints `22`.
-- [ ] 2.3 Create `.gitignore` with exactly:
+- [x] 2.3 Create `.gitignore` with exactly:
   ```gitignore
   # dependencies and build output (no leading slash: matches in every app)
   node_modules
@@ -64,7 +64,7 @@ Context: create the folders and the small root files. Pre-condition: Section 1 d
   .claude/settings.local.json
   ```
   Done when: `git check-ignore` proof in 7.3 passes.
-- [ ] 2.4 Create the root `package.json` (tooling hub only, NO `workspaces`, NO dependencies):
+- [x] 2.4 Create the root `package.json` (tooling hub only, NO `workspaces`, NO dependencies):
   ```json
   {
     "name": "@commercetools-labs/contentools",
@@ -97,7 +97,7 @@ Rollback: `rm -rf tools docs .nvmrc .gitignore package.json`.
 
 Context: copy the four trees using the list of files git tracks (so ignored junk and secrets cannot come along), then rename two paths. The legacy `cms/` folder is deliberately not in the list. Pre-condition: Section 2 done.
 
-- [ ] 3.1 Build the file list in the scratch dir (copy-paste as one block):
+- [x] 3.1 Build the file list in the scratch dir (copy-paste as one block):
   ```bash
   set -euo pipefail
   SRC=/Users/behnam/code/cms
@@ -115,28 +115,28 @@ Context: copy the four trees using the list of files git tracks (so ignored junk
   # expect: service 138 / contentools 60 / mcp 35 / puck 246
   ```
   Done when: the four counts above match. If a count differs, the source changed since 2026-10-08: re-read `git -C $SRC ls-files` diff, decide per file, and update explore.md/design.md numbers in the same change.
-- [ ] 3.2 Copy with tar (preserves file modes, creates folders, never touches the source):
+- [x] 3.2 Copy with tar (preserves file modes, creates folders, never touches the source):
   ```bash
   tr '\n' '\0' < "$SCRATCH/import-list.txt" > "$SCRATCH/import-list.z"
   tar -C "$SRC" --null -T "$SCRATCH/import-list.z" -cf - | tar -C /Users/behnam/code/commercetools-labs/contentools -xf -
   ```
   Done when: `ls` in the target shows `service contentools mcp puck` next to the files from Section 2.
-- [ ] 3.3 Rename two paths:
+- [x] 3.3 Rename two paths:
   ```bash
   cd /Users/behnam/code/commercetools-labs/contentools
   mv contentools admin-app
   mv puck/puck-react-test puck/playground
   ```
   Done when: `ls -d contentools puck/puck-react-test 2>&1` reports "No such file" for both, and `admin-app/package.json`, `puck/playground/package.json` exist.
-- [ ] 3.4 Forbidden-artifact scan (must print NOTHING):
+- [x] 3.4 Forbidden-artifact scan (must print NOTHING):
   ```bash
   find service admin-app mcp puck \( -name node_modules -o -name build -o -name dist -o -name .yarn -o -name coverage -o -name temp -o -name .git -o -name .DS_Store -o -name yarn.lock -o -name 'LICENSE*' -o -name Dockerfile -o -name netlify.toml -o -name '*.log' -o -name '.env' -o -name '.env.*' -o -name 'docker-compose*' \) -not -name '.env.example'
   ls -d cms .github 2>&1 | grep -v 'No such'     # prints nothing (no legacy cms/, no .github/)
   ```
   Done when: both commands print nothing. (Note `puck/packages/*/dist` do not exist because they were untracked.)
-- [ ] 3.5 Count proof: `for d in service admin-app mcp puck; do printf '%s ' $d; find $d -type f | wc -l; done`, expect `service 138`, `admin-app 60`, `mcp 35`, `puck 246`; `find puck/playground -type f | wc -l` expect `9`.
+- [x] 3.5 Count proof: `for d in service admin-app mcp puck; do printf '%s ' $d; find $d -type f | wc -l; done`, expect `service 138`, `admin-app 60`, `mcp 35`, `puck 246`; `find puck/playground -type f | wc -l` expect `9`.
   Done when: numbers match.
-- [ ] 3.6 Prove the source is untouched: `git -C /Users/behnam/code/cms status --short` still prints nothing and `rev-parse HEAD` equals `$SCRATCH/source-head.txt`.
+- [x] 3.6 Prove the source is untouched: `git -C /Users/behnam/code/cms status --short` still prints nothing and `rev-parse HEAD` equals `$SCRATCH/source-head.txt`.
 
 Pitfalls: (a) never use `cp -R /Users/behnam/code/cms/service ...` - that copies `node_modules` and the real `service/.env`. (b) On macOS `tar` is bsdtar; `--null -T` works there and in GNU tar. (c) `contentools` exists as folder name only after the copy: the TARGET itself is also called `contentools`, so `mv contentools admin-app` must run INSIDE the target (the `cd` above).
 Rollback: `cd` to the target and `rm -rf service admin-app contentools mcp puck`.
@@ -145,8 +145,8 @@ Rollback: `cd` to the target and `rm -rf service admin-app contentools mcp puck`
 
 Context: `puck/package.json` still names the old playground folder in its `workspaces` list and in the `start:test` script; Yarn would fail. Pre-condition: Section 3 done. Other occurrences of `puck-react-test` are prose in `puck/README.md` (spec I/P).
 
-- [ ] 4.1 Edit `puck/package.json`: in `"workspaces"` replace `"puck-react-test"` with `"playground"`; replace the script line `"start:test": "yarn workspace puck-react-test dev"` with `"start:playground": "yarn workspace @commercetools-labs/puck-playground dev"`.
-- [ ] 4.2 Edit `puck/playground/package.json`: set `"name": "@commercetools-labs/puck-playground"` (the name specs I and L use; the folder stays `puck/playground`) (it stays `"private": true`).
+- [x] 4.1 Edit `puck/package.json`: in `"workspaces"` replace `"puck-react-test"` with `"playground"`; replace the script line `"start:test": "yarn workspace puck-react-test dev"` with `"start:playground": "yarn workspace @commercetools-labs/puck-playground dev"`.
+- [x] 4.2 Edit `puck/playground/package.json`: set `"name": "@commercetools-labs/puck-playground"` (the name specs I and L use; the folder stays `puck/playground`) (it stays `"private": true`).
   Done when (4.1 + 4.2): `grep -rn "puck-react-test" puck/package.json puck/playground/package.json` prints nothing, and `node -e "JSON.parse(require('fs').readFileSync('puck/package.json','utf8'))"` exits 0.
 
 Pitfalls: the scoped name matters: `ossify` (Section 6) re-scopes names and would otherwise rename a bare `playground` name and break `yarn workspace <name>`. Do NOT touch `@commercetools-demo/*` imports here (spec C does one repo-wide rename).
@@ -156,7 +156,7 @@ Rollback: re-run Section 3 for `puck/` only.
 
 Context: small Node scripts (ESM `.mjs`, no npm packages) so `yarn verify`, SPDX checking and the publish wrapper work from day one. Style reference: `/Users/behnam/code/commercetools-labs/search-config/tools/*.mjs` and `tools/test/*.test.mjs`. Every `.mjs` file below starts with the SPDX header (6.1 shows the text; step 6 will also add it automatically, so you may leave it out and let `ossify` add it).
 
-- [ ] 5.1 Create `tools/lib/targets.mjs`:
+- [x] 5.1 Create `tools/lib/targets.mjs`:
   ```js
   /** The four buildable trees. `pm` picks the package manager used to run their scripts (owner decision: all Yarn). */
   export const TARGETS = [
@@ -167,7 +167,7 @@ Context: small Node scripts (ESM `.mjs`, no npm packages) so `yarn verify`, SPDX
     { name: 'admin-app', dir: 'admin-app', pm: 'yarn' }, // Connect app (Merchant Center custom application)
   ];
   ```
-- [ ] 5.2 Create `tools/lib/files.mjs` (lists files to check; git when available, else a filesystem walk):
+- [x] 5.2 Create `tools/lib/files.mjs` (lists files to check; git when available, else a filesystem walk):
   ```js
   import { execFileSync } from 'node:child_process';
   import { existsSync, readdirSync } from 'node:fs';
@@ -196,7 +196,7 @@ Context: small Node scripts (ESM `.mjs`, no npm packages) so `yarn verify`, SPDX
     return files.filter((f) => !skipped(f)).sort();
   }
   ```
-- [ ] 5.3 Create `tools/run-all.mjs`:
+- [x] 5.3 Create `tools/run-all.mjs`:
   ```js
   #!/usr/bin/env node
   import { spawnSync } from 'node:child_process';
@@ -245,7 +245,7 @@ Context: small Node scripts (ESM `.mjs`, no npm packages) so `yarn verify`, SPDX
   }
   ```
   Notes: `test` for `service` currently is an echo stub; B replaces it. `node --test` style scripts print nothing when skipped.
-- [ ] 5.4 Create `tools/labs-publish.mjs` (wrapper around the installed skill; NEVER reads/copies `policy.json`):
+- [x] 5.4 Create `tools/labs-publish.mjs` (wrapper around the installed skill; NEVER reads/copies `policy.json`):
   ```js
   #!/usr/bin/env node
   import { spawnSync } from 'node:child_process';
@@ -288,7 +288,7 @@ Context: small Node scripts (ESM `.mjs`, no npm packages) so `yarn verify`, SPDX
     process.exit(spawnSync('node', args, { stdio: 'inherit' }).status ?? 1);
   }
   ```
-- [ ] 5.5 Create `tools/check-spdx-headers.mjs`:
+- [x] 5.5 Create `tools/check-spdx-headers.mjs`:
   ```js
   #!/usr/bin/env node
   import { readFileSync } from 'node:fs';
@@ -338,7 +338,7 @@ Context: small Node scripts (ESM `.mjs`, no npm packages) so `yarn verify`, SPDX
     console.log(`spdx: OK (${checked} files)`);
   }
   ```
-- [ ] 5.6 Tests in `tools/test/` (use `node:test` + `node:assert/strict`; write temp dirs with `mkdtempSync(join(tmpdir(), 'ct-'))`):
+- [x] 5.6 Tests in `tools/test/` (use `node:test` + `node:assert/strict`; write temp dirs with `mkdtempSync(join(tmpdir(), 'ct-'))`):
   * `run-all.test.mjs`: `plan([{name:'a',dir:'a',pm:'npm'}], ['lint'], () => ({}))` gives one `skip`; with `() => ({lint:'x'})` gives `run`; `commandFor({pm:'yarn',script:'build'})` equals `['yarn',['run','build']]`; `install` with `scriptsOf` null gives `skip`.
   * `labs-publish.test.mjs`: `findScriptsDir({LABS_PUBLISH_DIR: <tmp without ossify.mjs>})` is `null`; with an `ossify.mjs` present returns it; plugin-cache lookup picks `0.29.4` over `0.9.0` in a fake home (build `<home>/.claude/plugins/cache/presales-plugin/presales/{0.9.0,0.29.4}/skills/commercetools-labs-publish/scripts/ossify.mjs`); `buildArgs('gate', ['--ack'], '/d', '/r')` equals `['/d/gate.mjs','--repo','/r','--ack']`; `buildArgs('ossify', [], '/d', '/r')` ends with `['--year','2026']` and does NOT contain `--apply`; `buildArgs('x',...)` throws.
   * `check-spdx-headers.test.mjs`: `hasHeader` true for the exact block (also after `#!/usr/bin/env node`), false for missing header, false for `Copyright (c) 2026 Someone Else`; `findOffenders` over a tmp dir with one good and one bad `.ts` returns the bad one; a `.md` file is ignored.
@@ -352,7 +352,7 @@ Rollback: `rm -rf tools/*.mjs tools/lib tools/test`.
 
 Context: ossify writes the MIT `LICENSE`, adds the header to every source file and re-scopes package names. Pre-conditions: Sections 3-5 done.
 
-- [ ] 6.1 Dry run first (expect exactly three refusals, handled in 6.2a): `node tools/labs-publish.mjs ossify | tee "$SCRATCH/ossify-dry.txt"`. Read the report. Expected: a list of files "to header", package renames (`service-typescript -> @commercetools-labs/service-typescript`, `@commercetools-demo/puck-api -> @commercetools-labs/puck-api`, ...), and exactly the three refused FooterBlock files of 6.2a (no third-party directory). If it lists any OTHER refused file or directory, STOP: add it to `questions.md` (never relicense foreign code).
+- [x] 6.1 Dry run first (expect exactly three refusals, handled in 6.2a): `node tools/labs-publish.mjs ossify | tee "$SCRATCH/ossify-dry.txt"`. Read the report. Expected: a list of files "to header", package renames (`service-typescript -> @commercetools-labs/service-typescript`, `@commercetools-demo/puck-api -> @commercetools-labs/puck-api`, ...), and exactly the three refused FooterBlock files of 6.2a (no third-party directory). If it lists any OTHER refused file or directory, STOP: add it to `questions.md` (never relicense foreign code).
   The header it will write (for reference, exact):
   ```
   /*
@@ -361,9 +361,9 @@ Context: ossify writes the MIT `LICENSE`, adds the header to every source file a
    * Freely available, AS IS and UNSUPPORTED. See LICENSE.
    */
   ```
-- [ ] 6.2 Apply: `yarn headers` (= `ossify --apply --year 2026`).
+- [x] 6.2 Apply: `yarn headers` (= `ossify --apply --year 2026`).
   Done when: `LICENSE` exists at the root and `node tools/check-spdx-headers.mjs` prints `spdx: OK (<n> files)` (n is roughly 400; record the number in the PR/notes).
-- [ ] 6.2a ossify REFUSES a file whose first 2000 characters contain the word `copyright` (it reads a prop named `copyright` as a foreign notice). Three of our files trip it: `puck/packages/puck-components/src/components/cms/FooterBlock.tsx`, `puck/packages/puck-editor/src/components/cms/FooterBlock.tsx`, `service/src/samples/CMS/footer-block.ts` (their paths change later in C/I; the dry-run report lists them under "FOREIGN COPYRIGHT - refused"). They are false positives (a form field called `copyright`). Add the header BY HAND as the first lines of each file:
+- [x] 6.2a ossify REFUSES a file whose first 2000 characters contain the word `copyright` (it reads a prop named `copyright` as a foreign notice). Three of our files trip it: `puck/packages/puck-components/src/components/cms/FooterBlock.tsx`, `puck/packages/puck-editor/src/components/cms/FooterBlock.tsx`, `service/src/samples/CMS/footer-block.ts` (their paths change later in C/I; the dry-run report lists them under "FOREIGN COPYRIGHT - refused"). They are false positives (a form field called `copyright`). Add the header BY HAND as the first lines of each file:
   ```
   /*
    * SPDX-License-Identifier: MIT
@@ -372,27 +372,27 @@ Context: ossify writes the MIT `LICENSE`, adds the header to every source file a
    */
   ```
   Then `yarn check:spdx` must pass. Note for R: the labs `gate.mjs` may flag the same three files (it scans for foreign copyright too); if it does, R decides between a gate `--ack`-free fix (rename the prop to `copyrightText` in the three files plus the stored content-type field - a data-shape change, avoid) or an upstream gate fix. Recorded as Q-A5.
-- [ ] 6.3 Inspect results: `head -8 service/src/app.ts` shows the header then the original first line (`import * as dotenv`); `head -12 mcp/bin/run-mcp.cjs` shows `#!/usr/bin/env node` first and the header right after; `grep '"name"' puck/packages/puck-api/package.json` shows `@commercetools-labs/puck-api`; `find . -name 'LICENSE*' -not -path './node_modules/*'` prints only `./LICENSE`.
-- [ ] 6.4 Re-run `yarn headers` and then `yarn check:spdx`: second run must change nothing (idempotent).
+- [x] 6.3 Inspect results: `head -8 service/src/app.ts` shows the header then the original first line (`import * as dotenv`); `head -12 mcp/bin/run-mcp.cjs` shows `#!/usr/bin/env node` first and the header right after; `grep '"name"' puck/packages/puck-api/package.json` shows `@commercetools-labs/puck-api`; `find . -name 'LICENSE*' -not -path './node_modules/*'` prints only `./LICENSE`.
+- [x] 6.4 Re-run `yarn headers` and then `yarn check:spdx`: second run must change nothing (idempotent).
 
 Pitfalls: ossify renames only `package.json` `name` fields. Dependency entries and imports still say `@commercetools-demo/...`; spec C replaces them everywhere in one pass. `ossify` skips `.json/.md/.yaml`: that is why C/O add their own checks.
 Rollback: re-run Section 3 (fresh copy), then 4, then 6.
 
 ## 7. Verification (all automated, no browser)
 
-- [ ] 7.1 `yarn test:tools` -> all pass.
-- [ ] 7.2 `yarn check:spdx` -> `spdx: OK (...)`, exit 0.
-- [ ] 7.3 Scratch-git ignore proof (never inside the target):
+- [x] 7.1 `yarn test:tools` -> all pass.
+- [x] 7.2 `yarn check:spdx` -> `spdx: OK (...)`, exit 0.
+- [x] 7.3 Scratch-git ignore proof (never inside the target):
   ```bash
   T="$SCRATCH/ignore-proof"; rm -rf "$T"; mkdir -p "$T/service" && cp .gitignore "$T/" && cd "$T" && git init -q && touch service/.env service/.env.e2e service/.env.example
   git check-ignore service/.env service/.env.e2e      # prints both paths
   git check-ignore service/.env.example; echo $?      # prints 1 (not ignored)
   cd /Users/behnam/code/commercetools-labs/contentools
   ```
-- [ ] 7.4 Root-hub proof: `node tools/run-all.mjs lint` prints `skip`/`== ...` lines without crashing for the apps (apps may legitimately fail lint before D/K; what matters is the runner reports per-app status and exit code non-zero only when a script actually fails). Use `node tools/run-all.mjs nonexistent-script` -> four `skip` lines, exit 0.
-- [ ] 7.5 `node -e "const p=require('./package.json');console.log(Object.keys(p).includes('workspaces'))"` -> `false`.
-- [ ] 7.6 Forbidden-artifact `find` from 3.4 -> empty; counts from 3.5 -> as listed (headers do not change counts; `LICENSE` and tool files are outside those folders).
-- [ ] 7.7 Grep sanity (informational, C fixes them): `grep -rIl "commercetools-demo" service admin-app mcp puck | wc -l` is still > 0 (expected, proves C has work); `grep -rIl "x-project-key" service | wc -l` > 0.
+- [x] 7.4 Root-hub proof: `node tools/run-all.mjs lint` prints `skip`/`== ...` lines without crashing for the apps (apps may legitimately fail lint before D/K; what matters is the runner reports per-app status and exit code non-zero only when a script actually fails). Use `node tools/run-all.mjs nonexistent-script` -> four `skip` lines, exit 0.
+- [x] 7.5 `node -e "const p=require('./package.json');console.log(Object.keys(p).includes('workspaces'))"` -> `false`.
+- [x] 7.6 Forbidden-artifact `find` from 3.4 -> empty; counts from 3.5 -> as listed (headers do not change counts; `LICENSE` and tool files are outside those folders).
+- [x] 7.7 Grep sanity (informational, C fixes them): `grep -rIl "commercetools-demo" service admin-app mcp puck | wc -l` is still > 0 (expected, proves C has work); `grep -rIl "x-project-key" service | wc -l` > 0.
 
 ## 8. Definition of Done (mapped to scenarios)
 
