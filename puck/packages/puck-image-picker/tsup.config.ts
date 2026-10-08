@@ -13,5 +13,11 @@ export default defineConfig({
   dts: true,
   sourcemap: true,
   clean: true,
-  external: ['react', 'react-dom', /^@commercetools\/nimbus/],
+  external: [
+    'react',
+    'react-dom',
+    /^@commercetools\/nimbus/,
+    '@commercetools-labs/puck-api',
+    '@commercetools-labs/puck-types',
+  ],
 });

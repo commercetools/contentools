@@ -11,117 +11,72 @@ import type {
   PuckPageWithStatesResponse,
   UpdatePuckPageInput,
 } from '@commercetools-labs/puck-types';
-import { httpClient, readHeaders, writeHeaders } from './http-client';
+import type { PuckClient } from '../client/client';
+import { enc } from '../client/path';
 
-export const listPuckPagesApi = async (
-  baseURL: string,
-  projectKey: string,
-  businessUnitKey: string
-): Promise<PuckPageListResponse> => {
-  return httpClient<PuckPageListResponse>(
-    `${baseURL}/${businessUnitKey}/puck-pages`,
-    { headers: readHeaders(projectKey) }
+export const listPuckPagesApi = (client: PuckClient) =>
+  client.request<PuckPageListResponse>(
+    'listPuckPagesApi',
+    `/${client.businessUnitKey}/puck-pages`
   );
-};
 
-export const getPuckPageApi = async (
-  baseURL: string,
-  projectKey: string,
-  businessUnitKey: string,
-  key: string
-): Promise<PuckPageWithStatesResponse> => {
-  return httpClient<PuckPageWithStatesResponse>(
-    `${baseURL}/${businessUnitKey}/puck-pages/${key}`,
-    { headers: readHeaders(projectKey) }
+export const getPuckPageApi = (client: PuckClient, key: string) =>
+  client.request<PuckPageWithStatesResponse>(
+    'getPuckPageApi',
+    `/${client.businessUnitKey}/puck-pages/${enc(key)}`
   );
-};
 
-export const createPuckPageApi = async (
-  baseURL: string,
-  projectKey: string,
-  jwtToken: string,
-  businessUnitKey: string,
+export const createPuckPageApi = (
+  client: PuckClient,
   body: { value: CreatePuckPageInput }
-): Promise<PuckPageResponse> => {
-  return httpClient<PuckPageResponse>(
-    `${baseURL}/${businessUnitKey}/puck-pages`,
-    {
-      method: 'POST',
-      headers: writeHeaders(projectKey, jwtToken),
-      body: JSON.stringify(body),
-    }
+) =>
+  client.request<PuckPageResponse>(
+    'createPuckPageApi',
+    `/${client.businessUnitKey}/puck-pages`,
+    { method: 'POST', body }
   );
-};
 
-export const updatePuckPageApi = async (
-  baseURL: string,
-  projectKey: string,
-  jwtToken: string,
-  businessUnitKey: string,
+export const updatePuckPageApi = (
+  client: PuckClient,
   key: string,
   body: { value: UpdatePuckPageInput }
-): Promise<PuckPageResponse> => {
-  return httpClient<PuckPageResponse>(
-    `${baseURL}/${businessUnitKey}/puck-pages/${key}`,
-    {
-      method: 'PUT',
-      headers: writeHeaders(projectKey, jwtToken),
-      body: JSON.stringify(body),
-    }
+) =>
+  client.request<PuckPageResponse>(
+    'updatePuckPageApi',
+    `/${client.businessUnitKey}/puck-pages/${enc(key)}`,
+    { method: 'PUT', body }
   );
-};
 
 export const deletePuckPageApi = async (
-  baseURL: string,
-  projectKey: string,
-  jwtToken: string,
-  businessUnitKey: string,
+  client: PuckClient,
   key: string
 ): Promise<void> => {
-  await httpClient<void>(
-    `${baseURL}/${businessUnitKey}/puck-pages/${key}`,
-    { method: 'DELETE', headers: writeHeaders(projectKey, jwtToken) }
+  await client.request<void>(
+    'deletePuckPageApi',
+    `/${client.businessUnitKey}/puck-pages/${enc(key)}`,
+    { method: 'DELETE' }
   );
 };
 
-export const getPublishedPuckPageApi = async (
-  baseURL: string,
-  projectKey: string,
-  businessUnitKey: string,
-  key: string
-): Promise<PuckPageResponse['value']> => {
-  return httpClient<PuckPageResponse['value']>(
-    `${baseURL}/${businessUnitKey}/published/puck-pages/${key}`,
-    { headers: readHeaders(projectKey) }
+export const getPublishedPuckPageApi = (client: PuckClient, key: string) =>
+  client.request<PuckPageResponse['value']>(
+    'getPublishedPuckPageApi',
+    `/${client.businessUnitKey}/published/puck-pages/${enc(key)}`
   );
-};
 
-export const getPreviewPuckPageApi = async (
-  baseURL: string,
-  projectKey: string,
-  businessUnitKey: string,
-  key: string
-): Promise<PuckPageResponse['value']> => {
-  return httpClient<PuckPageResponse['value']>(
-    `${baseURL}/${businessUnitKey}/preview/puck-pages/${key}`,
-    { headers: readHeaders(projectKey) }
+export const getPreviewPuckPageApi = (client: PuckClient, key: string) =>
+  client.request<PuckPageResponse['value']>(
+    'getPreviewPuckPageApi',
+    `/${client.businessUnitKey}/preview/puck-pages/${enc(key)}`
   );
-};
 
-export const queryPuckPageApi = async (
-  baseURL: string,
-  projectKey: string,
-  businessUnitKey: string,
+export const queryPuckPageApi = (
+  client: PuckClient,
   body: { query: string },
   mode: 'published' | 'preview'
-): Promise<PuckPageResponse['value'] | null> => {
-  return httpClient<PuckPageResponse['value'] | null>(
-    `${baseURL}/${businessUnitKey}/${mode}/puck-pages/query`,
-    {
-      method: 'POST',
-      headers: readHeaders(projectKey),
-      body: JSON.stringify(body),
-      nullOn404: true,
-    }
+) =>
+  client.request<PuckPageResponse['value'] | null>(
+    'queryPuckPageApi',
+    `/${client.businessUnitKey}/${mode}/puck-pages/query`,
+    { method: 'POST', body, nullOn404: true, mode }
   );
-};

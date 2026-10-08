@@ -32,6 +32,7 @@ import { EnsureIntlProvider } from './EnsureIntlProvider';
 import { EnsureNimbusProvider } from './EnsureNimbusProvider';
 import type { Config } from '@measured/puck';
 import type { CreatePuckPageInput, PuckPageListItem } from '@commercetools-labs/puck-types';
+import type { PuckConnection } from '@commercetools-labs/puck-types';
 import {
   Badge,
   Button,
@@ -496,7 +497,7 @@ const PageEditorRoute: React.FC<RouteProps> = ({ config, backButton }) => {
   const { pageKey } = useParams<{ pageKey: string }>();
   const history = useHistory();
   const location = useLocation();
-  const { baseURL, projectKey, businessUnitKey, jwtToken, locale } = usePuckApiContext();
+  const { connection } = usePuckApiContext();
   const pageName =
     (location.state as { pageName?: string } | null)?.pageName ??
     pageKey ??
@@ -534,11 +535,7 @@ const PageEditorRoute: React.FC<RouteProps> = ({ config, backButton }) => {
       </div>
       <div className="puck-editor-fill" style={{ flex: 1, overflow: 'hidden' }}>
         <PuckEditor
-          baseURL={baseURL}
-          projectKey={projectKey}
-          businessUnitKey={businessUnitKey}
-          jwtToken={jwtToken ?? ''}
-          locale={locale}
+          {...connection}
           pageKey={pageKey!}
           config={config}
           onDirtyChange={setIsDirty}
@@ -639,15 +636,9 @@ const PageManagerInner: React.FC<PageManagerInnerProps> = ({
 // Public component
 // ---------------------------------------------------------------------------
 
-export interface PageManagerProps {
+export interface PageManagerProps extends PuckConnection {
   /** URL path where this manager is mounted, e.g. "/pages" — used as router basename */
   parentUrl: string;
-  baseURL: string;
-  projectKey: string;
-  businessUnitKey: string;
-  jwtToken: string;
-  /** Content locale (e.g. "en-US") used for locale-aware calls like product search */
-  locale?: string;
   /** Puck component config — passed to editor and preview. Defaults to defaultPuckConfig. */
   config?: Config;
   /** Optional element rendered before the breadcrumb in editor/preview headers */
@@ -662,10 +653,12 @@ export interface PageManagerProps {
 export const PageManager: React.FC<PageManagerProps> = ({
   parentUrl,
   baseURL,
-  projectKey,
   businessUnitKey,
-  jwtToken,
   locale,
+  jwtToken,
+  getAuthHeaders,
+  fetcher,
+  publicDatasourceResolve,
   config,
   backButton,
   messageOverrides,
@@ -674,10 +667,12 @@ export const PageManager: React.FC<PageManagerProps> = ({
     <EnsureIntlProvider locale={locale} messageOverrides={messageOverrides}>
       <PuckApiProvider
         baseURL={baseURL}
-        projectKey={projectKey}
         businessUnitKey={businessUnitKey}
-        jwtToken={jwtToken}
         locale={locale}
+        jwtToken={jwtToken}
+        getAuthHeaders={getAuthHeaders}
+        fetcher={fetcher}
+        publicDatasourceResolve={publicDatasourceResolve}
       >
         <BrowserRouter basename={parentUrl}>
           <PageManagerInner config={config} backButton={backButton} />

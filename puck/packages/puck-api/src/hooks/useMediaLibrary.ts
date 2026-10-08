@@ -4,7 +4,7 @@
  * Freely available, AS IS and UNSUPPORTED. See LICENSE.
  */
 
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import type {
   MediaFile,
   MediaLibraryPagination,
@@ -13,6 +13,7 @@ import {
   fetchMediaLibraryApi,
   uploadMediaFileApi,
 } from '../api/media-library.api';
+import { PuckHttpError } from '../client/errors';
 import { usePuckApiContext } from '../context/PuckApiContext';
 
 interface MediaLibraryState {
@@ -21,13 +22,14 @@ interface MediaLibraryState {
   loading: boolean;
   uploading: boolean;
   error: string | null;
+  /** The service answered 501: no media provider is configured. */
+  notConfigured: boolean;
 }
 
 const initialPagination: MediaLibraryPagination = {
-  totalItems: 0,
-  totalPages: 0,
-  currentPage: 1,
   limit: 20,
+  nextCursor: null,
+  hasMore: false,
 };
 
 export interface UseMediaLibraryReturn {
@@ -36,11 +38,10 @@ export interface UseMediaLibraryReturn {
   loading: boolean;
   uploading: boolean;
   error: string | null;
-  fetchMedia: (
-    extensions?: string[],
-    page?: number,
-    limit?: number
-  ) => Promise<void>;
+  /** True when the installation has no media storage configured (not an error). */
+  notConfigured: boolean;
+  /** Loads the first page. */
+  fetchMedia: (extensions?: string[], limit?: number) => Promise<void>;
   uploadFile: (
     file: File,
     title?: string,
@@ -53,8 +54,7 @@ export interface UseMediaLibraryReturn {
 }
 
 export const useMediaLibrary = (): UseMediaLibraryReturn => {
-  const { baseURL, projectKey, businessUnitKey, jwtToken } =
-    usePuckApiContext();
+  const { client } = usePuckApiContext();
 
   const [state, setState] = useState<MediaLibraryState>({
     files: [],
@@ -62,40 +62,62 @@ export const useMediaLibrary = (): UseMediaLibraryReturn => {
     loading: false,
     uploading: false,
     error: null,
+    notConfigured: false,
   });
 
-  const fetchMedia = useCallback(
+  // Cursors are opaque and forward-only: "previous" re-requests the cursor that produced the previous page.
+  const [cursorStack, setCursorStack] = useState<(string | undefined)[]>([]);
+  const currentCursor = useRef<string | undefined>(undefined);
+
+  const loadPage = useCallback(
     async (
-      extensions: string[] = [],
-      page = 1,
-      limit = 20
+      extensions: string[],
+      limit: number,
+      cursor: string | undefined
     ): Promise<void> => {
       setState((s) => ({ ...s, loading: true, error: null }));
       try {
-        const result = await fetchMediaLibraryApi(
-          baseURL,
-          projectKey,
-          businessUnitKey,
-          jwtToken,
+        const result = await fetchMediaLibraryApi(client, {
           extensions,
-          page,
-          limit
-        );
+          limit,
+          cursor,
+        });
+        currentCursor.current = cursor;
         setState((s) => ({
           ...s,
           files: result.files,
           pagination: result.pagination,
           loading: false,
+          notConfigured: false,
         }));
       } catch (err) {
+        if (err instanceof PuckHttpError && err.status === 501) {
+          setState((s) => ({
+            ...s,
+            files: [],
+            loading: false,
+            error: null,
+            notConfigured: true,
+          }));
+          return;
+        }
         setState((s) => ({
           ...s,
           loading: false,
+          notConfigured: false,
           error: (err as Error).message,
         }));
       }
     },
-    [baseURL, projectKey, businessUnitKey, jwtToken]
+    [client]
+  );
+
+  const fetchMedia = useCallback(
+    async (extensions: string[] = [], limit = 20): Promise<void> => {
+      setCursorStack([]);
+      await loadPage(extensions, limit, undefined);
+    },
+    [loadPage]
   );
 
   const uploadFile = useCallback(
@@ -104,34 +126,28 @@ export const useMediaLibrary = (): UseMediaLibraryReturn => {
       title?: string,
       description?: string
     ): Promise<MediaFile> => {
-      if (!jwtToken) throw new Error('jwtToken is required to upload files');
       setState((s) => ({ ...s, uploading: true, error: null }));
       try {
         const result = await uploadMediaFileApi(
-          baseURL,
-          projectKey,
-          businessUnitKey,
-          jwtToken,
+          client,
           file,
           title,
           description
         );
         const mediaFile: MediaFile = {
           url: result.url,
-          name: file.name,
+          key: result.key,
+          name: result.name || file.name,
           title: title ?? file.name,
           description,
-          isImage: file.type.startsWith('image/'),
+          isImage: (result.contentType || file.type).startsWith('image/'),
+          contentType: result.contentType || file.type,
           createdAt: new Date().toISOString(),
-          size: file.size,
+          size: result.size ?? file.size,
         };
         setState((s) => ({
           ...s,
           files: [mediaFile, ...s.files],
-          pagination: {
-            ...s.pagination,
-            totalItems: s.pagination.totalItems + 1,
-          },
           uploading: false,
         }));
         return mediaFile;
@@ -144,37 +160,38 @@ export const useMediaLibrary = (): UseMediaLibraryReturn => {
         throw err;
       }
     },
-    [baseURL, projectKey, businessUnitKey, jwtToken]
+    [client]
   );
 
   const loadNextPage = useCallback(
     async (extensions: string[] = []): Promise<void> => {
-      const next = state.pagination.currentPage + 1;
-      if (next <= state.pagination.totalPages) {
-        await fetchMedia(extensions, next, state.pagination.limit);
-      }
+      const { hasMore, nextCursor, limit } = state.pagination;
+      if (!hasMore || !nextCursor) return;
+      const pageCursor = currentCursor.current; // read now: the ref changes when the next page loads
+      setCursorStack((stack) => [...stack, pageCursor]);
+      await loadPage(extensions, limit, nextCursor);
     },
-    [fetchMedia, state.pagination]
+    [loadPage, state.pagination]
   );
 
   const loadPreviousPage = useCallback(
     async (extensions: string[] = []): Promise<void> => {
-      const prev = state.pagination.currentPage - 1;
-      if (prev >= 1) {
-        await fetchMedia(extensions, prev, state.pagination.limit);
-      }
+      if (cursorStack.length === 0) return;
+      const previous = cursorStack[cursorStack.length - 1];
+      setCursorStack(cursorStack.slice(0, -1));
+      await loadPage(extensions, state.pagination.limit, previous);
     },
-    [fetchMedia, state.pagination]
+    [loadPage, cursorStack, state.pagination.limit]
   );
 
   const hasNextPage = useCallback(
-    () => state.pagination.currentPage < state.pagination.totalPages,
+    () => state.pagination.hasMore && state.pagination.nextCursor !== null,
     [state.pagination]
   );
 
   const hasPreviousPage = useCallback(
-    () => state.pagination.currentPage > 1,
-    [state.pagination]
+    () => cursorStack.length > 0,
+    [cursorStack]
   );
 
   return {
@@ -183,6 +200,7 @@ export const useMediaLibrary = (): UseMediaLibraryReturn => {
     loading: state.loading,
     uploading: state.uploading,
     error: state.error,
+    notConfigured: state.notConfigured,
     fetchMedia,
     uploadFile,
     loadNextPage,

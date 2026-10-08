@@ -54,6 +54,7 @@ import type {
   PuckContentVersionEntry,
   PuckData,
 } from '@commercetools-labs/puck-types';
+import type { PuckConnection } from '@commercetools-labs/puck-types';
 import {
   Badge,
   Button,
@@ -894,15 +895,9 @@ const ContentManagerRouterInner: React.FC<ContentManagerRouterInnerProps> = ({
 // Public component
 // ---------------------------------------------------------------------------
 
-export interface ContentManagerProps {
+export interface ContentManagerProps extends PuckConnection {
   /** URL path where this manager is mounted, e.g. "/content" — used as router basename */
   parentUrl: string;
-  baseURL: string;
-  projectKey: string;
-  businessUnitKey: string;
-  jwtToken: string;
-  /** Content locale (e.g. "en-US") used for locale-aware calls like product search */
-  locale?: string;
   /** Puck component config — passed to editor and preview. Defaults to a locale-aware config. */
   config?: Config;
   defaultContentType?: string;
@@ -918,10 +913,12 @@ export interface ContentManagerProps {
 export const ContentManager: React.FC<ContentManagerProps> = ({
   parentUrl,
   baseURL,
-  projectKey,
   businessUnitKey,
-  jwtToken,
   locale,
+  jwtToken,
+  getAuthHeaders,
+  fetcher,
+  publicDatasourceResolve,
   config,
   defaultContentType,
   backButton,
@@ -931,10 +928,12 @@ export const ContentManager: React.FC<ContentManagerProps> = ({
     <EnsureIntlProvider locale={locale} messageOverrides={messageOverrides}>
       <PuckApiProvider
         baseURL={baseURL}
-        projectKey={projectKey}
         businessUnitKey={businessUnitKey}
-        jwtToken={jwtToken}
         locale={locale}
+        jwtToken={jwtToken}
+        getAuthHeaders={getAuthHeaders}
+        fetcher={fetcher}
+        publicDatasourceResolve={publicDatasourceResolve}
       >
         <BrowserRouter basename={parentUrl}>
           <ContentManagerRouterInner

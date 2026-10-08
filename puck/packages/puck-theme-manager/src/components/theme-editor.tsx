@@ -9,6 +9,7 @@ import { useHistory } from 'react-router-dom';
 import { useIntl, type MessageDescriptor } from 'react-intl';
 import { PuckApiProvider, usePuckConfiguration } from '@commercetools-labs/puck-api';
 import type { ThemeTokens } from '@commercetools-labs/puck-types';
+import type { PuckConnection } from '@commercetools-labs/puck-types';
 import {
   Button,
   Card as NimbusCard,
@@ -240,13 +241,7 @@ interface InnerProps {
   };
 }
 
-export interface ThemeManagerProps extends InnerProps {
-  baseURL: string;
-  projectKey: string;
-  businessUnitKey: string;
-  jwtToken: string;
-  /** Content locale (e.g. "en-US"). Resolves to en/es; unsupported → en. */
-  locale?: string;
+export interface ThemeManagerProps extends InnerProps, PuckConnection {
   /** Per-key overrides for UI strings, applied on top of the resolved catalog. */
   messageOverrides?: Record<string, string>;
 }
@@ -892,18 +887,23 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
 
 const ThemeManager: React.FC<ThemeManagerProps> = ({
   baseURL,
-  projectKey,
   businessUnitKey,
-  jwtToken,
   locale,
+  jwtToken,
+  getAuthHeaders,
+  fetcher,
+  publicDatasourceResolve,
   messageOverrides,
   ...innerProps
 }) => (
   <PuckApiProvider
     baseURL={baseURL}
-    projectKey={projectKey}
     businessUnitKey={businessUnitKey}
+    locale={locale}
     jwtToken={jwtToken}
+    getAuthHeaders={getAuthHeaders}
+    fetcher={fetcher}
+    publicDatasourceResolve={publicDatasourceResolve}
   >
     <EnsureNimbusProvider locale={locale}>
       <EnsureIntlProvider locale={locale} messageOverrides={messageOverrides}>

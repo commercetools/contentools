@@ -48,6 +48,10 @@
     "build:watch": "tsup --watch",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "@commercetools-labs/puck-api": "workspace:^",
+    "@commercetools-labs/puck-types": "workspace:^"
+  },
   "peerDependencies": {
     "@chakra-ui/react": "^3.36.0",
     "@commercetools/nimbus": "^3.2.0",

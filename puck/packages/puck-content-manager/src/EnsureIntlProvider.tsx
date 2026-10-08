@@ -20,7 +20,7 @@ import { catalogs as contentManagerCatalogs } from './intl';
  *  2. This package's own strings (defined via `defineMessages`) are resolved
  *     from per-package catalogs merged here.
  *
- * Locale handling: only `en` and `es` are shipped. A full locale falls back to
+ * Locale handling: only `en`, `es` and `de` are shipped. A full locale falls back to
  * its language — `en-US` → `en`, `es-PE` → `es`; anything else → `en`.
  *
  * Messages are merged (last wins): any parent IntlProvider's messages (e.g. a
@@ -29,8 +29,8 @@ import { catalogs as contentManagerCatalogs } from './intl';
  * a host's UIKit translations while adding our app strings on top.
  */
 
-type Lang = 'en' | 'es';
-const SUPPORTED_LANGS: readonly Lang[] = ['en', 'es'];
+type Lang = 'en' | 'es' | 'de';
+const SUPPORTED_LANGS: readonly Lang[] = ['en', 'es', 'de'];
 const DEFAULT_LANG: Lang = 'en';
 
 /**
@@ -52,7 +52,7 @@ export function resolveLang(locale?: string): Lang {
 }
 
 export interface EnsureIntlProviderProps {
-  /** Content locale (e.g. "en-US"). Resolves to en/es; unsupported → en. */
+  /** Content locale (e.g. "en-US"). Resolves to en/es/de; unsupported → en. */
   locale?: string;
   /** Per-key message overrides applied on top of the resolved catalog. */
   messageOverrides?: Record<string, string>;

@@ -4,7 +4,7 @@
  * Freely available, AS IS and UNSUPPORTED. See LICENSE.
  */
 
-import { httpClient, readHeaders } from './http-client';
+import type { PuckClient } from '../client/client';
 
 /** Slim product shape returned by the service's product-search endpoint. */
 export interface ProductSearchResult {
@@ -16,21 +16,22 @@ export interface ProductSearchResult {
 }
 
 /**
- * Free-text product search (task #4). Backed by GET /products/search, which
- * proxies the commercetools Product Search API. Read-only — project-key auth.
+ * Free-text product search. Backed by GET /products/search, which proxies the
+ * commercetools Product Search API. Editor-only: requires authentication.
  */
-export const searchProductsApi = async (
-  baseURL: string,
-  projectKey: string,
+export const searchProductsApi = (
+  client: PuckClient,
   text: string,
   options: { limit?: number; locale?: string } = {}
-): Promise<ProductSearchResult[]> => {
-  const params = new URLSearchParams({ text });
-  if (options.limit) params.set('limit', String(options.limit));
-  if (options.locale) params.set('locale', options.locale);
-
-  return httpClient<ProductSearchResult[]>(
-    `${baseURL}/products/search?${params.toString()}`,
-    { headers: readHeaders(projectKey) }
+) =>
+  client.request<ProductSearchResult[]>(
+    'searchProductsApi',
+    '/products/search',
+    {
+      query: {
+        text,
+        limit: options.limit || undefined,
+        locale: options.locale || undefined,
+      },
+    }
   );
-};

@@ -22,6 +22,7 @@ import {
   publishPuckContentApi,
   revertPuckContentDraftApi,
 } from '../api/puck-content-states.api';
+import { authRequiredError } from '../client/errors';
 import { usePuckApiContext } from '../context/PuckApiContext';
 
 export interface UsePuckContentReturn {
@@ -33,17 +34,14 @@ export interface UsePuckContentReturn {
   error: string | null;
   isDirty: boolean;
   reload: () => Promise<void>;
-  saveDraft: (
-    data: PuckData,
-    meta?: PuckContentMeta
-  ) => Promise<void>;
+  saveDraft: (data: PuckData, meta?: PuckContentMeta) => Promise<void>;
   publish: (clearDraft?: boolean) => Promise<void>;
   revertToPublished: () => Promise<void>;
   loadVersions: () => Promise<void>;
 }
 
 export const usePuckContent = (contentKey: string): UsePuckContentReturn => {
-  const { baseURL, projectKey, businessUnitKey, jwtToken } =
+  const { client, baseURL, businessUnitKey, canAuthenticate } =
     usePuckApiContext();
 
   const [content, setContent] = useState<PuckContentValue | null>(null);
@@ -60,12 +58,7 @@ export const usePuckContent = (contentKey: string): UsePuckContentReturn => {
     setLoading(true);
     setError(null);
     try {
-      const data = await getPuckContentApi(
-        baseURL,
-        projectKey,
-        businessUnitKey,
-        contentKey
-      );
+      const data = await getPuckContentApi(client, contentKey);
       setContent(data.value);
       setStates(data.states);
       setIsDirty(false);
@@ -74,11 +67,12 @@ export const usePuckContent = (contentKey: string): UsePuckContentReturn => {
     } finally {
       setLoading(false);
     }
-  }, [baseURL, projectKey, businessUnitKey, contentKey]);
+  }, [client, contentKey]);
 
+  // baseURL / businessUnitKey are not read by `reload` (the client is stable) but a change must refetch.
   useEffect(() => {
     void reload();
-  }, [reload]);
+  }, [reload, baseURL, businessUnitKey]);
 
   useEffect(() => {
     return () => {
@@ -87,11 +81,12 @@ export const usePuckContent = (contentKey: string): UsePuckContentReturn => {
   }, []);
 
   const saveDraft = useCallback(
-    async (
-      data: PuckData,
-      meta?: PuckContentMeta
-    ): Promise<void> => {
-      if (!jwtToken) throw new Error('jwtToken is required to save');
+    async (data: PuckData, meta?: PuckContentMeta): Promise<void> => {
+      if (!canAuthenticate)
+        throw authRequiredError(
+          `${client.baseURL}/${client.businessUnitKey}/puck-contents/${contentKey}`,
+          'PUT'
+        );
       setIsDirty(true);
 
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
@@ -100,14 +95,9 @@ export const usePuckContent = (contentKey: string): UsePuckContentReturn => {
         saveTimerRef.current = setTimeout(async () => {
           setSaving(true);
           try {
-            const updated = await updatePuckContentApi(
-              baseURL,
-              projectKey,
-              jwtToken,
-              businessUnitKey,
-              contentKey,
-              { value: { data, ...(meta !== undefined ? { meta } : {}) } }
-            );
+            const updated = await updatePuckContentApi(client, contentKey, {
+              value: { data, ...(meta !== undefined ? { meta } : {}) },
+            });
             setContent(updated.value);
             setIsDirty(false);
             resolve();
@@ -120,19 +110,15 @@ export const usePuckContent = (contentKey: string): UsePuckContentReturn => {
         }, 1500);
       });
     },
-    [baseURL, projectKey, jwtToken, businessUnitKey, contentKey]
+    [client, canAuthenticate, contentKey]
   );
 
   const publish = useCallback(
     async (clearDraft = false): Promise<void> => {
-      if (!jwtToken) throw new Error('jwtToken is required to publish');
       setSaving(true);
       try {
         const state: PuckContentState = await publishPuckContentApi(
-          baseURL,
-          projectKey,
-          jwtToken,
-          businessUnitKey,
+          client,
           contentKey,
           clearDraft
         );
@@ -144,18 +130,14 @@ export const usePuckContent = (contentKey: string): UsePuckContentReturn => {
         setSaving(false);
       }
     },
-    [baseURL, projectKey, jwtToken, businessUnitKey, contentKey]
+    [client, contentKey]
   );
 
   const revertToPublished = useCallback(async (): Promise<void> => {
-    if (!jwtToken) throw new Error('jwtToken is required to revert');
     setSaving(true);
     try {
       const state: PuckContentState = await revertPuckContentDraftApi(
-        baseURL,
-        projectKey,
-        jwtToken,
-        businessUnitKey,
+        client,
         contentKey
       );
       setStates(state.states);
@@ -167,21 +149,16 @@ export const usePuckContent = (contentKey: string): UsePuckContentReturn => {
     } finally {
       setSaving(false);
     }
-  }, [baseURL, projectKey, jwtToken, businessUnitKey, contentKey]);
+  }, [client, contentKey]);
 
   const loadVersions = useCallback(async (): Promise<void> => {
     try {
-      const versionData = await getPuckContentVersionsApi(
-        baseURL,
-        projectKey,
-        businessUnitKey,
-        contentKey
-      );
+      const versionData = await getPuckContentVersionsApi(client, contentKey);
       setVersions(versionData.versions);
     } catch (err) {
       setError((err as Error).message);
     }
-  }, [baseURL, projectKey, businessUnitKey, contentKey]);
+  }, [client, contentKey]);
 
   return {
     content,

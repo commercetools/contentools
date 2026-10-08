@@ -22,7 +22,7 @@ export interface PuckDataRendererProps {
   config?: PuckConfig;
   /**
    * Content locale (e.g. "en-US"), used to resolve the rendered components'
-   * react-intl messages. Only `en`/`es` are shipped; unsupported locales fall
+   * react-intl messages. Only `en`, `es` and `de` are shipped; unsupported locales fall
    * back to English. Defaults to English.
    */
   locale?: string;
@@ -32,7 +32,8 @@ export interface PuckDataRendererProps {
 
 /**
  * SSR-friendly renderer — no data fetching, renders whatever Data you pass in.
- * Wrap with PuckApiProvider only if the config's components use API hooks.
+ * Works without any provider; product blocks use their embedded `resolvedData`
+ * or the optional ancestor PuckApiProvider.
  *
  * The rendered components require a react-intl context; this component supplies
  * one via {@link EnsureIntlProvider} so it works standalone in a storefront.

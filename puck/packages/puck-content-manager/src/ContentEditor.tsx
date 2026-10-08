@@ -14,6 +14,7 @@ import {
   usePuckTemplates,
 } from '@commercetools-labs/puck-api';
 import type { PuckContentVersionEntry, PuckData } from '@commercetools-labs/puck-types';
+import type { PuckConnection } from '@commercetools-labs/puck-types';
 import { EnsureIntlProvider } from './EnsureIntlProvider';
 import { EnsureNimbusProvider } from './EnsureNimbusProvider';
 import {
@@ -345,13 +346,7 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
 // Public component — wraps its own PuckApiProvider
 // ---------------------------------------------------------------------------
 
-export interface ContentEditorProps {
-  baseURL: string;
-  projectKey: string;
-  businessUnitKey: string;
-  jwtToken: string;
-  /** Content locale (e.g. "en-US") used for locale-aware calls like product search */
-  locale?: string;
+export interface ContentEditorProps extends PuckConnection {
   contentKey: string;
   /** Puck component config — must match what's used in the renderer */
   config: Config;
@@ -367,10 +362,12 @@ export interface ContentEditorProps {
 
 export const ContentEditor: React.FC<ContentEditorProps> = ({
   baseURL,
-  projectKey,
   businessUnitKey,
-  jwtToken,
   locale,
+  jwtToken,
+  getAuthHeaders,
+  fetcher,
+  publicDatasourceResolve,
   contentKey,
   config,
   onPublish,
@@ -382,10 +379,12 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({
     <EnsureIntlProvider locale={locale} messageOverrides={messageOverrides}>
       <PuckApiProvider
         baseURL={baseURL}
-        projectKey={projectKey}
         businessUnitKey={businessUnitKey}
-        jwtToken={jwtToken}
         locale={locale}
+        jwtToken={jwtToken}
+        getAuthHeaders={getAuthHeaders}
+        fetcher={fetcher}
+        publicDatasourceResolve={publicDatasourceResolve}
       >
         <ContentEditorInner
           contentKey={contentKey}

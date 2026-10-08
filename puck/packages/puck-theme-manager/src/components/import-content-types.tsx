@@ -9,6 +9,7 @@ import { useHistory } from 'react-router-dom';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { PuckApiProvider, usePuckContentType } from '@commercetools-labs/puck-api';
 import type { ImportResult } from '@commercetools-labs/puck-types';
+import type { PuckConnection } from '@commercetools-labs/puck-types';
 import { Button, Card, Stack, Text } from '@commercetools/nimbus';
 import { EnsureNimbusProvider } from '../EnsureNimbusProvider';
 import { EnsureIntlProvider } from '../EnsureIntlProvider';
@@ -21,13 +22,7 @@ interface InnerProps {
   };
 }
 
-export interface ImportContentTypesProps extends InnerProps {
-  baseURL: string;
-  projectKey: string;
-  businessUnitKey: string;
-  jwtToken: string;
-  /** Content locale (e.g. "en-US"). Resolves to en/es; unsupported → en. */
-  locale?: string;
+export interface ImportContentTypesProps extends InnerProps, PuckConnection {
   /** Per-key overrides for UI strings, applied on top of the resolved catalog. */
   messageOverrides?: Record<string, string>;
 }
@@ -141,18 +136,23 @@ const ImportContentTypesInner: React.FC<InnerProps> = ({ backButton }) => {
 
 const ImportContentTypes: React.FC<ImportContentTypesProps> = ({
   baseURL,
-  projectKey,
   businessUnitKey,
-  jwtToken,
   locale,
+  jwtToken,
+  getAuthHeaders,
+  fetcher,
+  publicDatasourceResolve,
   messageOverrides,
   ...innerProps
 }) => (
   <PuckApiProvider
     baseURL={baseURL}
-    projectKey={projectKey}
     businessUnitKey={businessUnitKey}
+    locale={locale}
     jwtToken={jwtToken}
+    getAuthHeaders={getAuthHeaders}
+    fetcher={fetcher}
+    publicDatasourceResolve={publicDatasourceResolve}
   >
     <EnsureNimbusProvider locale={locale}>
       <EnsureIntlProvider locale={locale} messageOverrides={messageOverrides}>

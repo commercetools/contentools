@@ -12,8 +12,8 @@ import React, {
   useState,
 } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useMediaLibrary } from './hooks/useMediaLibrary';
-import type { MediaFile } from './types';
+import { useMediaLibrary } from '@commercetools-labs/puck-api';
+import type { MediaFile } from '@commercetools-labs/puck-types';
 import {
   Button,
   FormField,
@@ -124,7 +124,9 @@ const UploadModal: React.FC<UploadModalProps> = ({
                 <TextInput
                   value={title}
                   onChange={(value) => setTitle(value)}
-                  placeholder={intl.formatMessage({ id: 'ImagePicker.titlePlaceholder' })}
+                  placeholder={intl.formatMessage({
+                    id: 'ImagePicker.titlePlaceholder',
+                  })}
                 />
               </FormField.Input>
             </FormField.Root>
@@ -136,7 +138,9 @@ const UploadModal: React.FC<UploadModalProps> = ({
                 <TextInput
                   value={description}
                   onChange={(value) => setDescription(value)}
-                  placeholder={intl.formatMessage({ id: 'ImagePicker.descriptionPlaceholder' })}
+                  placeholder={intl.formatMessage({
+                    id: 'ImagePicker.descriptionPlaceholder',
+                  })}
                 />
               </FormField.Input>
             </FormField.Root>
@@ -152,14 +156,23 @@ const UploadModal: React.FC<UploadModalProps> = ({
                 transition: 'border-color .2s',
               }}
               onClick={() => inputRef.current?.click()}
-              onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setDragging(true);
+              }}
               onDragLeave={() => setDragging(false)}
               onDrop={handleDrop}
             >
               {file ? (
                 <>
                   <div>📎 {file.name}</div>
-                  <div style={{ fontSize: '11px', marginTop: '4px', color: '#9ca3af' }}>
+                  <div
+                    style={{
+                      fontSize: '11px',
+                      marginTop: '4px',
+                      color: '#9ca3af',
+                    }}
+                  >
                     <FormattedMessage
                       id="ImagePicker.fileSize"
                       values={{ size: (file.size / 1024).toFixed(0) }}
@@ -198,7 +211,8 @@ const UploadModal: React.FC<UploadModalProps> = ({
           }}
         >
           <Text fontSize="sm" color="neutral.11" truncate>
-            {file?.name ?? intl.formatMessage({ id: 'ImagePicker.noFileSelected' })}
+            {file?.name ??
+              intl.formatMessage({ id: 'ImagePicker.noFileSelected' })}
           </Text>
           <Stack direction="row" gap="200">
             <Button variant="outline" onPress={onClose}>
@@ -228,7 +242,8 @@ const UploadModal: React.FC<UploadModalProps> = ({
 
 interface LibraryModalProps {
   files: MediaFile[];
-  pagination: { currentPage: number; totalPages: number };
+  pagination: { hasPrevious: boolean; hasNext: boolean };
+  notConfigured: boolean;
   loading: boolean;
   error: string | null;
   onNextPage: () => void;
@@ -240,6 +255,7 @@ interface LibraryModalProps {
 const LibraryModal: React.FC<LibraryModalProps> = ({
   files,
   pagination,
+  notConfigured,
   loading,
   error,
   onNextPage,
@@ -305,9 +321,19 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
         {/* Body */}
         <div style={{ flex: 1, overflow: 'auto', padding: '20px' }}>
           {loading ? (
-            <div style={{ display: 'flex', justifyContent: 'center', padding: '32px' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                padding: '32px',
+              }}
+            >
               <LoadingSpinner />
             </div>
+          ) : notConfigured ? (
+            <Text color="neutral.11">
+              <FormattedMessage id="ImagePicker.mediaNotConfigured" />
+            </Text>
           ) : files.length === 0 ? (
             <Text color="neutral.11">
               <FormattedMessage id="ImagePicker.noFilesFound" />
@@ -332,7 +358,10 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
                       border: `2px solid ${selected?.url === file.url ? '#3b82f6' : 'transparent'}`,
                       borderRadius: '6px',
                       padding: '6px',
-                      background: selected?.url === file.url ? 'rgba(59,130,246,0.07)' : '#f9fafb',
+                      background:
+                        selected?.url === file.url
+                          ? 'rgba(59,130,246,0.07)'
+                          : '#f9fafb',
                     }}
                     onClick={() => setSelected(file)}
                     title={file.title ?? file.name}
@@ -341,7 +370,13 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
                       <img
                         src={file.url}
                         alt={file.name}
-                        style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', background: '#e5e7eb' }}
+                        style={{
+                          width: '80px',
+                          height: '80px',
+                          objectFit: 'cover',
+                          borderRadius: '4px',
+                          background: '#e5e7eb',
+                        }}
                       />
                     ) : (
                       <div
@@ -377,29 +412,25 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
                 ))}
               </div>
 
-              {pagination.totalPages > 1 && (
-                <Stack direction="row" gap="200" alignItems="center" justifyContent="center">
+              {(pagination.hasPrevious || pagination.hasNext) && (
+                <Stack
+                  direction="row"
+                  gap="200"
+                  alignItems="center"
+                  justifyContent="center"
+                >
                   <Button
                     variant="outline"
                     size="sm"
-                    isDisabled={pagination.currentPage <= 1}
+                    isDisabled={!pagination.hasPrevious}
                     onPress={onPrevPage}
                   >
                     <FormattedMessage id="ImagePicker.prevPage" />
                   </Button>
-                  <Text fontSize="sm" color="neutral.11">
-                    <FormattedMessage
-                      id="ImagePicker.pageIndicator"
-                      values={{
-                        current: pagination.currentPage,
-                        total: pagination.totalPages,
-                      }}
-                    />
-                  </Text>
                   <Button
                     variant="outline"
                     size="sm"
-                    isDisabled={pagination.currentPage >= pagination.totalPages}
+                    isDisabled={!pagination.hasNext}
                     onPress={onNextPage}
                   >
                     <FormattedMessage id="ImagePicker.nextPage" />
@@ -431,7 +462,11 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
             <Button variant="outline" onPress={onClose}>
               <FormattedMessage id="ImagePicker.cancel" />
             </Button>
-            <Button variant="solid" isDisabled={!selected} onPress={handleConfirm}>
+            <Button
+              variant="solid"
+              isDisabled={!selected}
+              onPress={handleConfirm}
+            >
               <FormattedMessage id="ImagePicker.select" />
             </Button>
           </Stack>
@@ -472,7 +507,7 @@ export interface ImagePickerFieldProps {
   onChange: (value: string) => void;
   /** Only show images (default: true) */
   imagesOnly?: boolean;
-  /** Content locale (e.g. "en-US"). Resolves to en/es; unsupported → en. */
+  /** Content locale (e.g. "en-US"). Resolves to en/es/de; unsupported → en. */
   locale?: string;
   /** Per-key message overrides applied on top of the resolved catalog. */
   messageOverrides?: Record<string, string>;
@@ -487,14 +522,16 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
 }) => {
   const {
     files,
-    pagination,
     loading,
     uploading,
     error,
+    notConfigured,
     fetchMedia,
     uploadFile,
     loadNextPage,
     loadPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
   } = useMediaLibrary();
 
   const [showUpload, setShowUpload] = useState(false);
@@ -506,7 +543,7 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
   );
 
   const openLibrary = useCallback(() => {
-    void fetchMedia(extensions, 1, 20);
+    void fetchMedia(extensions, 20);
     setShowLibrary(true);
   }, [fetchMedia, extensions]);
 
@@ -558,7 +595,13 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
               <img
                 src={value}
                 alt=""
-                style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }}
+                style={{
+                  width: '48px',
+                  height: '48px',
+                  objectFit: 'cover',
+                  borderRadius: '4px',
+                  flexShrink: 0,
+                }}
               />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <Text fontSize="sm" color="neutral.11" truncate>
@@ -567,7 +610,12 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
                   )}
                 </Text>
               </div>
-              <Button variant="ghost" colorPalette="critical" size="xs" onPress={() => onChange('')}>
+              <Button
+                variant="ghost"
+                colorPalette="critical"
+                size="xs"
+                onPress={() => onChange('')}
+              >
                 <FormattedMessage id="ImagePicker.remove" />
               </Button>
             </div>
@@ -578,9 +626,11 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
           )}
 
           <Stack direction="row" gap="200">
-            <Button variant="outline" onPress={() => setShowUpload(true)}>
-              <FormattedMessage id="ImagePicker.upload" />
-            </Button>
+            {!notConfigured && (
+              <Button variant="outline" onPress={() => setShowUpload(true)}>
+                <FormattedMessage id="ImagePicker.upload" />
+              </Button>
+            )}
             <Button variant="solid" onPress={openLibrary}>
               <FormattedMessage id="ImagePicker.mediaLibrary" />
             </Button>
@@ -591,7 +641,9 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
               uploading={uploading}
               error={error}
               imagesOnly={imagesOnly}
-              onUpload={(file, title, desc) => void handleUpload(file, title, desc)}
+              onUpload={(file, title, desc) =>
+                void handleUpload(file, title, desc)
+              }
               onClose={() => setShowUpload(false)}
             />
           )}
@@ -599,7 +651,11 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
           {showLibrary && (
             <LibraryModal
               files={files}
-              pagination={pagination}
+              pagination={{
+                hasPrevious: hasPreviousPage(),
+                hasNext: hasNextPage(),
+              }}
+              notConfigured={notConfigured}
               loading={loading}
               error={error}
               onNextPage={() => void loadNextPage(extensions)}

@@ -9,16 +9,48 @@ import { PageManager } from '@commercetools-labs/puck-page-manager';
 import { ThemeManager } from '@commercetools-labs/puck-theme-manager';
 import { ContentManager } from '@commercetools-labs/puck-content-manager';
 import { PuckRenderer } from '@commercetools-labs/puck-renderer';
+import type {
+  PuckConnection,
+  PuckFetcher,
+} from '@commercetools-labs/puck-types';
 
 // ---------------------------------------------------------------------------
 // Config from environment variables (.env file)
 // ---------------------------------------------------------------------------
 const BASE_URL = import.meta.env.VITE_BASE_URL as string;
-const PROJECT_KEY = import.meta.env.VITE_PROJECT_KEY as string;
 const BUSINESS_UNIT_KEY = import.meta.env.VITE_BUSINESS_UNIT_KEY as string;
-const JWT_TOKEN = import.meta.env.VITE_JWT_TOKEN as string;
+// token | fetcher | none. `fetcher` simulates the Merchant Center forward-to proxy transport.
+const AUTH_MODE = ((import.meta.env.VITE_AUTH_MODE as string) || 'token') as
+  | 'token'
+  | 'fetcher'
+  | 'none';
+// Static service token. It is bundled into the browser: local development only.
+const SERVICE_TOKEN = import.meta.env.VITE_SERVICE_TOKEN as string;
 // Content locale for locale-aware calls (e.g. product search). Defaults to en-US.
 const LOCALE = (import.meta.env.VITE_LOCALE as string) || 'en-US';
+
+// ---------------------------------------------------------------------------
+// Connection (one object shared by every component)
+// ---------------------------------------------------------------------------
+// Stands in for the Merchant Center forward-to adapter: the transport adds the credentials,
+// so the components get no token of their own.
+const proxyLikeFetcher: PuckFetcher = (req) =>
+  fetch(req.url, {
+    method: req.method,
+    headers: { ...req.headers, Authorization: `Bearer ${SERVICE_TOKEN}` },
+    body: req.body,
+  });
+
+const connection: PuckConnection = {
+  baseURL: BASE_URL,
+  businessUnitKey: BUSINESS_UNIT_KEY,
+  locale: LOCALE,
+  ...(AUTH_MODE === 'token'
+    ? { jwtToken: SERVICE_TOKEN }
+    : AUTH_MODE === 'fetcher'
+      ? { fetcher: proxyLikeFetcher }
+      : {}),
+};
 
 // ---------------------------------------------------------------------------
 // Config warning
@@ -30,11 +62,14 @@ const ConfigWarning: React.FC = () => (
         <h3 className="text-xl font-bold text-slate-800">Configuration required</h3>
         <p className="text-sm leading-relaxed text-slate-600">
           Copy <code className="rounded bg-slate-100 px-1 py-0.5 text-xs">.env.example</code> to{' '}
-          <code className="rounded bg-slate-100 px-1 py-0.5 text-xs">.env</code> and fill in your API
-          credentials before using this app.
+          <code className="rounded bg-slate-100 px-1 py-0.5 text-xs">.env</code> and set the service
+          URL and business unit before using this app. To run against the bundled mock service:{' '}
+          <code className="rounded bg-slate-100 px-1 py-0.5 text-xs">
+            yarn workspace @commercetools-labs/puck-playground mock
+          </code>
         </p>
         <pre className="m-0 overflow-auto rounded border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
-          {`VITE_BASE_URL=http://localhost:8080\nVITE_PROJECT_KEY=my-project\nVITE_BUSINESS_UNIT_KEY=my-bu\nVITE_JWT_TOKEN=your-jwt-token`}
+          {`VITE_BASE_URL=http://localhost:8080/service\nVITE_BUSINESS_UNIT_KEY=main-store`}
         </pre>
       </div>
     </div>
@@ -120,12 +155,10 @@ const LABEL_STYLE: React.CSSProperties = {
 };
 
 interface RendererPanelProps {
-  baseURL: string;
-  projectKey: string;
-  businessUnitKey: string;
+  connection: PuckConnection;
 }
 
-const RendererPanel: React.FC<RendererPanelProps> = ({ baseURL, projectKey, businessUnitKey }) => {
+const RendererPanel: React.FC<RendererPanelProps> = ({ connection }) => {
   const [type, setType] = useState<'page' | 'content'>('page');
   const [mode, setMode] = useState<'published' | 'preview'>('published');
   const [pageKey, setPageKey] = useState('');
@@ -253,9 +286,16 @@ const RendererPanel: React.FC<RendererPanelProps> = ({ baseURL, projectKey, busi
           </div>
         </div>
 
+        {AUTH_MODE === 'none' && (
+          <p className="text-sm text-slate-600">
+            No auth: only published rendering works.
+          </p>
+        )}
+
         {submitted && hasTarget && (
           <div
             key={renderKey}
+            data-testid="renderer-output"
             style={{
               border: '1px solid #e0e0e0',
               borderRadius: '8px',
@@ -264,9 +304,7 @@ const RendererPanel: React.FC<RendererPanelProps> = ({ baseURL, projectKey, busi
           >
             <PuckRenderer
               type={type}
-              baseURL={baseURL}
-              projectKey={projectKey}
-              businessUnitKey={businessUnitKey}
+              {...connection}
               pageKey={type === 'page' ? (pageKey || undefined) : undefined}
               slug={type === 'page' ? (slug || undefined) : undefined}
               contentKey={type === 'content' ? (contentKey || undefined) : undefined}
@@ -327,7 +365,7 @@ const TailwindTestBanner: React.FC = () => (
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>(getInitialTab);
 
-  if (!BASE_URL || !PROJECT_KEY || !BUSINESS_UNIT_KEY) {
+  if (!BASE_URL || !BUSINESS_UNIT_KEY) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'auto' }}>
         <TailwindTestBanner />
@@ -336,13 +374,7 @@ const App: React.FC = () => {
     );
   }
 
-  const sharedProps = {
-    baseURL: BASE_URL,
-    projectKey: PROJECT_KEY,
-    businessUnitKey: BUSINESS_UNIT_KEY,
-    jwtToken: JWT_TOKEN,
-    locale: LOCALE,
-  };
+  const sharedProps = connection;
 
   const handleTabChange = (tab: Tab) => {
     setActiveTab(tab);
@@ -359,11 +391,7 @@ const App: React.FC = () => {
         {activeTab === 'contents' && <ContentManager {...sharedProps} parentUrl="/" />}
         {activeTab === 'theme' && <ThemeManager {...sharedProps}  />}
         {activeTab === 'renderer' && (
-          <RendererPanel
-            baseURL={BASE_URL}
-            projectKey={PROJECT_KEY}
-            businessUnitKey={BUSINESS_UNIT_KEY}
-          />
+          <RendererPanel connection={connection} />
         )}
       </div>
     </div>

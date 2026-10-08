@@ -17,32 +17,26 @@ export interface UsePuckContentTypeReturn {
 }
 
 export const usePuckContentType = (): UsePuckContentTypeReturn => {
-  const { baseURL, projectKey, businessUnitKey, jwtToken } =
-    usePuckApiContext();
+  const { client } = usePuckApiContext();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const clearError = useCallback(() => setError(null), []);
 
-  const importDefaultContentTypes = useCallback(async (): Promise<ImportResult> => {
-    if (!jwtToken) throw new Error('jwtToken is required to import content types');
-    setLoading(true);
-    setError(null);
-    try {
-      return await importDefaultContentTypesApi(
-        baseURL,
-        projectKey,
-        jwtToken,
-        businessUnitKey
-      );
-    } catch (err) {
-      setError((err as Error).message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, [baseURL, projectKey, jwtToken, businessUnitKey]);
+  const importDefaultContentTypes =
+    useCallback(async (): Promise<ImportResult> => {
+      setLoading(true);
+      setError(null);
+      try {
+        return await importDefaultContentTypesApi(client);
+      } catch (err) {
+        setError((err as Error).message);
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    }, [client]);
 
   return { loading, error, importDefaultContentTypes, clearError };
 };

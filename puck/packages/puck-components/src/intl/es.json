@@ -363,5 +363,6 @@
   "Editor.size.generic.small": "Pequeño",
   "Editor.size.generic.medium": "Mediano",
   "Editor.size.generic.large": "Grande",
-  "Editor.size.generic.xlarge": "Muy grande"
+  "Editor.size.generic.xlarge": "Muy grande",
+  "Editor.mediaNotConfigured": "El almacenamiento de medios no está configurado en esta instalación. Pida a un administrador que configure un proveedor de medios."
 }

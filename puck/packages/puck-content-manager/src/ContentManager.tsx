@@ -15,6 +15,7 @@ import type {
   CreatePuckContentInput,
   PuckContentListItem,
 } from '@commercetools-labs/puck-types';
+import type { PuckConnection } from '@commercetools-labs/puck-types';
 import {
   Badge,
   Button,
@@ -412,11 +413,7 @@ const ContentList: React.FC<ContentListProps> = ({ defaultContentType, onEdit })
 // Public component — wraps its own PuckApiProvider
 // ---------------------------------------------------------------------------
 
-export interface ContentManagerListProps {
-  baseURL: string;
-  projectKey: string;
-  businessUnitKey: string;
-  jwtToken: string;
+export interface ContentManagerListProps extends PuckConnection {
   defaultContentType?: string;
   onEdit: (item: PuckContentListItem) => void;
   /**
@@ -428,9 +425,12 @@ export interface ContentManagerListProps {
 
 export const ContentManagerList: React.FC<ContentManagerListProps> = ({
   baseURL,
-  projectKey,
   businessUnitKey,
+  locale,
   jwtToken,
+  getAuthHeaders,
+  fetcher,
+  publicDatasourceResolve,
   defaultContentType,
   onEdit,
   messageOverrides,
@@ -439,9 +439,12 @@ export const ContentManagerList: React.FC<ContentManagerListProps> = ({
     <EnsureIntlProvider messageOverrides={messageOverrides}>
       <PuckApiProvider
         baseURL={baseURL}
-        projectKey={projectKey}
         businessUnitKey={businessUnitKey}
+        locale={locale}
         jwtToken={jwtToken}
+        getAuthHeaders={getAuthHeaders}
+        fetcher={fetcher}
+        publicDatasourceResolve={publicDatasourceResolve}
       >
         <ContentList defaultContentType={defaultContentType} onEdit={onEdit} />
       </PuckApiProvider>

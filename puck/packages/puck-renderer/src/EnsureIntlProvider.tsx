@@ -25,12 +25,12 @@ import { intlCatalogs as editorCatalogs } from '@commercetools-labs/puck-compone
  * parent react-intl provider does exist, its messages are merged beneath ours so
  * host translations are preserved.
  *
- * Locale handling: only `en` and `es` are shipped. A full locale falls back to
+ * Locale handling: only `en`, `es` and `de` are shipped. A full locale falls back to
  * its language — `en-US` → `en`, `es-PE` → `es`; anything else → `en`.
  */
 
-type Lang = 'en' | 'es';
-const SUPPORTED_LANGS: readonly Lang[] = ['en', 'es'];
+type Lang = 'en' | 'es' | 'de';
+const SUPPORTED_LANGS: readonly Lang[] = ['en', 'es', 'de'];
 const DEFAULT_LANG: Lang = 'en';
 
 export function resolveLang(locale?: string): Lang {
@@ -41,7 +41,7 @@ export function resolveLang(locale?: string): Lang {
 }
 
 export interface EnsureIntlProviderProps {
-  /** Content locale (e.g. "en-US"). Resolves to en/es; unsupported → en. */
+  /** Content locale (e.g. "en-US"). Resolves to en/es/de; unsupported → en. */
   locale?: string;
   /** Per-key message overrides applied on top of the resolved catalog. */
   messageOverrides?: Record<string, string>;
