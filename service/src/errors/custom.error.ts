@@ -14,17 +14,22 @@ class CustomError extends Error {
   statusCode: number | string;
   message: string;
   errors?: ErrorItem[];
+  code?: string;
 
   constructor(
     statusCode: number | string,
     message: string,
-    errors?: ErrorItem[]
+    errors?: ErrorItem[],
+    code?: string
   ) {
     super(message);
     this.statusCode = statusCode;
     this.message = message;
     if (errors) {
       this.errors = errors;
+    }
+    if (code) {
+      this.code = code;
     }
   }
 }

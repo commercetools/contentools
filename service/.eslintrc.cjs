@@ -6,6 +6,7 @@
 
 module.exports = {
   root: true,
+  ignorePatterns: ['build', 'src/_pending', 'node_modules'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 2020,

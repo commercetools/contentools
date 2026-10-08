@@ -97,3 +97,19 @@ Ran in `scratchpad/exp` with jest 29.7 + ts-jest 29.4 + supertest 7 + msw + jose
 3. Body size: default 100 kb is too small for Puck pages; D sets 2 MB and documents it.
 4. `CTP_SCOPE` is space separated (`manage_key_value_documents:key view_products:key`): split before handing to `ClientBuilder`.
 5. Source `.env` / `.env.example` in `cms/service` may contain real values: never copy `.env*` files (A's rules; D writes a fresh `.env.example`).
+
+## Pending files still referencing tenant code (recorded by the implementation of D)
+
+Files under `service/src/_pending/` that F/G must port (first column: `grep -ci` hits are in the working tree; source of truth is `tools/forbidden-pending.txt`):
+
+```
+controllers/datasource-resolution.route.ts   (F)
+routes/configuration.route.ts                (F)
+routes/content-type.route.ts                 (F)
+routes/datasource.route.ts                   (F)
+routes/file.route.ts                         (G)
+routes/product.route.ts                      (F; uses validateJwt only, not flagged by the guard)
+routes/puck-content.route.ts                 (F)
+routes/puck-page.route.ts                    (F)
+routes/puck-template.route.ts                (F)
+```

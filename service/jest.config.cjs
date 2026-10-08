@@ -4,10 +4,13 @@
  * Freely available, AS IS and UNSUPPORTED. See LICENSE.
  */
 
+/** @type {import('jest').Config} */
 module.exports = {
-  displayName: 'Tests Typescript Application - Service',
-  moduleDirectories: ['node_modules', 'src'],
-  testMatch: ['**/tests/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[tj]s?(x)'],
   preset: 'ts-jest',
   testEnvironment: 'node',
+  roots: ['<rootDir>/tests'],
+  testMatch: ['**/*.test.ts'],
+  testPathIgnorePatterns: ['/node_modules/', '/src/_pending/'],
+  setupFiles: ['<rootDir>/tests/support/env.ts'],
+  clearMocks: true,
 };
