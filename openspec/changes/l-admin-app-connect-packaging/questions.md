@@ -1,0 +1,10 @@
+# Questions (spec L). Each proceeds on the stated default.
+
+| ID | Question | Recommended default | Affects |
+| -- | -------- | ------------------- | ------- |
+| Q-L1 | MC "OAuth scopes for Manage" would ideally be empty (the admin app only reads business units through MC; writes happen in the service). It is unknown whether the registration form / `config:sync` accepts an empty manage list. | Ship `manage: ['manage_key_value_documents']` (content lives in key-value documents; same as the sibling repo); try empty during first registration and simplify if accepted | L |
+| Q-L2 | The master plan says Connect injects `CONNECT_SERVICE_URL` into the MC app. Docs and skill show it only for `service` applications. L therefore uses an explicit `CONTENTOOLS_SERVICE_URL` set by a second pass (redeploy). For H/E: the service should derive its forward-to audience from the origin of its own `CONNECT_SERVICE_URL` (verified in the sibling repo, to be confirmed on first deploy) so both sides always agree. OK? | Yes | H, E, L |
+| Q-L3 | `inheritAs.configuration` is shared by all apps. L declares `CLOUD_IDENTIFIER` there (required, no default) and asks H not to declare it again in `service`. Agree? | Yes (L adds it; H reads `process.env.CLOUD_IDENTIFIER`) | H, L |
+| Q-L4 | `APPLICATION_URL`: docs/skill say Connect provides it and it must not be declared; the sibling declares it as a key. L follows the docs; if the first Connect build fails with `Invalid application URL`, add it (required: false). Accept this as a first-deploy experiment? | Yes | L |
+| Q-L5 | Connect testing uses this same repository with git tags (owner decision, no private fork). Connect can read an HTTPS URL only for public repositories, so rc tags `v1.0.0-rc.N` are deployed with `connectorstaged create`/`update` after the R gate makes the repo public; before that only part A and local checks run. Confirm. | Confirmed (owner decision) | L, Q, R |
+| Q-L6 | Default `entryPointUriPath` `contentools` may collide in a region (see K Q-K5). | Keep default, overridable at deploy time | K, L |
