@@ -4,11 +4,9 @@
  * Freely available, AS IS and UNSUPPORTED. See LICENSE.
  */
 
-import { CustomObjectController } from './custom-object.controller';
-import { CONTENT_TYPE_CONTAINER } from '../constants';
+import { customObjects } from '../ct/custom-objects';
 import { SecureTranspiler } from '../utils/secure-transpiler';
-import { AuthenticatedRequest } from '../types/service.types';
-import { logger } from '../utils/logger.utils';
+import { getLogger } from '../utils/logger.utils';
 import { contentTypes as sampleContentTypes } from '../samples/content-types';
 
 interface SampleContentTypeExport {
@@ -37,17 +35,12 @@ function typeToKey(type: string): string {
 
 /**
  * Loops through content types from samples/content-types/index, transpiles code,
- * base64-encodes transpiled code and source text, and creates custom objects
+ * base64-encodes transpiled code and source text, and upserts custom objects
  * using the derived key (metadata.type in kebab-case).
  */
-export async function importDefaultContentTypes(
-  req: AuthenticatedRequest
-): Promise<ImportResult> {
+export async function importDefaultContentTypes(): Promise<ImportResult> {
   const result: ImportResult = { imported: [], failed: [] };
-  const contentTypeController = new CustomObjectController(
-    req,
-    CONTENT_TYPE_CONTAINER
-  );
+  const contentTypes = customObjects('contentType');
 
   for (const defaultExport of sampleContentTypes as SampleContentTypeExport[]) {
     const typeName = defaultExport.metadata?.type;
@@ -81,11 +74,11 @@ export async function importDefaultContentTypes(
         },
       };
 
-      await contentTypeController.createCustomObject(key, value);
+      await contentTypes.put(key, value);
       result.imported.push(key);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      logger.error(`Import failed for ${key}:`, message);
+      getLogger().error('content type import failed', { key, message });
       result.failed.push({ key, error: message });
     }
   }

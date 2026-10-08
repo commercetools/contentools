@@ -8,17 +8,17 @@ import { transform } from '@babel/standalone';
 
 export class SecureTranspiler {
   private static readonly DANGEROUS_PATTERNS = [
-    /eval\s*\(/g,
-    /Function\s*\(/g,
-    /document\.(write|createElement)/g,
-    /innerHTML\s*=/g,
-    /outerHTML\s*=/g,
-    /window\./g,
-    /global\./g,
-    /process\./g,
-    /__dirname|__filename/g,
-    /require\s*\(/g,
-    /import\s*\(/g,
+    /eval\s*\(/,
+    /Function\s*\(/,
+    /document\.(write|createElement)/,
+    /innerHTML\s*=/,
+    /outerHTML\s*=/,
+    /window\./,
+    /global\./,
+    /process\./,
+    /__dirname|__filename/,
+    /require\s*\(/,
+    /import\s*\(/,
   ];
 
   static validateCode(code: string): void {
