@@ -15,6 +15,8 @@
     "verify": "node tools/run-all.mjs lint typecheck test build",
     "headers": "node tools/labs-publish.mjs ossify --apply",
     "check:spdx": "node tools/check-spdx-headers.mjs",
+    "check:forbidden": "node tools/check-forbidden-terms.mjs",
+    "check:legacy-calls": "node tools/check-legacy-route-calls.mjs",
     "test:tools": "node --test \"tools/test/*.test.mjs\"",
     "gate": "node tools/labs-publish.mjs gate"
   }
