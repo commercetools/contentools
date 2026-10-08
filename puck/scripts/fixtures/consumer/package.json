@@ -1,0 +1,6 @@
+{
+  "name": "@commercetools-labs/puck-consumer-fixture",
+  "private": true,
+  "type": "module",
+  "license": "MIT"
+}

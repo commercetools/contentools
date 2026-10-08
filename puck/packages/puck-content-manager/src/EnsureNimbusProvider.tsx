@@ -14,7 +14,7 @@ import {
 
 
 const SCOPED_SYSTEM_KEY = Symbol.for(
-  '@commercetools-demo/puck:nimbus-scoped-system'
+  '@commercetools-labs/puck:nimbus-scoped-system'
 );
 
 const globalScope = globalThis as unknown as Record<

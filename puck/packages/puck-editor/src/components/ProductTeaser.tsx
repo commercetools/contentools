@@ -6,10 +6,10 @@
 
 import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
-import { renderProductTeaser, type ProductTeaserProps } from '@commercetools-demo/puck-components';
+import { renderProductTeaser, type ProductTeaserProps } from '@commercetools-labs/puck-components';
 import { DatasourceField } from '../fields/DatasourceField';
 import { richTextField } from '../fields/RichTextField';
-import { productLinkDefaults, createProductLinkFields } from './cms/shared';
+import { productLinkDefaults, createProductLinkFields } from './blocks/shared';
 
 export type { ProductTeaserProps };
 

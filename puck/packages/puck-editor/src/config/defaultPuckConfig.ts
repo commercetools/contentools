@@ -45,7 +45,7 @@ import {
   createWebsiteLogoConfig,
 } from '../components';
 import { ColorPickerField } from '../fields/ColorPickerField';
-import { intlCatalogs, renderRoot } from '@commercetools-demo/puck-components';
+import { intlCatalogs, renderRoot } from '@commercetools-labs/puck-components';
 
 const en = intlCatalogs.en;
 
@@ -54,7 +54,7 @@ const en = intlCatalogs.en;
  * user-facing label localized via the supplied `intl`.
  *
  * ```ts
- * import { createDefaultPuckConfig } from '@commercetools-demo/puck-editor';
+ * import { createDefaultPuckConfig } from '@commercetools-labs/puck-editor';
  * const intl = useIntl();
  * const config = useMemo(() => createDefaultPuckConfig(intl), [intl]);
  * ```
@@ -73,7 +73,7 @@ export function createDefaultPuckConfig(intl: IntlShape): Config {
       Card: createCardConfig(intl),
       Spacer: createSpacerConfig(intl),
       ProductTeaser: createProductTeaserConfig(intl),
-      // CMS components
+      // Content blocks
       HeroBanner: createHeroBannerConfig(intl),
       TextBlock: createTextBlockConfig(intl),
       CategoryGrid: createCategoryGridConfig(intl),

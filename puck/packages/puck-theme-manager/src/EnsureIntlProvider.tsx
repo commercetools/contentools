@@ -78,7 +78,6 @@ export const EnsureIntlProvider: React.FC<
         // Missing translations fall back to each message's `defaultMessage`
         // (and UIKit ships its own defaults), so this is expected — don't flood.
         if (err.code === ReactIntlErrorCode.MISSING_TRANSLATION) return;
-        // eslint-disable-next-line no-console
         console.error(err);
       }}
     >

@@ -1,23 +1,47 @@
 {
   "name": "@commercetools-labs/puck-image-picker",
-  "version": "0.8.1",
+  "version": "1.0.0",
   "description": "Standalone ImagePickerField component with media library support",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/commercetools/contentools.git",
+    "directory": "puck/packages/puck-image-picker"
+  },
+  "bugs": {
+    "url": "https://github.com/commercetools/contentools/issues"
+  },
+  "homepage": "https://github.com/commercetools/contentools/tree/main/puck/packages/puck-image-picker#readme",
+  "keywords": [
+    "commercetools",
+    "puck",
+    "page-builder",
+    "react"
+  ],
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     }
   },
   "files": [
     "dist",
-    "package.json"
+    "README.md"
   ],
   "publishConfig": {
     "access": "public"
+  },
+  "engines": {
+    "node": ">=22"
   },
   "scripts": {
     "build": "tsup",

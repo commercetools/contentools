@@ -6,7 +6,7 @@
 
 import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
-import { renderGrid, type GridProps } from '@commercetools-demo/puck-components';
+import { renderGrid, type GridProps } from '@commercetools-labs/puck-components';
 import { createSpacingField } from '../fields/sizeFields';
 
 export type { GridProps };

@@ -6,7 +6,7 @@
 
 import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
-import { renderSpacer, type SpacerProps } from '@commercetools-demo/puck-components';
+import { renderSpacer, type SpacerProps } from '@commercetools-labs/puck-components';
 import { ColorPickerField } from '../fields/ColorPickerField';
 import { createSpacerHeightField } from '../fields/sizeFields';
 

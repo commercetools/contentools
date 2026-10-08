@@ -17,10 +17,10 @@ export default defineConfig({
     'react',
     'react-dom',
     'react-router-dom',
-    '@commercetools-demo/puck-types',
-    '@commercetools-demo/puck-api',
-    '@commercetools-demo/puck-editor',
-    '@commercetools-demo/puck-renderer',
+    '@commercetools-labs/puck-types',
+    '@commercetools-labs/puck-api',
+    '@commercetools-labs/puck-editor',
+    '@commercetools-labs/puck-renderer',
   ],
   // @measured/puck is bundled (not external) — same pattern as puck-editor
 });

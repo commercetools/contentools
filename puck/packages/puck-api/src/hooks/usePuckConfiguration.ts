@@ -5,7 +5,7 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
-import type { ThemeTokens } from '@commercetools-demo/puck-types';
+import type { ThemeTokens } from '@commercetools-labs/puck-types';
 import {
   createThemeApi,
   getThemeApi,

@@ -4,7 +4,7 @@
  * Freely available, AS IS and UNSUPPORTED. See LICENSE.
  */
 
-import type { ImportResult, ThemeTokens } from '@commercetools-demo/puck-types';
+import type { ImportResult, ThemeTokens } from '@commercetools-labs/puck-types';
 
 const readHeaders = (projectKey: string): Record<string, string> => ({
   'Content-Type': 'application/json',

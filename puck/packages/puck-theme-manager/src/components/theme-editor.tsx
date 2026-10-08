@@ -7,8 +7,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useIntl, type MessageDescriptor } from 'react-intl';
-import { PuckApiProvider, usePuckConfiguration } from '@commercetools-demo/puck-api';
-import type { ThemeTokens } from '@commercetools-demo/puck-types';
+import { PuckApiProvider, usePuckConfiguration } from '@commercetools-labs/puck-api';
+import type { ThemeTokens } from '@commercetools-labs/puck-types';
 import {
   Button,
   Card as NimbusCard,
@@ -168,39 +168,6 @@ interface SelectOption {
   value: string;
   label: MessageDescriptor | string;
 }
-
-const BORDER_RADIUS_OPTIONS: SelectOption[] = [
-  { value: 'none', label: { id: 'ThemeManager.optionNone' } },
-  { value: 'sm', label: { id: 'ThemeManager.optionSmall' } },
-  { value: 'md', label: { id: 'ThemeManager.optionMedium' } },
-  { value: 'lg', label: { id: 'ThemeManager.optionLarge' } },
-  { value: 'full', label: { id: 'ThemeManager.optionFull' } },
-];
-
-const BORDER_WIDTH_OPTIONS: SelectOption[] = [
-  { value: '0', label: '0' },
-  { value: '1', label: '1' },
-  { value: '2', label: '2' },
-];
-
-const BUTTON_STYLE_OPTIONS: SelectOption[] = [
-  { value: 'solid', label: { id: 'ThemeManager.optionSolid' } },
-  { value: 'outline', label: { id: 'ThemeManager.optionOutline' } },
-  { value: 'ghost', label: { id: 'ThemeManager.optionGhost' } },
-];
-
-const CARD_SHADOW_OPTIONS: SelectOption[] = [
-  { value: 'none', label: { id: 'ThemeManager.optionNone' } },
-  { value: 'sm', label: { id: 'ThemeManager.optionSmall' } },
-  { value: 'md', label: { id: 'ThemeManager.optionMedium' } },
-  { value: 'lg', label: { id: 'ThemeManager.optionLarge' } },
-];
-
-const HEADER_STYLE_OPTIONS: SelectOption[] = [
-  { value: 'transparent', label: { id: 'ThemeManager.optionTransparent' } },
-  { value: 'solid', label: { id: 'ThemeManager.optionSolid' } },
-  { value: 'minimal', label: { id: 'ThemeManager.optionMinimal' } },
-];
 
 const SHADOW_STYLE_OPTIONS: SelectOption[] = [
   { value: 'none', label: { id: 'ThemeManager.optionNone' } },
@@ -419,7 +386,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
         <FlatButton
           onClick={() => history.push('/')}
           label={backButton.label}
-          icon={backButton.icon as any}
+          icon={backButton.icon}
         >
           {backButton.label}
         </FlatButton>

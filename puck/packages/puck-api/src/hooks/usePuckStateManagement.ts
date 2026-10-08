@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type {
   PuckPageState,
   PuckStateInfo,
-} from '@commercetools-demo/puck-types';
+} from '@commercetools-labs/puck-types';
 import {
   getPuckPageStatesApi,
   publishPuckPageApi,

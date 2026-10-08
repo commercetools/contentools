@@ -1,11 +1,13 @@
-# Puck CMS packages
+# Puck packages
 
-A set of `@commercetools-demo/puck-*` packages that add a Puck-based visual page
+> **UNSUPPORTED - commercetools-labs.** Freely available, AS IS and UNSUPPORTED. See [LICENSE](../LICENSE). Not covered by commercetools support.
+
+A set of `@commercetools-labs/puck-*` packages that add a Puck-based visual page
 editor, content manager, theme manager and renderer to a commercetools project.
 This guide covers **how to consume the packages from a host application**.
 
 For the internal architecture and build workflow, see the package sources under
-`packages/*` and the reference test app in `puck-react-test/`.
+`packages/*` and the reference test app in `playground/`.
 
 ---
 
@@ -13,14 +15,14 @@ For the internal architecture and build workflow, see the package sources under
 
 | Package | Import | What it gives you |
 | --- | --- | --- |
-| `@commercetools-demo/puck-page-manager` | `PageManager` | Page list + editor/preview routes |
-| `@commercetools-demo/puck-content-manager` | `ContentManager` | Standalone content-block list + editor |
-| `@commercetools-demo/puck-theme-manager` | `ThemeManager` | Design-token editor |
-| `@commercetools-demo/puck-renderer` | `PuckRenderer`, `PuckDataRenderer` | Storefront rendering (data-fetching / pure) |
-| `@commercetools-demo/puck-editor` | `PuckEditor`, `createDefaultPuckConfig`, built-in component factories | Raw editor + Puck config for custom compositions |
-| [`@commercetools-demo/puck-components`](packages/puck-components/README.md) | `defaultRenderConfig`, render fns | Nimbus-free component render layer shared by the editor + renderer ([rich-text theming variables](packages/puck-components/README.md#theming-rich-text-puck-rich-text-content)) |
-| `@commercetools-demo/puck-api` | `PuckApiProvider`, hooks | Data layer (pages, contents, media, datasource, theme) |
-| `@commercetools-demo/puck-types` | types only | Shared TypeScript types |
+| `@commercetools-labs/puck-page-manager` | `PageManager` | Page list + editor/preview routes |
+| `@commercetools-labs/puck-content-manager` | `ContentManager` | Standalone content-block list + editor |
+| `@commercetools-labs/puck-theme-manager` | `ThemeManager` | Design-token editor |
+| `@commercetools-labs/puck-renderer` | `PuckRenderer`, `PuckDataRenderer` | Storefront rendering (data-fetching / pure) |
+| `@commercetools-labs/puck-editor` | `PuckEditor`, `createDefaultPuckConfig`, built-in component factories | Raw editor + Puck config for custom compositions |
+| [`@commercetools-labs/puck-components`](packages/puck-components/README.md) | `defaultRenderConfig`, render fns | Nimbus-free component render layer shared by the editor + renderer ([rich-text theming variables](packages/puck-components/README.md#theming-rich-text-puck-rich-text-content)) |
+| `@commercetools-labs/puck-api` | `PuckApiProvider`, hooks | Data layer (pages, contents, media, datasource, theme) |
+| `@commercetools-labs/puck-types` | types only | Shared TypeScript types |
 
 `PageManager`, `ContentManager`, `ThemeManager`, `PuckEditor` and `PuckRenderer`
 are **self-contained**: each mounts its own data + UI context internally, so you
@@ -65,10 +67,10 @@ npm install slate@^0.123.0 slate-dom@^0.123.0 slate-history@^0.115.0 \
 Then install the packages you need:
 
 ```bash
-npm install @commercetools-demo/puck-page-manager \
-            @commercetools-demo/puck-content-manager \
-            @commercetools-demo/puck-theme-manager \
-            @commercetools-demo/puck-renderer
+npm install @commercetools-labs/puck-page-manager \
+            @commercetools-labs/puck-content-manager \
+            @commercetools-labs/puck-theme-manager \
+            @commercetools-labs/puck-renderer
 ```
 
 ---
@@ -110,7 +112,7 @@ const config = {
 ### Page manager
 
 ```tsx
-import { PageManager } from '@commercetools-demo/puck-page-manager';
+import { PageManager } from '@commercetools-labs/puck-page-manager';
 
 export function PagesRoute() {
   return (
@@ -129,7 +131,7 @@ Props: `parentUrl` (required), `baseURL`, `projectKey`, `businessUnitKey`,
 ### Content manager
 
 ```tsx
-import { ContentManager } from '@commercetools-demo/puck-content-manager';
+import { ContentManager } from '@commercetools-labs/puck-content-manager';
 
 export function ContentRoute() {
   return <ContentManager {...config} parentUrl="/content" defaultContentType="hero" />;
@@ -141,7 +143,7 @@ Props: same as `PageManager`, plus `defaultContentType?`.
 ### Theme manager
 
 ```tsx
-import { ThemeManager } from '@commercetools-demo/puck-theme-manager';
+import { ThemeManager } from '@commercetools-labs/puck-theme-manager';
 
 export function ThemeRoute() {
   return <ThemeManager {...config} />;
@@ -157,7 +159,7 @@ Render a published (or preview/draft) page or content item. `PuckRenderer`
 fetches the data itself:
 
 ```tsx
-import { PuckRenderer } from '@commercetools-demo/puck-renderer';
+import { PuckRenderer } from '@commercetools-labs/puck-renderer';
 
 // Render a page by key (or by slug)
 <PuckRenderer
@@ -183,7 +185,7 @@ import { PuckRenderer } from '@commercetools-demo/puck-renderer';
 For SSR or when you already hold the Puck data, use the pure renderer:
 
 ```tsx
-import { PuckDataRenderer } from '@commercetools-demo/puck-renderer';
+import { PuckDataRenderer } from '@commercetools-labs/puck-renderer';
 
 <PuckDataRenderer data={puckData} />;
 ```
@@ -205,7 +207,7 @@ you can restyle headings, links, lists, code, etc. from your own CSS:
 ```
 
 See the full variable reference in
-[`@commercetools-demo/puck-components` README](packages/puck-components/README.md#theming-rich-text-puck-rich-text-content).
+[`@commercetools-labs/puck-components` README](packages/puck-components/README.md#theming-rich-text-puck-rich-text-content).
 
 ### Custom Puck config
 
@@ -220,7 +222,7 @@ react-intl context (e.g. your host app's `<IntlProvider>`):
 ```tsx
 import { useMemo } from 'react';
 import { useIntl } from 'react-intl';
-import { createDefaultPuckConfig } from '@commercetools-demo/puck-editor';
+import { createDefaultPuckConfig } from '@commercetools-labs/puck-editor';
 
 function PagesRoute() {
   const intl = useIntl();
@@ -299,7 +301,7 @@ The managers talk to a service backend exposing (per business unit):
 /:businessUnitKey/puck-pages
 ```
 
-with the same auth middleware as the existing pages routes. Pages are stored as
+see the Contentools service documentation. Pages are stored as
 `PuckPageValue` `{ key, businessUnitKey, name, slug, puckData, meta, createdAt,
 updatedAt }` in custom objects. See `service/` for the controller, routes and
 container constants.
@@ -308,12 +310,12 @@ container constants.
 
 ## Reference app
 
-`puck-react-test/` is a Vite + React + TypeScript app that mounts all managers.
+`playground/` is a Vite + React + TypeScript app that mounts all managers.
 Copy `.env.example` to `.env`, fill in your credentials, then:
 
 ```bash
 yarn install
-yarn start:test   # http://localhost:5174
+yarn start:playground   # http://localhost:5174
 ```
 
 Its `src/App.tsx` is a concise, working example of mounting every component.

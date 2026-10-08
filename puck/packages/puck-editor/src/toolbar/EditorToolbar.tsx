@@ -6,9 +6,9 @@
 
 import React from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
-import type { PuckStateInfo } from '@commercetools-demo/puck-types';
+import type { PuckStateInfo } from '@commercetools-labs/puck-types';
 import { usePuck } from '@measured/puck';
-import { useVersionHistoryContext } from '@commercetools-demo/puck-version-history';
+import { useVersionHistoryContext } from '@commercetools-labs/puck-version-history';
 import {
   Badge,
   Button,

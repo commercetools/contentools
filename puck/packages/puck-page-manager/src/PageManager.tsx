@@ -19,19 +19,19 @@ import {
   usePuckPages,
   usePuckTemplates,
   usePuckApiContext,
-} from '@commercetools-demo/puck-api';
+} from '@commercetools-labs/puck-api';
 import {
   ComponentsResizer,
   PropertiesResizer,
   PuckEditor,
   UnsavedChangesDialog,
   createDefaultPuckConfig,
-} from '@commercetools-demo/puck-editor';
-import { PuckRenderer } from '@commercetools-demo/puck-renderer';
+} from '@commercetools-labs/puck-editor';
+import { PuckRenderer } from '@commercetools-labs/puck-renderer';
 import { EnsureIntlProvider } from './EnsureIntlProvider';
 import { EnsureNimbusProvider } from './EnsureNimbusProvider';
 import type { Config } from '@measured/puck';
-import type { CreatePuckPageInput, PuckPageListItem } from '@commercetools-demo/puck-types';
+import type { CreatePuckPageInput, PuckPageListItem } from '@commercetools-labs/puck-types';
 import {
   Badge,
   Button,

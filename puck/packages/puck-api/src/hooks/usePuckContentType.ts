@@ -5,7 +5,7 @@
  */
 
 import { useCallback, useState } from 'react';
-import type { ImportResult } from '@commercetools-demo/puck-types';
+import type { ImportResult } from '@commercetools-labs/puck-types';
 import { importDefaultContentTypesApi } from '../api/configuration.api';
 import { usePuckApiContext } from '../context/PuckApiContext';
 

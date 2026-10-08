@@ -6,7 +6,7 @@
 
 import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
-import { renderColumns, type ColumnsProps } from '@commercetools-demo/puck-components';
+import { renderColumns, type ColumnsProps } from '@commercetools-labs/puck-components';
 
 export type { ColumnsProps };
 

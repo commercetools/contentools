@@ -6,7 +6,7 @@
 
 import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
-import { renderCard, type CardProps } from '@commercetools-demo/puck-components';
+import { renderCard, type CardProps } from '@commercetools-labs/puck-components';
 import { RichTextField } from '../fields/RichTextField';
 import { createFontSizeField } from '../fields/fontSizeField';
 import { createRadiusField } from '../fields/sizeFields';

@@ -1,35 +1,48 @@
 {
   "name": "@commercetools-labs/puck-workspace",
   "private": true,
+  "license": "MIT",
   "workspaces": [
     "packages/*",
     "playground"
   ],
   "packageManager": "yarn@4.5.1",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "build": "yarn workspaces foreach --all --topological-dev run build",
     "build:watch": "yarn workspaces foreach --all --parallel run build:watch",
     "typecheck": "yarn workspaces foreach --all run typecheck",
+    "lint": "eslint --max-warnings 0 \"packages/*/src/**/*.{ts,tsx}\" \"playground/src/**/*.{ts,tsx}\" \"scripts/**/*.mjs\"",
+    "test": "vitest run",
+    "check:headers": "node scripts/check-headers.mjs",
+    "check:metadata": "node scripts/verify-metadata.mjs",
+    "check:consumer": "tsc -p scripts/fixtures/consumer/tsconfig.esm.json && tsc -p scripts/fixtures/consumer/tsconfig.cjs.json && tsc -p scripts/fixtures/consumer/tsconfig.bundler.json",
+    "verify": "yarn check:headers && yarn check:metadata && yarn build && yarn typecheck && yarn check:consumer && yarn lint && yarn test",
+    "verify:pack": "node scripts/verify-metadata.mjs && node scripts/publish-packages.mjs",
     "start:playground": "yarn workspace @commercetools-labs/puck-playground dev",
-    "test": "yarn workspaces foreach --all run test",
-    "lint": "eslint \"packages/*/src/**/*.{ts,tsx}\""
+    "release:bump": "node scripts/bump-versions.mjs",
+    "release:publish": "node scripts/publish-packages.mjs"
   },
   "resolutions": {
     "@types/react": "^19",
     "@types/react-dom": "^19"
   },
   "devDependencies": {
-    "@testing-library/dom": "^10.4.0",
-    "@testing-library/jest-dom": "^6.10.0",
-    "@testing-library/react": "^16.3.3",
-    "@testing-library/user-event": "^14.6.7",
-    "jsdom": "^26.1.0",
+    "@eslint/js": "^9",
+    "@testing-library/dom": "^10",
+    "@testing-library/jest-dom": "^6",
+    "@testing-library/react": "^16",
+    "@testing-library/user-event": "^14",
+    "eslint": "^9",
+    "eslint-plugin-react-hooks": "^5",
+    "globals": "^15",
+    "jsdom": "^26",
     "msw": "^2.10.5",
-    "vitest": "^3.2.7",
-    "@typescript-eslint/eslint-plugin": "^8.18.0",
-    "@typescript-eslint/parser": "^8.18.0",
-    "eslint": "^8.57.1",
     "prettier": "^3.4.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8",
+    "vitest": "^3"
   }
 }

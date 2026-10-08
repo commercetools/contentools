@@ -10,11 +10,11 @@ import {
   PuckApiProvider,
   usePuckContents,
   usePuckTemplates,
-} from '@commercetools-demo/puck-api';
+} from '@commercetools-labs/puck-api';
 import type {
   CreatePuckContentInput,
   PuckContentListItem,
-} from '@commercetools-demo/puck-types';
+} from '@commercetools-labs/puck-types';
 import {
   Badge,
   Button,

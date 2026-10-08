@@ -1,9 +1,11 @@
-# @commercetools-demo/puck-components
+> **UNSUPPORTED - commercetools-labs.** Freely available, AS IS and UNSUPPORTED. See [LICENSE](https://github.com/commercetools/contentools/blob/main/LICENSE). Not covered by commercetools support.
 
-Nimbus-free "visualize" layer for the Puck CMS: the component render functions,
+# @commercetools-labs/puck-components
+
+Nimbus-free "visualize" layer for Puck page content: the component render functions,
 their prop types, shared render helpers, the i18n catalogs, and a render-only
 Puck config (`defaultRenderConfig` / `createRenderConfig`). Storefronts consume
-this through [`@commercetools-demo/puck-renderer`](../puck-renderer); the editor
+this through [`@commercetools-labs/puck-renderer`](../puck-renderer); the editor
 composes these render functions with its own field widgets.
 
 Nothing here imports `@commercetools/nimbus` or `@chakra-ui/react`.

@@ -12,7 +12,7 @@ import type {
   PuckContentValue,
   PuckContentVersionEntry,
   PuckData,
-} from '@commercetools-demo/puck-types';
+} from '@commercetools-labs/puck-types';
 import {
   getPuckContentApi,
   updatePuckContentApi,

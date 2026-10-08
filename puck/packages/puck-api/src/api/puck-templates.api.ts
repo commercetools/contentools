@@ -9,7 +9,7 @@ import type {
   PuckTemplateKind,
   PuckTemplateListResponse,
   PuckTemplateResponse,
-} from '@commercetools-demo/puck-types';
+} from '@commercetools-labs/puck-types';
 import { httpClient, readHeaders, writeHeaders } from './http-client';
 
 export const listPuckTemplatesApi = async (

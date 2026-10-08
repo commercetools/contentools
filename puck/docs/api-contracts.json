@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "description": "Contract documentation for every mutating FE→backend API call in @puck/ packages. Each entry traces the payload from UI component through hook/transformer to the final fetch body, and compares it against the backend route's expected schema. Entries with compatible=false are the only ones requiring a contract fix.",
+  "description": "Contract documentation for every mutating FE→backend API call in @commercetools-labs/puck-* packages. Each entry traces the payload from UI component through hook/transformer to the final fetch body, and compares it against the backend route's expected schema. Entries with compatible=false are the only ones requiring a contract fix.",
   "entries": [
     {
       "apiFunction": "createPuckContentApi",
@@ -488,7 +488,7 @@
         {
           "fn": "resolveDatasourceApi",
           "file": "puck/packages/puck-api/src/api/datasource.api.ts:22",
-          "description": "BUG: body = JSON.stringify(params) — sends the params object DIRECTLY as the body root"
+          "description": "Sends { params } as the body root (fixed; see useDatasource)"
         }
       ],
       "fePayload": {
@@ -505,8 +505,7 @@
         },
         "note": "Backend does `const { params } = req.body` — the params object must be nested under a 'params' key"
       },
-      "compatible": false,
-      "incompatibilityNote": "FE sends the params object as the body root (e.g. { \"sku\": \"ABC\" }). Backend destructures `const { params } = req.body`, so it always receives params=undefined and datasource resolution silently returns wrong data. Fix: wrap in resolveDatasourceApi — body should be JSON.stringify({ params }) instead of JSON.stringify(params)."
+      "compatible": true
     }
   ]
 }

@@ -61,6 +61,7 @@ export const useDatasource = (
         setError(err.message);
         setLoading(false);
       });
+    // deps intentionally limited: skusKey is the stable key for skus
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, skusKey, baseURL, projectKey, businessUnitKey, jwtToken]);
 

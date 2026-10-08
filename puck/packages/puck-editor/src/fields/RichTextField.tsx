@@ -24,7 +24,7 @@ export interface RichTextFieldProps {
 //
 // Thin wrapper around Nimbus `RichTextInput`, which accepts and emits HTML
 // strings (converting to/from its internal Slate representation). The props
-// contract is unchanged, so every consumer (the RichText block and the cms/*
+// contract is unchanged, so every consumer (the RichText block and the blocks/*
 // components) keeps working without modification, and stored page data needs
 // no migration.
 // ---------------------------------------------------------------------------

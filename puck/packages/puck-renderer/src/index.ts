@@ -19,4 +19,4 @@ export {
   defaultRenderConfig,
   createRenderConfig,
   intlCatalogs,
-} from '@commercetools-demo/puck-components';
+} from '@commercetools-labs/puck-components';

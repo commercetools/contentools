@@ -7,7 +7,7 @@
 import React, { useContext, type PropsWithChildren } from 'react';
 import { IntlContext, IntlProvider, ReactIntlErrorCode } from 'react-intl';
 // Catalogs come from the Nimbus-free render package.
-import { intlCatalogs as editorCatalogs } from '@commercetools-demo/puck-components';
+import { intlCatalogs as editorCatalogs } from '@commercetools-labs/puck-components';
 
 /**
  * Ensures a react-intl context exists for the rendered Puck components.
@@ -71,7 +71,6 @@ export const EnsureIntlProvider: React.FC<
         // Missing translations fall back to the English base above, so this is
         // expected — don't flood the console.
         if (err.code === ReactIntlErrorCode.MISSING_TRANSLATION) return;
-        // eslint-disable-next-line no-console
         console.error(err);
       }}
     >

@@ -5,7 +5,7 @@
  */
 
 // -----------------------------------------------------------------------------
-// @commercetools-demo/puck-components — Nimbus-free "visualize" layer
+// @commercetools-labs/puck-components — Nimbus-free "visualize" layer
 //
 // Component render functions, their prop types, shared render helpers, the i18n
 // catalogs, and a render-only Puck config. The editor package composes these
@@ -36,8 +36,8 @@ export {
   resolveProductLink,
   productLinkDefaults,
   colors,
-} from './components/cms/shared';
-export type { ProductLinkWith, ProductLinkProps } from './components/cms/shared';
+} from './components/blocks/shared';
+export type { ProductLinkWith, ProductLinkProps } from './components/blocks/shared';
 
 // Component render functions + prop types
 export * from './components';

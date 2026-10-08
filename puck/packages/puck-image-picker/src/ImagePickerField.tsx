@@ -7,6 +7,7 @@
 import React, {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -499,7 +500,10 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
   const [showUpload, setShowUpload] = useState(false);
   const [showLibrary, setShowLibrary] = useState(false);
 
-  const extensions = imagesOnly ? ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'] : [];
+  const extensions = useMemo(
+    () => (imagesOnly ? ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'] : []),
+    [imagesOnly]
+  );
 
   const openLibrary = useCallback(() => {
     void fetchMedia(extensions, 1, 20);

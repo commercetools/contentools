@@ -7,8 +7,8 @@
 import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { PuckApiProvider, usePuckContentType } from '@commercetools-demo/puck-api';
-import type { ImportResult } from '@commercetools-demo/puck-types';
+import { PuckApiProvider, usePuckContentType } from '@commercetools-labs/puck-api';
+import type { ImportResult } from '@commercetools-labs/puck-types';
 import { Button, Card, Stack, Text } from '@commercetools/nimbus';
 import { EnsureNimbusProvider } from '../EnsureNimbusProvider';
 import { EnsureIntlProvider } from '../EnsureIntlProvider';
