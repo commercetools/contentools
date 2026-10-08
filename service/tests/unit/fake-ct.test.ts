@@ -67,3 +67,18 @@ describe('fake commercetools store', () => {
     expect(JSON.stringify(r.body)).toContain('fake-ct: unsupported where clause: foo');
   });
 });
+
+describe('fake product search', () => {
+  it('answers the programmed result and records the call', async () => {
+    const { getApiRoot } = await import('../../src/ct/client');
+    const fake = await import('../support/fake-ct');
+    fake.productSearch.respondWith(() => [{ id: 'p1' }]);
+    const res = await getApiRoot()
+      .products()
+      .search()
+      .post({ body: { query: { exact: { field: 'variants.sku', value: 'S' } } } })
+      .execute();
+    expect(res.body.results[0]?.id).toBe('p1');
+    expect(fake.productSearch.calls).toHaveLength(1);
+  });
+});
