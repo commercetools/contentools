@@ -20,9 +20,28 @@ const alias = Object.fromEntries(
 export default defineConfig({
   resolve: { alias },
   test: {
-    environment: 'jsdom',
+    // the publish-script test packs ten packages; 5 s is too tight when other test files run in parallel
+    testTimeout: 30_000,
     globals: false,
-    include: ['packages/*/src/**/*.test.{ts,tsx}', 'scripts/**/*.test.mjs'],
     setupFiles: ['./vitest.setup.ts'],
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: 'packages',
+          environment: 'jsdom',
+          include: ['packages/*/src/**/*.test.{ts,tsx}', 'scripts/**/*.test.mjs'],
+        },
+      },
+      {
+        // the mock service tests need Node's own fetch, FormData and File
+        extends: true,
+        test: {
+          name: 'mock-server',
+          environment: 'node',
+          include: ['playground/mock-server/**/*.test.mjs'],
+        },
+      },
+    ],
   },
 });
