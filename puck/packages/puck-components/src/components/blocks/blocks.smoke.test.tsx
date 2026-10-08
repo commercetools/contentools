@@ -9,7 +9,6 @@ import '@testing-library/jest-dom/vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { IntlProvider } from 'react-intl';
 import { describe, expect, it } from 'vitest';
-import { PuckApiContext } from '@commercetools-labs/puck-api';
 import { renderFAQAccordion } from './FAQAccordion';
 import { renderCountdownBanner } from './CountdownBanner';
 import { renderNewsletterSignup } from './NewsletterSignup';
@@ -23,13 +22,12 @@ import { renderTextBlock } from './TextBlock';
 import { renderDivider } from './Divider';
 import { renderProductTeaser } from '../ProductTeaser';
 
-// The product blocks are given pre-resolved data, so no network is used.
-const apiValue = { baseURL: 'http://localhost', projectKey: 'p', businessUnitKey: 'b' };
+// The product blocks are given pre-resolved data and no provider: no network is used.
 
 const wrap = (ui: React.ReactElement) =>
   render(
     <IntlProvider locale="en" messages={{}} onError={() => undefined}>
-      <PuckApiContext.Provider value={apiValue}>{ui}</PuckApiContext.Provider>
+      {ui}
     </IntlProvider>
   );
 
@@ -127,7 +125,7 @@ describe('content blocks (smoke)', () => {
 
   it('ProductTeaser renders the pre-resolved product', () => {
     wrap(<>{renderProductTeaser({ id: 'pt', datasource: single, richText: '<p>Teaser copy</p>', linkWith: 'sku', baseUrl: '/p/' } as never)}</>);
-    expect(screen.getAllByText('Blue Shirt')[0]).toBeInTheDocument();
+    expect(screen.getByAltText('Blue Shirt')).toBeInTheDocument();
   });
 
   it('HeroBanner renders the title', () => {

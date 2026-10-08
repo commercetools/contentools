@@ -120,7 +120,9 @@ const UploadModal: React.FC<UploadModalProps> = ({
                 <TextInput
                   value={title}
                   onChange={(value) => setTitle(value)}
-                  placeholder={intl.formatMessage({ id: 'Editor.fileTitlePlaceholder' })}
+                  placeholder={intl.formatMessage({
+                    id: 'Editor.fileTitlePlaceholder',
+                  })}
                 />
               </FormField.Input>
             </FormField.Root>
@@ -132,7 +134,9 @@ const UploadModal: React.FC<UploadModalProps> = ({
                 <TextInput
                   value={description}
                   onChange={(value) => setDescription(value)}
-                  placeholder={intl.formatMessage({ id: 'Editor.optionalDescriptionPlaceholder' })}
+                  placeholder={intl.formatMessage({
+                    id: 'Editor.optionalDescriptionPlaceholder',
+                  })}
                 />
               </FormField.Input>
             </FormField.Root>
@@ -148,19 +152,30 @@ const UploadModal: React.FC<UploadModalProps> = ({
                 transition: 'border-color .2s',
               }}
               onClick={() => inputRef.current?.click()}
-              onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setDragging(true);
+              }}
               onDragLeave={() => setDragging(false)}
               onDrop={handleDrop}
             >
               {file ? (
                 <>
                   <div>📎 {file.name}</div>
-                  <div style={{ fontSize: '11px', marginTop: '4px', color: '#9ca3af' }}>
+                  <div
+                    style={{
+                      fontSize: '11px',
+                      marginTop: '4px',
+                      color: '#9ca3af',
+                    }}
+                  >
                     {(file.size / 1024).toFixed(0)} KB
                   </div>
                 </>
               ) : (
-                <div>📁 <FormattedMessage id="Editor.dropToSelectFile" /></div>
+                <div>
+                  📁 <FormattedMessage id="Editor.dropToSelectFile" />
+                </div>
               )}
               <input
                 ref={inputRef}
@@ -217,7 +232,8 @@ const UploadModal: React.FC<UploadModalProps> = ({
 
 interface LibraryModalProps {
   files: MediaFile[];
-  pagination: { currentPage: number; totalPages: number };
+  pagination: { hasPrevious: boolean; hasNext: boolean };
+  notConfigured: boolean;
   loading: boolean;
   error: string | null;
   onNextPage: () => void;
@@ -229,6 +245,7 @@ interface LibraryModalProps {
 const LibraryModal: React.FC<LibraryModalProps> = ({
   files,
   pagination,
+  notConfigured,
   loading,
   error,
   onNextPage,
@@ -294,9 +311,19 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
         {/* Body */}
         <div style={{ flex: 1, overflow: 'auto', padding: '20px' }}>
           {loading ? (
-            <div style={{ display: 'flex', justifyContent: 'center', padding: '32px' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                padding: '32px',
+              }}
+            >
               <LoadingSpinner />
             </div>
+          ) : notConfigured ? (
+            <Text color="neutral.11">
+              <FormattedMessage id="Editor.mediaNotConfigured" />
+            </Text>
           ) : files.length === 0 ? (
             <Text color="neutral.11">
               <FormattedMessage id="Editor.noFilesFound" />
@@ -321,7 +348,10 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
                       border: `2px solid ${selected?.url === file.url ? '#3b82f6' : 'transparent'}`,
                       borderRadius: '6px',
                       padding: '6px',
-                      background: selected?.url === file.url ? 'rgba(59,130,246,0.07)' : '#f9fafb',
+                      background:
+                        selected?.url === file.url
+                          ? 'rgba(59,130,246,0.07)'
+                          : '#f9fafb',
                     }}
                     onClick={() => setSelected(file)}
                     title={file.title ?? file.name}
@@ -330,7 +360,13 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
                       <img
                         src={file.url}
                         alt={file.name}
-                        style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', background: '#e5e7eb' }}
+                        style={{
+                          width: '80px',
+                          height: '80px',
+                          objectFit: 'cover',
+                          borderRadius: '4px',
+                          background: '#e5e7eb',
+                        }}
                       />
                     ) : (
                       <div
@@ -366,23 +402,25 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
                 ))}
               </div>
 
-              {pagination.totalPages > 1 && (
-                <Stack direction="row" gap="200" alignItems="center" justifyContent="center">
+              {(pagination.hasPrevious || pagination.hasNext) && (
+                <Stack
+                  direction="row"
+                  gap="200"
+                  alignItems="center"
+                  justifyContent="center"
+                >
                   <Button
                     variant="outline"
                     size="sm"
-                    isDisabled={pagination.currentPage <= 1}
+                    isDisabled={!pagination.hasPrevious}
                     onPress={onPrevPage}
                   >
                     <FormattedMessage id="Editor.prev" />
                   </Button>
-                  <Text fontSize="sm" color="neutral.11">
-                    {pagination.currentPage} / {pagination.totalPages}
-                  </Text>
                   <Button
                     variant="outline"
                     size="sm"
-                    isDisabled={pagination.currentPage >= pagination.totalPages}
+                    isDisabled={!pagination.hasNext}
                     onPress={onNextPage}
                   >
                     <FormattedMessage id="Editor.next" />
@@ -414,7 +452,11 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
             <Button variant="outline" onPress={onClose}>
               <FormattedMessage id="Editor.cancel" />
             </Button>
-            <Button variant="solid" isDisabled={!selected} onPress={handleConfirm}>
+            <Button
+              variant="solid"
+              isDisabled={!selected}
+              onPress={handleConfirm}
+            >
               <FormattedMessage id="Editor.select" />
             </Button>
           </Stack>
@@ -443,14 +485,16 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
   const intl = useIntl();
   const {
     files,
-    pagination,
     loading,
     uploading,
     error,
+    notConfigured,
     fetchMedia,
     uploadFile,
     loadNextPage,
     loadPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
   } = useMediaLibrary();
 
   const [showUpload, setShowUpload] = useState(false);
@@ -462,7 +506,7 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
   );
 
   const openLibrary = useCallback(() => {
-    void fetchMedia(extensions, 1, 20);
+    void fetchMedia(extensions, 20);
     setShowLibrary(true);
   }, [fetchMedia, extensions]);
 
@@ -512,12 +556,25 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
           <img
             src={value}
             alt={intl.formatMessage({ id: 'Editor.selectedImagePreview' })}
-            style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }}
+            style={{
+              width: '48px',
+              height: '48px',
+              objectFit: 'cover',
+              borderRadius: '4px',
+              flexShrink: 0,
+            }}
           />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <Text fontSize="sm" color="neutral.11" truncate>{value}</Text>
+            <Text fontSize="sm" color="neutral.11" truncate>
+              {value}
+            </Text>
           </div>
-          <Button variant="ghost" colorPalette="critical" size="xs" onPress={() => onChange('')}>
+          <Button
+            variant="ghost"
+            colorPalette="critical"
+            size="xs"
+            onPress={() => onChange('')}
+          >
             <FormattedMessage id="Editor.remove" />
           </Button>
         </div>
@@ -528,9 +585,11 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
       )}
 
       <Stack direction="row" gap="200">
-        <Button variant="outline" onPress={() => setShowUpload(true)}>
-          <FormattedMessage id="Editor.upload" />
-        </Button>
+        {!notConfigured && (
+          <Button variant="outline" onPress={() => setShowUpload(true)}>
+            <FormattedMessage id="Editor.upload" />
+          </Button>
+        )}
         <Button variant="solid" onPress={openLibrary}>
           <FormattedMessage id="Editor.mediaLibrary" />
         </Button>
@@ -548,7 +607,11 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
       {showLibrary && (
         <LibraryModal
           files={files}
-          pagination={pagination}
+          pagination={{
+            hasPrevious: hasPreviousPage(),
+            hasNext: hasNextPage(),
+          }}
+          notConfigured={notConfigured}
           loading={loading}
           error={error}
           onNextPage={() => void loadNextPage(extensions)}

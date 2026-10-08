@@ -5,13 +5,15 @@
  */
 
 import React, { type ReactNode } from 'react';
-import { ImagePickerContext, type ImagePickerConfig } from './ImagePickerContext';
+import { PuckApiProvider } from '@commercetools-labs/puck-api';
+import type { PuckConnection } from '@commercetools-labs/puck-types';
 import { EnsureIntlProvider } from '../EnsureIntlProvider';
 
-export interface ImagePickerProviderProps extends ImagePickerConfig {
+/** Connection to the service; identical to the one every other Puck package takes. */
+export type ImagePickerConfig = PuckConnection;
+
+export interface ImagePickerProviderProps extends PuckConnection {
   children: ReactNode;
-  /** Content locale (e.g. "en-US"). Resolves to en/es; unsupported → en. */
-  locale?: string;
   /** Per-key message overrides applied on top of the resolved catalog. */
   messageOverrides?: Record<string, string>;
 }
@@ -19,19 +21,27 @@ export interface ImagePickerProviderProps extends ImagePickerConfig {
 export const ImagePickerProvider: React.FC<ImagePickerProviderProps> = ({
   children,
   baseURL,
-  projectKey,
   businessUnitKey,
-  jwtToken,
   locale,
+  jwtToken,
+  getAuthHeaders,
+  fetcher,
+  publicDatasourceResolve,
   messageOverrides,
 }) => {
   return (
-    <ImagePickerContext.Provider
-      value={{ baseURL, projectKey, businessUnitKey, jwtToken }}
+    <PuckApiProvider
+      baseURL={baseURL}
+      businessUnitKey={businessUnitKey}
+      locale={locale}
+      jwtToken={jwtToken}
+      getAuthHeaders={getAuthHeaders}
+      fetcher={fetcher}
+      publicDatasourceResolve={publicDatasourceResolve}
     >
       <EnsureIntlProvider locale={locale} messageOverrides={messageOverrides}>
         {children}
       </EnsureIntlProvider>
-    </ImagePickerContext.Provider>
+    </PuckApiProvider>
   );
 };

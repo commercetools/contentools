@@ -10,6 +10,9 @@ export type { PuckDataRendererProps } from './PuckDataRenderer';
 export { PuckRenderer } from './PuckRenderer';
 export type { PuckRendererProps } from './PuckRenderer';
 
+export { loadPuckData } from './loadPuckData';
+export type { LoadPuckDataTarget } from './loadPuckData';
+
 export { EnsureIntlProvider, resolveLang } from './EnsureIntlProvider';
 export type { EnsureIntlProviderProps } from './EnsureIntlProvider';
 
