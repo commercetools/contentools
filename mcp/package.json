@@ -29,7 +29,8 @@
   "scripts": {
     "build": "tsup",
     "clean": "rm -rf ai-sdk langchain mastra",
-    "mcp": "tsx src/modelcontextprotocol/index.ts"
+    "mcp": "tsx src/modelcontextprotocol/index.ts",
+    "test": "vitest run"
   },
   "engines": {
     "node": ">=18"
@@ -53,9 +54,11 @@
     "@langchain/core": "^0.3.0",
     "@modelcontextprotocol/sdk": "^1.27.1",
     "ai": "^6.0.0",
+    "msw": "^2",
     "ts-node": "^10.9.2",
     "tsup": "^8.3.0",
     "tsx": "^4.21.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "^3"
   }
 }
