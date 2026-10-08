@@ -22,6 +22,7 @@
     "test:e2e": "jest --config e2e/jest.config.js --runInBand"
   },
   "dependencies": {
+    "@babel/standalone": "^7.28.0",
     "@commercetools-backend/express": "^27.13.0",
     "@commercetools-backend/loggers": "^27.13.0",
     "@commercetools/platform-sdk": "^8.27.0",
@@ -32,6 +33,7 @@
     "zod": "^4.0.0"
   },
   "devDependencies": {
+    "@types/babel__standalone": "^7",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.14",

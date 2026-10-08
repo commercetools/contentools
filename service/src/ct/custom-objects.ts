@@ -22,7 +22,10 @@ export interface CustomObjectsClient {
   create(key: string, value: unknown): Promise<CustomObject>;
   put(key: string, value: unknown, version?: number): Promise<CustomObject>;
   delete(key: string): Promise<boolean>;
-  list(where?: string): Promise<CustomObject[]>;
+  list(
+    where?: string,
+    options?: { limit?: number }
+  ): Promise<CustomObject[]>;
   update<T>(
     key: string,
     mutate: (current: T | null) => T,
@@ -111,10 +114,18 @@ export function customObjects(containerKey: ContainerKey): CustomObjectsClient {
       }
     },
 
-    async list(where) {
+    async list(where, options) {
       const results: CustomObject[] = [];
+      const wanted = options?.limit;
       let offset = 0;
       for (;;) {
+        if (wanted !== undefined && results.length >= wanted) {
+          break;
+        }
+        const pageLimit =
+          wanted === undefined
+            ? PAGE_SIZE
+            : Math.min(PAGE_SIZE, wanted - results.length);
         if (offset >= LIST_CAP) {
           getLogger().warn('custom object list truncated at cap', {
             container,
@@ -130,7 +141,7 @@ export function customObjects(containerKey: ContainerKey): CustomObjectsClient {
             .get({
               queryArgs: {
                 ...(where && { where }),
-                limit: PAGE_SIZE,
+                limit: pageLimit,
                 offset,
                 sort: ['id asc'],
                 withTotal: false,
@@ -142,10 +153,10 @@ export function customObjects(containerKey: ContainerKey): CustomObjectsClient {
           throw toCustomError(error, 'customObjects.list');
         }
         results.push(...page);
-        if (page.length < PAGE_SIZE) {
+        if (page.length < pageLimit) {
           break;
         }
-        offset += PAGE_SIZE;
+        offset += pageLimit;
       }
       return results;
     },

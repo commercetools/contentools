@@ -75,6 +75,22 @@ describe('customObjects', () => {
     expect(listCalls).toHaveLength(3);
   });
 
+  it('list stops paginating at options.limit', async () => {
+    const container = customObjects('puckContent').container;
+    for (let i = 0; i < 30; i += 1) {
+      fake.seed(container, `k${i}`, { i });
+    }
+    const found = await customObjects('puckContent').list(undefined, {
+      limit: 1,
+    });
+    expect(found).toHaveLength(1);
+    const listCalls = fake.requests.filter(
+      (r) => r.method === 'GET' && r.url.includes('/custom-objects/')
+    );
+    expect(listCalls).toHaveLength(1);
+    expect(listCalls[0]?.url).toContain('limit=1');
+  });
+
   it('list applies a where predicate', async () => {
     const co = customObjects('puckPage');
     await co.put('a', { bu: 'x' });

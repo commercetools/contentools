@@ -109,7 +109,7 @@
     "@babel/template" "^7.29.7"
     "@babel/types" "^7.29.8"
 
-"@babel/parser@^7.1.0", "@babel/parser@^7.14.7", "@babel/parser@^7.20.7", "@babel/parser@^7.23.9", "@babel/parser@^7.29.7", "@babel/parser@^7.29.8", "@babel/parser@^7.29.9":
+"@babel/parser@^7.1.0", "@babel/parser@^7.14.7", "@babel/parser@^7.20.7", "@babel/parser@^7.23.9", "@babel/parser@^7.25.6", "@babel/parser@^7.29.7", "@babel/parser@^7.29.8", "@babel/parser@^7.29.9":
   version "7.29.9"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.29.9.tgz#e7ee0a24f752c5296c6455855ccb72662e67ea96"
   integrity sha512-CjXrNHTnvqBVqHgdBysY3vk2T8tpJHb5/RMeHJBTyVa9xgugCB0CJTx/3oO8RV2QRQP391RWpB7D6hLjm8V9uA==
@@ -247,6 +247,11 @@
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.29.10.tgz#fe9920782f7ee34029165ac6f272984917a1641b"
   integrity sha512-NpugTzbKgGrNe45Ui32cN8vCFFMxVtP/9rtfwv0nP5FRDAjvYBxJcLVpYA9mr1jxP6cnIT7x9LUzuDTbWYYNRA==
 
+"@babel/standalone@^7.28.0":
+  version "7.29.10"
+  resolved "https://registry.yarnpkg.com/@babel/standalone/-/standalone-7.29.10.tgz#63939e49c8fb9987d6dc9084f786bb1e7c818834"
+  integrity sha512-Hw4VoSA8lWuYPfYlzfKP3W44F166NEQJbgJRkzZSn1lAqNPq0nVlOEfBKTLckQDs6X3cUcAq2Nh6vopUMvkk3g==
+
 "@babel/template@^7.29.7", "@babel/template@^7.3.3":
   version "7.29.7"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.29.7.tgz#4d9d4004f645cdd304de958c725162784ecac700"
@@ -269,7 +274,7 @@
     "@babel/types" "^7.29.8"
     debug "^4.3.1"
 
-"@babel/types@^7.0.0", "@babel/types@^7.20.7", "@babel/types@^7.28.2", "@babel/types@^7.29.7", "@babel/types@^7.29.8", "@babel/types@^7.3.3":
+"@babel/types@^7.0.0", "@babel/types@^7.20.7", "@babel/types@^7.25.6", "@babel/types@^7.28.2", "@babel/types@^7.29.7", "@babel/types@^7.29.8", "@babel/types@^7.3.3":
   version "7.29.8"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.29.8.tgz#1229eef31d85156d70fa3f4cd859376d0eaf6863"
   integrity sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg==
@@ -785,7 +790,7 @@
     color "^5.0.2"
     text-hex "1.0.x"
 
-"@types/babel__core@^7.1.14":
+"@types/babel__core@^7.1.14", "@types/babel__core@^7.20.5":
   version "7.20.5"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.20.5.tgz#3df15f27ba85319caa07ba08d0721889bb39c017"
   integrity sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==
@@ -796,14 +801,26 @@
     "@types/babel__template" "*"
     "@types/babel__traverse" "*"
 
-"@types/babel__generator@*":
+"@types/babel__generator@*", "@types/babel__generator@^7.6.8":
   version "7.27.0"
   resolved "https://registry.yarnpkg.com/@types/babel__generator/-/babel__generator-7.27.0.tgz#b5819294c51179957afaec341442f9341e4108a9"
   integrity sha512-ufFd2Xi92OAVPYsy+P4n7/U7e68fex0+Ee8gSG9KX7eo084CWiQ4sdxktvdl0bOPupXtVJPY19zk6EwWqUQ8lg==
   dependencies:
     "@babel/types" "^7.0.0"
 
-"@types/babel__template@*":
+"@types/babel__standalone@^7":
+  version "7.1.9"
+  resolved "https://registry.yarnpkg.com/@types/babel__standalone/-/babel__standalone-7.1.9.tgz#51ae2d49beaee9a8be1cd6a2997af83a5077d03a"
+  integrity sha512-IcCNPLqpevUD7UpV8QB0uwQPOyoOKACFf0YtYWRHcmxcakaje4Q7dbG2+jMqxw/I8Zk0NHvEps66WwS7z/UaaA==
+  dependencies:
+    "@babel/parser" "^7.25.6"
+    "@babel/types" "^7.25.6"
+    "@types/babel__core" "^7.20.5"
+    "@types/babel__generator" "^7.6.8"
+    "@types/babel__template" "^7.4.4"
+    "@types/babel__traverse" "^7.20.6"
+
+"@types/babel__template@*", "@types/babel__template@^7.4.4":
   version "7.4.4"
   resolved "https://registry.yarnpkg.com/@types/babel__template/-/babel__template-7.4.4.tgz#5672513701c1b2199bc6dad636a9d7491586766f"
   integrity sha512-h/NUaSyG5EyxBIp8YRxo4RMe2/qQgvyowRwVMzhYhBCONbW8PUsg4lkFMrhgZhUe5z3L3MiLDuvyJ/CaPa2A8A==
@@ -811,7 +828,7 @@
     "@babel/parser" "^7.1.0"
     "@babel/types" "^7.0.0"
 
-"@types/babel__traverse@*", "@types/babel__traverse@^7.0.6":
+"@types/babel__traverse@*", "@types/babel__traverse@^7.0.6", "@types/babel__traverse@^7.20.6":
   version "7.28.0"
   resolved "https://registry.yarnpkg.com/@types/babel__traverse/-/babel__traverse-7.28.0.tgz#07d713d6cce0d265c9849db0cbe62d3f61f36f74"
   integrity sha512-8PvcXf70gTDZBgt9ptxJ8elBeBjcLOAcOtoO/mPJjtji1+CdGbHgm77om1GrsPxsiE+uXIpNSK64UYaIwQXd4Q==
