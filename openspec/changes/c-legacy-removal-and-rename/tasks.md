@@ -16,8 +16,8 @@
 
 Context: C only edits the copied trees. Pre-conditions: spec A archived (`yarn test:tools` green, `yarn check:spdx` green), Node 22.
 
-- [ ] 1.1 Verify the starting point: `ls service admin-app mcp puck tools/lib/files.mjs` works and `ls cms .github 2>&1` says "No such file or directory" for both. Done when: both are absent (the legacy `cms/` package and the old workflows are intentionally not in the TARGET).
-- [ ] 1.2 Baseline counts (to compare at the end): `lf | wc -l` (about 490). Write the number in your notes.
+- [x] 1.1 Verify the starting point: `ls service admin-app mcp puck tools/lib/files.mjs` works and `ls cms .github 2>&1` says "No such file or directory" for both. Done when: both are absent (the legacy `cms/` package and the old workflows are intentionally not in the TARGET).
+- [x] 1.2 Baseline counts (to compare at the end): `lf | wc -l` (about 490). Write the number in your notes.
 
 Rollback for the whole spec: re-run A's tasks 3.1-3.6 for the tree you want to reset (the copy is deterministic), then 6.x of A (ossify).
 
@@ -25,7 +25,7 @@ Rollback for the whole spec: re-run A's tasks 3.1-3.6 for the tree you want to r
 
 Context: two zero-dependency Node scripts. The guard fails on forbidden words; the proof script fails on calls to legacy routes. Both have `node --test` tests (style of A). Every `.mjs` carries the SPDX header (`yarn headers` adds it).
 
-- [ ] 2.1 Create `tools/check-forbidden-terms.mjs`:
+- [x] 2.1 Create `tools/check-forbidden-terms.mjs`:
   ```js
   #!/usr/bin/env node
   import { existsSync, readFileSync } from 'node:fs';
@@ -109,7 +109,7 @@ Context: two zero-dependency Node scripts. The guard fails on forbidden words; t
   ```
   (`OK (0 hits, N pending)`; spec O's final state is `0 pending`.)
   Create empty `tools/forbidden-pending.txt` and `tools/forbidden-allow.txt` (each with a one-line `#` header comment explaining the format: pending = `<path or dir/>  # owner spec`; allow = `<path> <term-id>  # reason`).
-- [ ] 2.2 Create `tools/check-legacy-route-calls.mjs`:
+- [x] 2.2 Create `tools/check-legacy-route-calls.mjs`:
   ```js
   #!/usr/bin/env node
   import { readFileSync } from 'node:fs';
@@ -153,10 +153,10 @@ Context: two zero-dependency Node scripts. The guard fails on forbidden words; t
   }
   ```
   Note on the regex: the `${query}` suffix of `puck-templates${query}` is accepted by the `[/?$]` class.
-- [ ] 2.3 Tests (`node:test`) in `tools/test/`: `check-forbidden-terms.test.mjs` (scanText finds `Firestore` on line 3; `scanPath('puck/packages/x/src/components/cms/A.tsx')` and `scanPath('service/src/samples/CMS/a.ts')` each return a `cms` hit with line 0; a `package.json` text line `"description": "... Puck CMS integration"` is a `cms` hit; `evaluate` fails an unlisted hit, tolerates a listed hit, fails a stale pending entry, honours `allow`; "Content Tools" with a space is NOT a hit); `check-legacy-route-calls.test.mjs` (`extractPaths` on a template string; `classify` marks `/${businessUnitKey}/content-items` FAIL and `/${businessUnitKey}/puck-pages/${key}` OK, `/${businessUnitKey}/puck-templates${query}` OK).
+- [x] 2.3 Tests (`node:test`) in `tools/test/`: `check-forbidden-terms.test.mjs` (scanText finds `Firestore` on line 3; `scanPath('puck/packages/x/src/components/cms/A.tsx')` and `scanPath('service/src/samples/CMS/a.ts')` each return a `cms` hit with line 0; a `package.json` text line `"description": "... Puck CMS integration"` is a `cms` hit; `evaluate` fails an unlisted hit, tolerates a listed hit, fails a stale pending entry, honours `allow`; "Content Tools" with a space is NOT a hit); `check-legacy-route-calls.test.mjs` (`extractPaths` on a template string; `classify` marks `/${businessUnitKey}/content-items` FAIL and `/${businessUnitKey}/puck-pages/${key}` OK, `/${businessUnitKey}/puck-templates${query}` OK).
   Command: `yarn test:tools` -> all pass.
-- [ ] 2.4 Add root scripts to `package.json`: `"check:forbidden": "node tools/check-forbidden-terms.mjs"`, `"check:legacy-calls": "node tools/check-legacy-route-calls.mjs"`.
-- [ ] 2.5 Baseline: `node tools/check-forbidden-terms.mjs --no-pending --list | tail -60 > <scratch>/baseline.txt` and read it. Done when: it lists the classes of explore.md section 1 (about 190 files; `puck/packages` dominates because of the scope name).
+- [x] 2.4 Add root scripts to `package.json`: `"check:forbidden": "node tools/check-forbidden-terms.mjs"`, `"check:legacy-calls": "node tools/check-legacy-route-calls.mjs"`.
+- [x] 2.5 Baseline: `node tools/check-forbidden-terms.mjs --no-pending --list | tail -60 > <scratch>/baseline.txt` and read it. Done when: it lists the classes of explore.md section 1 (about 190 files; `puck/packages` dominates because of the scope name).
 
 Pitfalls: `\bpoc\b` is a word match (no hit in "pocket"). The guard intentionally ignores `openspec/` and `plans/`. `listFiles` skips `public`, `dist`, `build` dirs.
 Rollback: delete the two scripts, tests, two list files and the two package.json entries.
@@ -165,10 +165,10 @@ Rollback: delete the two scripts, tests, two list files and the two package.json
 
 Context: the HTTP calls of the front ends are plain template strings, so the compiler cannot tell us which routes are used. This script is the proof that the kept list is complete.
 
-- [ ] 3.1 Run `mkdir -p plans/evidence/c && node tools/check-legacy-route-calls.mjs | tee plans/evidence/c/legacy-calls.txt`.
+- [x] 3.1 Run `mkdir -p plans/evidence/c && node tools/check-legacy-route-calls.mjs | tee plans/evidence/c/legacy-calls.txt`.
   Expected (copy of the source analysis): 28 lines, all `OK`, ending `legacy-calls: OK (28 endpoint templates, 0 legacy)` (26 puck templates + the two tenant calls `/authenticate-project` in `admin-app/src/hooks/use-contentools-api/use-contentools-api.ts:28` and `/refresh-jwt` in `admin-app/src/contexts/auth.tsx:68`). If a FAIL line appears, STOP: a legacy route is used. Record it in `questions.md` and do NOT delete that route.
-- [ ] 3.2 Cross-check the service side: `grep -rn "validateJwt\|requireProjectKey" service/src/routes/puck-*.route.ts | wc -l` is informational; more importantly run `grep -rnE "from '\.\./controllers/(content-item|page|page-content-item)\.controller'" service/src | grep -v "^service/src/routes/\(content-item\|pages\|page-\)"` and expect NO output (no kept file imports the three legacy controllers except each other).
-- [ ] 3.3 Confirm the three helper controllers that LOOK legacy are shared: `grep -n "content-state-controller\|content-version-controller" service/src/controllers/puck-page.controller.ts service/src/controllers/puck-content.controller.ts` prints lines (keep them).
+- [x] 3.2 Cross-check the service side: `grep -rn "validateJwt\|requireProjectKey" service/src/routes/puck-*.route.ts | wc -l` is informational; more importantly run `grep -rnE "from '\.\./controllers/(content-item|page|page-content-item)\.controller'" service/src | grep -v "^service/src/routes/\(content-item\|pages\|page-\)"` and expect NO output (no kept file imports the three legacy controllers except each other).
+- [x] 3.3 Confirm the three helper controllers that LOOK legacy are shared: `grep -n "content-state-controller\|content-version-controller" service/src/controllers/puck-page.controller.ts service/src/controllers/puck-content.controller.ts` prints lines (keep them).
   Done when 3.1-3.3 behave as stated and `plans/evidence/c/legacy-calls.txt` exists.
 
 Pitfalls: the script only sees template literals that start with `${baseURL}`/`${baseUrl}`. If you ever find a call built differently (string concatenation), add a case to the script and its test.
@@ -178,9 +178,9 @@ Rollback: none (read-only).
 
 Context: removes 44 routes and everything only they used (explore.md section 2). Work in this order so the compiler guides you. Pre-condition: Section 3.
 
-- [ ] 4.1 Edit `service/src/routes/service.route.ts`: delete the imports of `contentItemStateRouter`, `contentItemVersionRouter`, `contentItemRouter`, `pageComponentRouter`, `pageRowRouter`, `pageStateRouter`, `pageVersionRouter`, `pagesRouter`, `proxyRouter`, `pageContentItemStateRouter`, `deprecationMiddleware` and their `serviceRouter.use('/', ...)` lines plus the `serviceRouter.use(deprecationMiddleware)` line and its comment. Final body keeps `configurationRouter`, `contentTypeRouter`, `fileRouter`, `datasourceRouter`, `productRouter`, `authRouter`, `puckPageRouter`, `puckContentRouter`, `puckTemplateRouter` in that order.
-- [ ] 4.2 Delete the ten route files: `cd service/src/routes && rm content-item.route.ts content-item-state.route.ts content-item-version.route.ts page-component.route.ts page-content-item-state.route.ts page-row.route.ts page-state.route.ts page-version.route.ts pages.route.ts proxy.route.ts`.
-- [ ] 4.3 Reduce `service/src/routes/content-type.route.ts` to the import route only. Keep the handler for `POST /content-type/import` (original lines 65-78, shown below) and delete the other five handlers (lines 13-64 and 80-152). Keep only these imports: `Router, RequestHandler` (express), `logger`, `importDefaultContentTypes`, `validateJwt`, `validateProject`. Remove `CustomObjectController`, `CONTENT_TYPE_CONTAINER`, `uuidv4`, `requireProjectKey` imports (unused now).
+- [x] 4.1 Edit `service/src/routes/service.route.ts`: delete the imports of `contentItemStateRouter`, `contentItemVersionRouter`, `contentItemRouter`, `pageComponentRouter`, `pageRowRouter`, `pageStateRouter`, `pageVersionRouter`, `pagesRouter`, `proxyRouter`, `pageContentItemStateRouter`, `deprecationMiddleware` and their `serviceRouter.use('/', ...)` lines plus the `serviceRouter.use(deprecationMiddleware)` line and its comment. Final body keeps `configurationRouter`, `contentTypeRouter`, `fileRouter`, `datasourceRouter`, `productRouter`, `authRouter`, `puckPageRouter`, `puckContentRouter`, `puckTemplateRouter` in that order.
+- [x] 4.2 Delete the ten route files: `cd service/src/routes && rm content-item.route.ts content-item-state.route.ts content-item-version.route.ts page-component.route.ts page-content-item-state.route.ts page-row.route.ts page-state.route.ts page-version.route.ts pages.route.ts proxy.route.ts`.
+- [x] 4.3 Reduce `service/src/routes/content-type.route.ts` to the import route only. Keep the handler for `POST /content-type/import` (original lines 65-78, shown below) and delete the other five handlers (lines 13-64 and 80-152). Keep only these imports: `Router, RequestHandler` (express), `logger`, `importDefaultContentTypes`, `validateJwt`, `validateProject`. Remove `CustomObjectController`, `CONTENT_TYPE_CONTAINER`, `uuidv4`, `requireProjectKey` imports (unused now).
   ```ts
   const contentTypeRouter = Router();
   contentTypeRouter.post('/content-type/import', validateJwt, validateProject, (async (req, res, next) => {
@@ -194,13 +194,13 @@ Context: removes 44 routes and everything only they used (explore.md section 2).
   }) as RequestHandler);
   export default contentTypeRouter;
   ```
-- [ ] 4.4 Edit `service/src/routes/file.route.ts`: delete the whole `fileRouter.post('/compile-upload', ...)` handler (from the line `fileRouter.post('/compile-upload'` to its closing `}) as RequestHandler);` just above `export default fileRouter;`). Remove imports `bundleCode` (`../utils/bundler.utils`), `CustomObjectController`, `CONTENT_TYPE_CONTAINER` (only that handler used them). Keep `POST /:businessUnitKey/upload-file` and `GET /:businessUnitKey/media-library`.
-- [ ] 4.5 Delete legacy code: from `service/src`: `rm controllers/content-item.controller.ts controllers/page.controller.ts controllers/page-content-item.controller.ts mappers/page.ts utils/bundler.utils.ts utils/constants.ts utils/assert.utils.ts utils/distance.ts middleware/deprecation.middleware.ts types/rollup-plugin-string.d.ts types/sdkError.ts types/index.types.ts validators/helpers.validators.ts samples/content-types.ts samples/datasource.ts api/success.api.ts interfaces/config.interface.ts interfaces/resource.interface.ts interfaces/response.interface.ts` and `rm -r mappers api interfaces utils/__mocks__ samples/bb 2>/dev/null` (empty dirs; `samples/bb` is untracked junk and not in the TARGET - ignore the error). KEEP `validators/env.validators.ts`.
-- [ ] 4.6 Edit `service/src/constants.ts`: delete the exports `CONTENT_ITEM_CONTAINER`, `CONTENT_ITEM_STATE_CONTAINER`, `CONTENT_ITEM_VERSION_CONTAINER`, `JWT_TOKEN_KEY`, `DATASOURCES` (the whole array), `SHARED_CONTAINER`, `CMS_DEPLOYED_URL_KEY`, `PAGE_VERSION_CONTAINER`, `PAGE_STATE_CONTAINER`, `CONTENT_PAGE_CONTAINER`, `PAGE_CONTENT_ITEMS_CONTAINER`, `PAGE_CONTENT_ITEM_STATE_CONTAINER`, `PAGE_CONTENT_ITEM_VERSION_CONTAINER`, `NUMBER_OF_COLUMNS`. Change the default of `CORS_ALLOWED_ORIGINS` to `'localhost:5173,localhost:3000,localhost:3001,localhost:5174'` (removes `commercetools.com,frontend.site,ct-poc.net`; spec E rewrites CORS). Keep the rest.
-- [ ] 4.7 Rename the samples directory and fix its import: `git`-free: `mv service/src/samples/CMS service/src/samples/content-types`; in `service/src/controllers/content-type-import.controller.ts` change line 6 `'../samples/CMS'` to `'../samples/content-types'` and the comment at line 33 `samples/CMS/index` to `samples/content-types/index`; in `service/src/utils/constants.ts` - already deleted. In `service/src/samples/content-types/*.ts` replace any `CMS` word (run `grep -rn -i "cms" service/src/samples` - expected no output after the move; fix by hand otherwise).
+- [x] 4.4 Edit `service/src/routes/file.route.ts`: delete the whole `fileRouter.post('/compile-upload', ...)` handler (from the line `fileRouter.post('/compile-upload'` to its closing `}) as RequestHandler);` just above `export default fileRouter;`). Remove imports `bundleCode` (`../utils/bundler.utils`), `CustomObjectController`, `CONTENT_TYPE_CONTAINER` (only that handler used them). Keep `POST /:businessUnitKey/upload-file` and `GET /:businessUnitKey/media-library`.
+- [x] 4.5 Delete legacy code: from `service/src`: `rm controllers/content-item.controller.ts controllers/page.controller.ts controllers/page-content-item.controller.ts mappers/page.ts utils/bundler.utils.ts utils/constants.ts utils/assert.utils.ts utils/distance.ts middleware/deprecation.middleware.ts types/rollup-plugin-string.d.ts types/sdkError.ts types/index.types.ts validators/helpers.validators.ts samples/content-types.ts samples/datasource.ts api/success.api.ts interfaces/config.interface.ts interfaces/resource.interface.ts interfaces/response.interface.ts` and `rm -r mappers api interfaces utils/__mocks__ samples/bb 2>/dev/null` (empty dirs; `samples/bb` is untracked junk and not in the TARGET - ignore the error). KEEP `validators/env.validators.ts`.
+- [x] 4.6 Edit `service/src/constants.ts`: delete the exports `CONTENT_ITEM_CONTAINER`, `CONTENT_ITEM_STATE_CONTAINER`, `CONTENT_ITEM_VERSION_CONTAINER`, `JWT_TOKEN_KEY`, `DATASOURCES` (the whole array), `SHARED_CONTAINER`, `CMS_DEPLOYED_URL_KEY`, `PAGE_VERSION_CONTAINER`, `PAGE_STATE_CONTAINER`, `CONTENT_PAGE_CONTAINER`, `PAGE_CONTENT_ITEMS_CONTAINER`, `PAGE_CONTENT_ITEM_STATE_CONTAINER`, `PAGE_CONTENT_ITEM_VERSION_CONTAINER`, `NUMBER_OF_COLUMNS`. Change the default of `CORS_ALLOWED_ORIGINS` to `'localhost:5173,localhost:3000,localhost:3001,localhost:5174'` (removes `commercetools.com,frontend.site,ct-poc.net`; spec E rewrites CORS). Keep the rest.
+- [x] 4.7 Rename the samples directory and fix its import: `git`-free: `mv service/src/samples/CMS service/src/samples/content-types`; in `service/src/controllers/content-type-import.controller.ts` change line 6 `'../samples/CMS'` to `'../samples/content-types'` and the comment at line 33 `samples/CMS/index` to `samples/content-types/index`; in `service/src/utils/constants.ts` - already deleted. In `service/src/samples/content-types/*.ts` replace any `CMS` word (run `grep -rn -i "cms" service/src/samples` - expected no output after the move; fix by hand otherwise).
   Note: `samples/content-types/footer-block.ts` is one of the three files ossify refused (a form field named `copyright`); it already carries the hand-added header from A task 6.2a. Check with `head -6 service/src/samples/content-types/footer-block.ts`.
-- [ ] 4.8 Edit `service/package.json`: remove dependencies `lit`, `rollup`, `@rollup/plugin-commonjs`, `@rollup/plugin-node-resolve`, `@rollup/plugin-typescript`, `rollup-plugin-string` and devDependencies `rollup-plugin-typescript2`, `vite`, `vite-node`. Keep `@babel/standalone`, `@types/babel__standalone`. Delete the line `/temp/` from `service/.gitignore` and `temp-compile/*` from `service/.eslintignore`. (Do NOT touch `@google-cloud/firestore`, `jsonwebtoken`: D removes them; they are guarded via the pending list.)
-- [ ] 4.9 Delete legacy e2e and docs: `cd service/e2e && rm auth.e2e.ts content-item.e2e.ts content-type.e2e.ts page-component.e2e.ts page-content-item-state.e2e.ts page-row.e2e.ts page-state.e2e.ts page-version.e2e.ts pages.e2e.ts proxy.e2e.ts`. Replace `service/README.md` (1132 lines of legacy API docs) by this stub:
+- [x] 4.8 Edit `service/package.json`: remove dependencies `lit`, `rollup`, `@rollup/plugin-commonjs`, `@rollup/plugin-node-resolve`, `@rollup/plugin-typescript`, `rollup-plugin-string` and devDependencies `rollup-plugin-typescript2`, `vite`, `vite-node`. Keep `@babel/standalone`, `@types/babel__standalone`. Delete the line `/temp/` from `service/.gitignore` and `temp-compile/*` from `service/.eslintignore`. (Do NOT touch `@google-cloud/firestore`, `jsonwebtoken`: D removes them; they are guarded via the pending list.)
+- [x] 4.9 Delete legacy e2e and docs: `cd service/e2e && rm auth.e2e.ts content-item.e2e.ts content-type.e2e.ts page-component.e2e.ts page-content-item-state.e2e.ts page-row.e2e.ts page-state.e2e.ts page-version.e2e.ts pages.e2e.ts proxy.e2e.ts`. Replace `service/README.md` (1132 lines of legacy API docs) by this stub:
   ```md
   # Contentools service
 
@@ -208,9 +208,9 @@ Context: removes 44 routes and everything only they used (explore.md section 2).
   This README is rewritten by spec P. Until then see `openspec/changes/` for the plan.
   ```
   Also fix `service/e2e/README.md` lines 1 and 3: `CMS service` -> `Contentools service`.
-- [ ] 4.10 Compile: `cd service && yarn install && yarn tsc --noEmit -p tsconfig.json`. Expected: exit 0. Typical fixes: an `import` of a deleted module that you missed (the error names the file); unused imports are not errors for `tsc` but remove them anyway (`yarn lint`).
+- [x] 4.10 Compile: `cd service && yarn install && yarn tsc --noEmit -p tsconfig.json`. Expected: exit 0. Typical fixes: an `import` of a deleted module that you missed (the error names the file); unused imports are not errors for `tsc` but remove them anyway (`yarn lint`).
   Done when: `yarn tsc --noEmit` exits 0 and `yarn lint` shows no new errors.
-- [ ] 4.11 Runtime proof (no credentials needed): `cd service && yarn build && (PORT=8080 node build/index.js & echo $! > /tmp/svc.pid) && sleep 2` then
+- [x] 4.11 Runtime proof (no credentials needed): `cd service && yarn build && (PORT=8080 node build/index.js & echo $! > /tmp/svc.pid) && sleep 2` then
   ```bash
   for p in test-bu/content-items test-bu/pages test-bu/page-items/x/states test-bu/pages/x/rows proxy-script compile-upload content-type content-type/x; do printf '%s ' $p; curl -s -o /dev/null -w '%{http_code}\n' localhost:8080/service/$p; done
   ```
@@ -224,17 +224,17 @@ Rollback: `cd` TARGET; re-copy `service/` per A and redo A 6.x (ossify) and 2.x/
 
 Context: `mcp/` turns service routes into AI tools. 46 of its 88 tools call routes that no longer exist. Pre-condition: Section 4 (so you know the route list is final).
 
-- [ ] 5.1 Delete tool groups: `cd mcp/src/shared && rm -r auth content-item content-item-version content-item-state page page-version page-state page-row page-component page-content-item-state proxy`.
-- [ ] 5.2 Edit `mcp/src/shared/content-type/tools.ts`: keep only the `import_content_types` entry (original lines 73-79) and the imports/schemas it needs; delete `list_content_types`, `get_content_type`, `create_content_type`, `update_content_type`, `delete_content_type` and now-unused schema constants. Edit `mcp/src/shared/file/tools.ts`: delete the `compile_upload` entry (original line 33). 
-- [ ] 5.3 Edit `mcp/src/shared/tools.ts`: keep imports/spreads only for `configurationTools`, `contentTypeTools`, `datasourceTools`, `fileTools`; `allTools = [...configurationTools, ...contentTypeTools, ...datasourceTools, ...fileTools]`.
-- [ ] 5.4 Edit `mcp/src/shared/functions.ts` (592 lines): delete every map entry whose key is not one of the 42 kept methods: `get_all_configurations`; `{get,create,update,delete}_{theme,header,facet,footer,site_metadata,category_listing,translations,b2b_account_menu_links}`; `list_datasources`, `get_datasource`, `create_datasource`, `update_datasource`, `delete_datasource`, `test_datasource`; `upload_file`, `get_media_library`; `import_content_types`. Remove helper code that only the deleted entries used.
-- [ ] 5.5 Rename (typo and scope), then fix names by hand where a sentence needs it:
+- [x] 5.1 Delete tool groups: `cd mcp/src/shared && rm -r auth content-item content-item-version content-item-state page page-version page-state page-row page-component page-content-item-state proxy`.
+- [x] 5.2 Edit `mcp/src/shared/content-type/tools.ts`: keep only the `import_content_types` entry (original lines 73-79) and the imports/schemas it needs; delete `list_content_types`, `get_content_type`, `create_content_type`, `update_content_type`, `delete_content_type` and now-unused schema constants. Edit `mcp/src/shared/file/tools.ts`: delete the `compile_upload` entry (original line 33). 
+- [x] 5.3 Edit `mcp/src/shared/tools.ts`: keep imports/spreads only for `configurationTools`, `contentTypeTools`, `datasourceTools`, `fileTools`; `allTools = [...configurationTools, ...contentTypeTools, ...datasourceTools, ...fileTools]`.
+- [x] 5.4 Edit `mcp/src/shared/functions.ts` (592 lines): delete every map entry whose key is not one of the 42 kept methods: `get_all_configurations`; `{get,create,update,delete}_{theme,header,facet,footer,site_metadata,category_listing,translations,b2b_account_menu_links}`; `list_datasources`, `get_datasource`, `create_datasource`, `update_datasource`, `delete_datasource`, `test_datasource`; `upload_file`, `get_media_library`; `import_content_types`. Remove helper code that only the deleted entries used.
+- [x] 5.5 Rename (typo and scope), then fix names by hand where a sentence needs it:
   ```bash
   lf | grep '^mcp/' | xargs perl -pi -e 's/ContentToolsAPI/ContentoolsAPI/g; s/ContentToolsAgent/ContentoolsAgent/g; s/ContentToolsTool/ContentoolsTool/g; s/createContentToolsMcpServer/createContentoolsMcpServer/g; s/contenttools-mcp/contentools-mcp/g; s#\@commercetools-demo/#\@commercetools-labs/#g'
   ```
   In `mcp/package.json`: `"name": "@commercetools-labs/contentools-mcp"` (ossify had produced `...contenttools-mcp`; the perl above fixes it), `"description": "Contentools MCP - AI SDK, LangChain and MCP tools for the Contentools service API"`, `"clean": "rm -rf ai-sdk langchain"` (drop `mastra`). In `mcp/.gitignore` delete the `mastra/*` line.
-- [ ] 5.6 Rewrite `mcp/README.md` minimally (spec P/M finish it): title `# @commercetools-labs/contentools-mcp`; one-sentence intro "Contentools MCP exposes the Contentools service API as tools for the AI SDK, LangChain and the Model Context Protocol."; keep the install and usage examples with the new names; delete the `/mastra` example and bullet (lines 47-49, 57 of the original); replace `https://your-service.run.app/service` by `https://<your-connect-service-url>/service`; replace "All CMS service routes (configuration, content types, content items, pages, datasources, file, auth, etc.)" by "Tools for configuration documents, datasources, media files and content-type import.".
-- [ ] 5.7 Verify: `cd mcp && yarn install && yarn tsc --noEmit` exits 0; registry vs implementation:
+- [x] 5.6 Rewrite `mcp/README.md` minimally (spec P/M finish it): title `# @commercetools-labs/contentools-mcp`; one-sentence intro "Contentools MCP exposes the Contentools service API as tools for the AI SDK, LangChain and the Model Context Protocol."; keep the install and usage examples with the new names; delete the `/mastra` example and bullet (lines 47-49, 57 of the original); replace `https://your-service.run.app/service` by `https://<your-connect-service-url>/service`; replace "All CMS service routes (configuration, content types, content items, pages, datasources, file, auth, etc.)" by "Tools for configuration documents, datasources, media files and content-type import.".
+- [x] 5.7 Verify: `cd mcp && yarn install && yarn tsc --noEmit` exits 0; registry vs implementation:
   ```bash
   cd mcp && yarn tsx -e "import {allTools} from './src/shared/tools'; import * as f from './src/shared/functions'; console.log(allTools.length)"
   ```
@@ -248,8 +248,8 @@ Rollback: re-copy `mcp/` per A.
 Context: coordinator decision after the specs I/J were drafted: C covers `service/` and `mcp/` only. Spec I renames the two `cms` directories inside `puck/` (`components/cms` -> `components/blocks` in puck-components and puck-editor), the `@commercetools-demo/` -> `@commercetools-labs/` scope inside `puck/`, and the puck prose; spec K does the admin-app renames. C therefore does NOT edit `puck/` or `admin-app/` at all, but the guard scans the whole tree, so both trees are pending entries (Section 8) until I and K finish.
 This section is the checked, verbatim work list handed to I and K (do not execute it in C).
 
-- [ ] 6.1 Confirm nothing in `puck/` or `admin-app/` was edited by C: `lf | grep -E '^(puck|admin-app)/'` timestamps are unchanged since A (`find puck admin-app -newer package.json -type f -not -path '*/node_modules/*'` prints only files A's ossify touched, or nothing).
-- [ ] 6.2 Reference for spec I (puck). Scope rename command: `lf | grep '^puck/' | xargs grep -Il "@commercetools-demo" | xargs perl -pi -e 's#\@commercetools-demo/#\@commercetools-labs/#g'`. Directory renames: `mv puck/packages/puck-components/src/components/cms .../blocks`, same for puck-editor; fix imports with `perl -pi -e "s#\./cms/#./blocks/#g; s#\./cms'#./blocks'#g; s#components/cms#components/blocks#g"` over `puck/packages/(puck-components|puck-editor)/src`. Remaining prose to fix by hand (original lines from SOURCE):
+- [x] 6.1 Confirm nothing in `puck/` or `admin-app/` was edited by C: `lf | grep -E '^(puck|admin-app)/'` timestamps are unchanged since A (`find puck admin-app -newer package.json -type f -not -path '*/node_modules/*'` prints only files A's ossify touched, or nothing).
+- [x] 6.2 Reference for spec I (puck). Scope rename command: `lf | grep '^puck/' | xargs grep -Il "@commercetools-demo" | xargs perl -pi -e 's#\@commercetools-demo/#\@commercetools-labs/#g'`. Directory renames: `mv puck/packages/puck-components/src/components/cms .../blocks`, same for puck-editor; fix imports with `perl -pi -e "s#\./cms/#./blocks/#g; s#\./cms'#./blocks'#g; s#components/cms#components/blocks#g"` over `puck/packages/(puck-components|puck-editor)/src`. Remaining prose to fix by hand (original lines from SOURCE):
 
   | File | Old text | New text |
   | --- | --- | --- |
@@ -269,7 +269,7 @@ This section is the checked, verbatim work list handed to I and K (do not execut
   | `puck/README.md:1` | `# Puck CMS packages` | `# Contentools Puck packages` |
   | `puck/playground/index.html:6` | `<title>Puck CMS Test App</title>` | `<title>Contentools Playground</title>` |
   I's done-when: `grep -rIil cms puck --exclude-dir=node_modules` prints nothing; each `puck/packages/*/package.json` `exports` contains only `"."` so the folder rename cannot break consumers; `cd puck && yarn install && yarn typecheck` is green.
-- [ ] 6.3 Reference for spec K (admin-app). (a) `admin-app/src/constants.ts`: `entryPointUriPath = 'contentools'` and `.env.example` `ENTRY_POINT_URI_PATH=contentools` (was `multitenant-contentools-wrapper` / `contentools-wrapper`). (b) `CMS_API_URL` -> `CONTENTOOLS_SERVICE_URL` (Q-C1) in `.env.example`, `custom-application-config.mjs:20`, `src/contexts/auth.tsx:42-43`, `src/hooks/use-contentools-api/use-contentools-api.ts:21-22`, `src/routes.tsx:23,46,55,64`. (c) `custom-application-config.mjs`: delete the three `*.<region>.run.app` hosts in `connect-src` and `script-src` and the `'frame-src': ['*.ct-poc.net']` line (L rebuilds the CSP). (d) `package.json`: `"versions:demo"` -> `"versions:labs": "manypkg upgrade @commercetools-labs"`. (e) `src/components/admin-layout/index.tsx:68` badge `CMS` -> `Contentools`. (f) `src/i18n/data/core.json`: delete the five unused `Welcome.*` keys (one contains "for demo purposes"). (g) the onboarding files (`connect-project.tsx`, `contexts/auth.tsx`, `use-create-api-client`, `use-contentools-api`, `types/tenant-config.ts` with `CmsConfig`) are deleted by K. 
+- [x] 6.3 Reference for spec K (admin-app). (a) `admin-app/src/constants.ts`: `entryPointUriPath = 'contentools'` and `.env.example` `ENTRY_POINT_URI_PATH=contentools` (was `multitenant-contentools-wrapper` / `contentools-wrapper`). (b) `CMS_API_URL` -> `CONTENTOOLS_SERVICE_URL` (Q-C1) in `.env.example`, `custom-application-config.mjs:20`, `src/contexts/auth.tsx:42-43`, `src/hooks/use-contentools-api/use-contentools-api.ts:21-22`, `src/routes.tsx:23,46,55,64`. (c) `custom-application-config.mjs`: delete the three `*.<region>.run.app` hosts in `connect-src` and `script-src` and the `'frame-src': ['*.ct-poc.net']` line (L rebuilds the CSP). (d) `package.json`: `"versions:demo"` -> `"versions:labs": "manypkg upgrade @commercetools-labs"`. (e) `src/components/admin-layout/index.tsx:68` badge `CMS` -> `Contentools`. (f) `src/i18n/data/core.json`: delete the five unused `Welcome.*` keys (one contains "for demo purposes"). (g) the onboarding files (`connect-project.tsx`, `contexts/auth.tsx`, `use-create-api-client`, `use-contentools-api`, `types/tenant-config.ts` with `CmsConfig`) are deleted by K. 
 
 Pitfalls: do not "helpfully" run the scope rename over the whole tree in C: it would conflict with I's own commits. The MCP scope is renamed in C (task 5.5) because spec M/N build on it.
 Rollback: n/a (nothing changed).
@@ -278,24 +278,24 @@ Rollback: n/a (nothing changed).
 
 Context: tenant/Firestore terms are removed by D, E, J, K, M. The pending list records each owner so nothing is forgotten.
 
-- [ ] 8.1 Run `node tools/check-forbidden-terms.mjs --no-pending --list`. Expected files (this is the list produced from the SOURCE analysis; reconcile by hand if yours differs, and explain any extra file in `questions.md`): 
+- [x] 8.1 Run `node tools/check-forbidden-terms.mjs --no-pending --list`. Expected files (this is the list produced from the SOURCE analysis; reconcile by hand if yours differs, and explain any extra file in `questions.md`): 
   * D: `service/.env.example`, `service/package.json`, `service/src/app.ts`, `service/src/controllers/auth.controller.ts`, `service/src/controllers/datasource-resolution.route.ts`, `service/src/middleware/jwt.middleware.ts`, `service/src/middleware/project-key.middleware.ts`, `service/src/middleware/project.middleware.ts`, `service/src/routes/auth.route.ts`, `service/src/routes/configuration.route.ts`, `service/src/routes/content-type.route.ts`, `service/src/routes/datasource.route.ts`, `service/src/routes/file.route.ts`, `service/src/routes/puck-content.route.ts`, `service/src/routes/puck-page.route.ts`, `service/src/routes/puck-template.route.ts`, `service/src/types/service.types.ts`, `service/src/utils/firestore.utils.ts`
   * B/F (service e2e, rewritten for the new auth): `service/e2e/README.md`, `service/e2e/setup.ts`, `service/e2e/helpers/http.ts`, `service/e2e/configuration.e2e.ts`, `service/e2e/datasource.e2e.ts`, `service/e2e/file.e2e.ts`, `service/e2e/puck-content.e2e.ts`, `service/e2e/puck-page.e2e.ts`
   * I/J (whole tree, because I renames the scope and the `cms` dirs, J removes `x-project-key`): the directory prefix `puck/`
   * K (whole tree): the directory prefix `admin-app/`
   * M: `mcp/src/shared/functions.ts`, `mcp/src/types/auth.ts`
   Write them into `tools/forbidden-pending.txt`, one per line, `<path or dir/>  # <owner>` (e.g. `service/src/utils/firestore.utils.ts  # D`, `puck/  # I,J`, `admin-app/  # K`). A directory prefix is stale only if NO file under it has a hit; I and K narrow or delete their prefix as they finish.
-- [ ] 8.2 (the `puck/` folder names `components/cms` and the `Puck CMS` descriptions in `package.json` files are reported by the guard through `scanPath` and the text scan; they sit under the pending prefix `puck/` until I renames them.) `yarn check:forbidden` -> `forbidden-terms: OK (0 hits, <N> pending)` where N = number of lines you wrote (about 29). Done when it exits 0. Then remove one pending line temporarily: the guard must fail naming that file with `[term]` hits; restore it. Add an inline comment at the top of the pending file: "Spec O requires this file to be empty."
-- [ ] 8.3 `tools/forbidden-allow.txt` must stay empty (comment only).
+- [x] 8.2 (the `puck/` folder names `components/cms` and the `Puck CMS` descriptions in `package.json` files are reported by the guard through `scanPath` and the text scan; they sit under the pending prefix `puck/` until I renames them.) `yarn check:forbidden` -> `forbidden-terms: OK (0 hits, <N> pending)` where N = number of lines you wrote (about 29). Done when it exits 0. Then remove one pending line temporarily: the guard must fail naming that file with `[term]` hits; restore it. Add an inline comment at the top of the pending file: "Spec O requires this file to be empty."
+- [x] 8.3 `tools/forbidden-allow.txt` must stay empty (comment only).
 
 ## 9. Verification (all automated)
 
-- [ ] 9.1 `yarn test:tools` -> pass. `yarn check:spdx` -> OK (new files have headers; run `yarn headers` if not).
-- [ ] 9.2 `yarn check:forbidden` -> OK as in 8.2; `yarn check:legacy-calls` -> `legacy-calls: OK (<n> endpoint templates, 0 legacy)`.
-- [ ] 9.3 `ls .github 2>&1 | head -1` -> "No such file or directory"; `ls cms 2>&1 | head -1` -> same.
-- [ ] 9.4 Service: `cd service && yarn tsc --noEmit` and 4.11 curl checks -> as stated.
-- [ ] 9.5 MCP: `cd mcp && yarn tsc --noEmit` -> exit 0; registry count 42.
-- [ ] 9.8 Counts: legacy files deleted: `ls service/src/routes | wc -l` -> `10` (auth, configuration, content-type, datasource, file, product, puck-content, puck-page, puck-template, service); `ls service/e2e/*.e2e.ts | wc -l` -> `5`; `ls mcp/src/shared` shows `api.ts auth? ` (no `auth` dir) `configuration content-type datasource file format.ts functions.ts tools.ts`.
+- [x] 9.1 `yarn test:tools` -> pass. `yarn check:spdx` -> OK (new files have headers; run `yarn headers` if not).
+- [x] 9.2 `yarn check:forbidden` -> OK as in 8.2; `yarn check:legacy-calls` -> `legacy-calls: OK (<n> endpoint templates, 0 legacy)`.
+- [x] 9.3 `ls .github 2>&1 | head -1` -> "No such file or directory"; `ls cms 2>&1 | head -1` -> same.
+- [x] 9.4 Service: `cd service && yarn tsc --noEmit` and 4.11 curl checks -> as stated.
+- [x] 9.5 MCP: `cd mcp && yarn tsc --noEmit` -> exit 0; registry count 42.
+- [x] 9.8 Counts: legacy files deleted: `ls service/src/routes | wc -l` -> `10` (auth, configuration, content-type, datasource, file, product, puck-content, puck-page, puck-template, service); `ls service/e2e/*.e2e.ts | wc -l` -> `5`; `ls mcp/src/shared` shows `api.ts auth? ` (no `auth` dir) `configuration content-type datasource file format.ts functions.ts tools.ts`.
 
 ## 10. Definition of Done (scenario mapping)
 

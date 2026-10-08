@@ -29,6 +29,7 @@ export const TERMS = [
 const SKIP_PREFIX = [
   'openspec/', 'plans/', '.claude/', 'tools/check-forbidden-terms.mjs', 'tools/test/check-forbidden-terms.test.mjs',
   // Tooling that must name the things it polices or locate the external publish plugin on disk:
+  'tools/forbidden-pending.txt', 'tools/forbidden-allow.txt',
   'tools/check-legacy-route-calls.mjs', 'tools/labs-publish.mjs', 'tools/test/labs-publish.test.mjs',
 ];
 const SKIP_FILE = [/(^|\/)(package-lock\.json|yarn\.lock|pnpm-lock\.yaml)$/, /\.(png|jpe?g|gif|ico|webp|woff2?|ttf|otf|pdf|zip|tgz|svg)$/i];
