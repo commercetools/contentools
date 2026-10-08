@@ -1,0 +1,21 @@
+{
+  "name": "@commercetools-labs/contentools",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tooling hub for the Contentools reference implementation. Not a workspace root: each Connect app is self-contained.",
+  "license": "MIT",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "install:all": "node tools/run-all.mjs install",
+    "build": "node tools/run-all.mjs build",
+    "typecheck": "node tools/run-all.mjs typecheck",
+    "lint": "node tools/run-all.mjs lint",
+    "test": "node tools/run-all.mjs test",
+    "test:e2e": "node tools/run-all.mjs test:e2e",
+    "verify": "node tools/run-all.mjs lint typecheck test build",
+    "headers": "node tools/labs-publish.mjs ossify --apply",
+    "check:spdx": "node tools/check-spdx-headers.mjs",
+    "test:tools": "node --test \"tools/test/*.test.mjs\"",
+    "gate": "node tools/labs-publish.mjs gate"
+  }
+}
