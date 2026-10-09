@@ -122,8 +122,27 @@ deployAs:
         - key: SERVICE_API_TOKEN
           description: "Static token the content service accepts (same value as the service application's SERVICE_API_TOKEN); at least 32 characters."
           required: true
+  - name: admin-app
+    applicationType: merchant-center-custom-application
+    configuration:
+      standardConfiguration:
+        - key: CUSTOM_APPLICATION_ID
+          description: "The Application ID the Merchant Center shows after the custom application is registered."
+          required: true
+        - key: ENTRY_POINT_URI_PATH
+          description: "The entry point URI path the custom application is registered with (unique per region, 2-64 chars, lowercase alphanumerics and hyphens)."
+          required: true
+          default: "contentools"
+        - key: CONTENTOOLS_SERVICE_URL
+          description: "https URL of the service application, ending in /service. Empty on the first deployment; set it with a redeploy once the service URL is known."
+          required: false
 inheritAs:
   apiClient:
     scopes:
       - manage_key_value_documents
       - view_products
+  configuration:
+    standardConfiguration:
+      - key: CLOUD_IDENTIFIER
+        description: "Merchant Center cloud identifier of the project's region (gcp-eu, gcp-us, gcp-au, aws-eu, aws-us); the admin-app's MC API host and the issuer of the forwarded tokens verified by the service."
+        required: true
