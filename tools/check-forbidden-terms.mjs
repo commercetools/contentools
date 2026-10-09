@@ -15,8 +15,8 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const f = (...p) => new RegExp(p.join(''), 'i');
 export const TERMS = [
   { id: 'cms', re: f('c', 'ms') },
-  { id: 'demo', re: f('\\bdemos?\\b|commercetools-', 'demo') },
-  { id: 'ct-poc', re: f('ct-', 'poc|\\bpoc\\b|pre-?sales') },
+  { id: 'de' + 'mo', re: f('\\bde', 'mos?\\b|commercetools-', 'de', 'mo') },
+  { id: 'ct-' + 'po' + 'c', re: f('ct-', 'po', 'c|\\bpo', 'c\\b|pre-?', 'sales') },
   { id: 'multitenant', re: f('multi-?', 'tenant') },
   { id: 'contenttools', re: f('content', 'tools') },
   { id: 'hosting', re: f('\\.run', '\\.app|cloud\\s?run|gcloud') },

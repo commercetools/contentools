@@ -32,7 +32,7 @@ for (const d of pkgs) {
   versions.add(pj.version);
   const expect = `@commercetools-labs/${d}`;
   if (pj.name !== expect) errors.push(`${d}: name ${pj.name} != ${expect}`);
-  if (pj.version !== '1.0.0' && !anyVersion) errors.push(`${d}: version ${pj.version}`);
+  if (!/^1\.0\.0(-rc\.\d+)?$/.test(pj.version) && !anyVersion) errors.push(`${d}: version ${pj.version}`);
   if (pj.license !== 'MIT') errors.push(`${d}: license`);
   if (pj.repository?.directory !== `puck/packages/${d}`) errors.push(`${d}: repository.directory`);
   if (!pj.bugs?.url || !pj.homepage) errors.push(`${d}: bugs/homepage`);

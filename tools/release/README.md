@@ -48,3 +48,54 @@ The root tooling (`yarn test`, `yarn verify`, `release:puck:*`) runs puck throug
 12. The owner pushes: `git push origin v1.0.0-rc.N` or `v1.0.0` (checkpoint CP-3). Later fixes are normal commits, allowed only when the labs gate is clean on the new commit (squash only for leaks); then bump, `yarn verify:strict`, next rc tag. Tags are never moved or deleted once pushed.
 13. Connect: `commercetools connect connectorstaged create --repository-url <url> --repository-tag v1.0.0 --creator-email <email> --name contentools --key contentools`, then `deployment create` per region (see `service/README.md`).
 14. Rollback: never `npm unpublish`. Use `npm deprecate @commercetools-labs/<pkg>@<version> "<reason>"` and publish a patch. Delete an unpushed local tag with `git tag -d v<version>`.
+
+## Public launch: export, labs gate, checkpoints
+
+The launch publishes ONE squashed commit from a clean export. Nothing in this section runs without the owner's literal reply at the matching checkpoint.
+Set `LABS_PUBLISH_DIR` to the folder holding the labs scripts `ossify.mjs` and `gate.mjs` (they are run in place; their policy file is never copied or quoted). `yarn gate` and `yarn headers` wrap them for the development tree.
+
+Export filter (everything except `plans/`, `openspec/changes/`, `.claude/`, `.cursor/`, `.vscode/`, `.playwright-mcp/`, build and dependency folders, logs, tarballs and every `.env*` except `.env.example`):
+
+```
+- .git/
+- node_modules/
+- build/
+- dist/
+- coverage/
+- .turbo/
+- .yarn/cache/
+- .yarn/install-state.gz
+- plans/
+- openspec/changes/
+- .claude/
+- .cursor/
+- .vscode/
+- .playwright-mcp/
+- .DS_Store
+- *.log
+- *.tgz
++ .env.example
++ **/.env.example
+- .env
+- .env.*
+- **/.env
+- **/.env.*
+```
+
+Pre-flight (offline, repeat until clear; fixes are always made in the development tree, never in the export):
+
+1. `rm -rf "$REL" && mkdir -p "$REL" && rsync -a --filter="merge rsync-filter.txt" "$DEV"/ "$REL"/`
+2. `node "$LABS_PUBLISH_DIR/ossify.mjs" --repo "$REL" --apply --year 2026` (idempotent; read the report: `0 FOREIGN COPYRIGHT` and no third-party directories).
+3. In `$REL`: `git init -b main`, add, commit with the owner's global identity and the message below, then `node "$LABS_PUBLISH_DIR/gate.mjs" --repo "$REL"`. Expect `0 failure(s), 0 warning(s)` and `CLEAR.`; the gate refuses a dirty tree. `--ack` only acknowledges WARN findings (never FAIL); write down each acknowledged warning.
+4. Review the add list (`git add --dry-run .`): no env files, key files, `node_modules`, `plans/`, one root `LICENSE`, four `yarn.lock` files and no `package-lock.json`.
+5. `tools/release/anonymous-proof.sh <clone-url> <expected-sha8> [workdir]` (`REF=<tag>`, `EXPECT_COMMITS=<n>`): fresh HOME, no credentials, install, typecheck, test and build for every app and puck. `SKIP_BUILDS=1` checks only clone, commit hash and commit count (works against a local bare repository).
+
+The initial commit message names the project, lists the four deliverables (service, Merchant Center app, MCP server, puck packages), states MIT, AS IS and UNSUPPORTED, says history was intentionally not migrated, and ends with the Co-Authored-By trailer.
+
+Checkpoint messages (send verbatim with the placeholders filled, then wait; an agent's own output is never approval):
+
+* CP-1, reply `go npm-rc`: "Release checkpoint 1 of 3 (npm release candidate). The pre-flight gate is clear on commit <sha8> (<N> files, 0 FAIL, <W> WARN reviewed). I am about to publish these 10 public packages at 1.0.0-rc.<N> with `--access public` and dist-tag next, in this order: <list>. Tarball listings: <path>. Published versions cannot be undone."
+* CP-2, reply `go repo`: "Release checkpoint 2 of 3 (public repository). Final gate output on commit <sha8>: clear (history 1 commit, <N> files). Add list reviewed: <path>. The public author will be <name / email>. I am about to create the public repository, push `main`, set the labs property and topic, and push tag v1.0.0-rc.<N>. Once public, the commit is permanently fetchable."
+* CP-3, reply `go final`: "Release checkpoint 3 of 3 (final 1.0.0). Full acceptance passed on rc.<N>. Changes since the rc: <diff stat>. Gate on the final commit <sha8>: clear. I am about to publish the 10 packages at 1.0.0 (dist-tag latest), push, tag v1.0.0, enable private vulnerability reporting and create release notes."
+
+After the first push, a fix is a normal commit (re-export, ossify, commit, gate on HEAD, push) as long as the gate stays clean. A leak (secret, customer name, internal host) in any pushed commit is not a normal fix: rotate, delete the repository, restart with a new single squashed commit.

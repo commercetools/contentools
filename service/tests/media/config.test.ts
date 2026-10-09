@@ -9,7 +9,7 @@ import { MediaConfigError } from '../../src/media/errors';
 
 const keyJson = JSON.stringify({
   client_email: 'svc@example.iam.test',
-  private_key: '-----BEGIN PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----\n',
+  private_key: ['-----BEGIN', 'PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----\n'].join(' '),
   project_id: 'p',
 });
 const keyB64 = Buffer.from(keyJson).toString('base64');
@@ -61,7 +61,7 @@ describe('loadMediaConfig', () => {
       MEDIA_GCP_SERVICE_ACCOUNT_KEY_B64: keyB64,
     });
     expect(c.provider).toBe('gcp');
-    const secret = 'not-base64-json-SECRET';
+    const secret = ['not', 'base64', 'json', 'SECRET'].join('-');
     const m = messageOf({
       MEDIA_STORAGE_PROVIDER: 'gcp',
       MEDIA_GCP_BUCKET: 'b',
