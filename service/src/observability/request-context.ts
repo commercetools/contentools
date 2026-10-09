@@ -10,7 +10,7 @@ import type { RequestHandler } from 'express';
 
 const store = new AsyncLocalStorage<{ correlationId: string }>();
 
-const VALID_ID = /^[A-Za-z0-9._:-]{1,128}$/;
+const VALID_ID = /^[A-Za-z0-9._-]{8,128}$/;
 
 export const currentCorrelationId = (): string | undefined =>
   store.getStore()?.correlationId;

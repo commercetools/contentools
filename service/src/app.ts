@@ -13,6 +13,7 @@ import {
 } from './middleware/error.middleware';
 import { accessLog } from './observability/access-log';
 import { requestContext } from './observability/request-context';
+import { SERVICE_MOUNT } from './routes/mount';
 import serviceRouter from './routes/service.route';
 
 export function createApp(config: Configuration = getConfiguration()): Express {
@@ -22,7 +23,7 @@ export function createApp(config: Configuration = getConfiguration()): Express {
   app.use(accessLog);
   app.use(createCorsMiddleware(config.auth.corsOrigins));
   app.use(express.json({ limit: '2mb' }));
-  app.use('/service', serviceRouter);
+  app.use(SERVICE_MOUNT, serviceRouter);
   app.use(notFoundMiddleware);
   app.use(errorMiddleware);
   return app;
