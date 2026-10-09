@@ -86,6 +86,42 @@ deployAs:
         - key: MEDIA_CLOUDINARY_API_SECRET
           description: "API secret; required when MEDIA_STORAGE_PROVIDER is cloudinary."
           required: false
+  - name: mcp
+    applicationType: service
+    endpoint: /mcp
+    scripts:
+      postDeploy: yarn connector:post-deploy
+    configuration:
+      standardConfiguration:
+        - key: CONTENT_SERVICE_URL
+          description: "External URL of the contentools service application, ending in /service (https, no trailing slash)."
+          required: true
+        - key: DEFAULT_BUSINESS_UNIT_KEY
+          description: "Business unit used when a tool call omits businessUnitKey."
+          required: false
+          default: "default"
+        - key: MCP_ENABLE_WRITES
+          description: "true registers the 20 mutating tools; they act with the full authority of SERVICE_API_TOKEN."
+          required: false
+          default: "false"
+        - key: MCP_TOOL_GROUPS
+          description: "all, or comma-separated: pages,contents,templates,configuration,datasources,products,media,content-types."
+          required: false
+          default: "all"
+        - key: MCP_ALLOWED_ORIGINS
+          description: "Comma-separated browser origins allowed to call /mcp; empty allows only non-browser clients."
+          required: false
+        - key: MCP_REQUEST_TIMEOUT_MS
+          description: "Timeout in milliseconds for each call from a tool to the service."
+          required: false
+          default: "15000"
+      securedConfiguration:
+        - key: MCP_ACCESS_TOKEN
+          description: "Bearer token(s) MCP clients must send; a comma-separated list allows rotation; each at least 32 characters."
+          required: true
+        - key: SERVICE_API_TOKEN
+          description: "Static token the content service accepts (same value as the service application's SERVICE_API_TOKEN); at least 32 characters."
+          required: true
 inheritAs:
   apiClient:
     scopes:
