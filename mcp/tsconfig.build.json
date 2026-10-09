@@ -2,5 +2,5 @@
   "extends": "./tsconfig.json",
   "compilerOptions": { "rootDir": "src", "declaration": false, "sourceMap": true },
   "include": ["src"],
-  "exclude": ["src/adapters", "**/*.test.ts"]
+  "exclude": ["src/adapters", "src/stdio", "**/*.test.ts"]
 }

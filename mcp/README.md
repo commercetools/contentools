@@ -100,3 +100,13 @@ claude mcp add --transport http contentools https://<mcp-app-url>/mcp \
 Deploy the `service` application first and copy its URL (ending in `/service`) into `CONTENT_SERVICE_URL` of the `mcp` deployment: Connect provides no variable holding a sibling application's URL. Set `SERVICE_API_TOKEN` to the same value on both applications. The post-deploy script (`yarn connector:post-deploy`) is a read-only probe: it checks that the service answers and accepts the token (a 404 for a probe page counts as accepted); it fails the deployment on 401 or 403 and only warns when the service is unreachable. A cold start on a sandbox can take about 15 seconds, so a first MCP call may need a retry.
 
 The folder is self-contained (no imports from sibling folders). `src/core` holds the transport-neutral tool definitions; `src/mcp` the MCP glue; `src/server` the Express app.
+
+## npm package
+
+The same 44 tools are published as `@commercetools-labs/contentools-mcp` for in-process use (AI SDK, LangChain, your own MCP server, or stdio via `npx -y @commercetools-labs/contentools-mcp`):
+
+```bash
+npm i @commercetools-labs/contentools-mcp zod
+```
+
+The npm landing page is [`publish/README.md`](./publish/README.md). Published manually with `yarn publish:npm` (dry run by default; `--publish` for the real thing); there is no CI. Local checks: `yarn check:app && yarn build:npm && yarn verify:package` (after `node scripts/publish.mjs` created `.publish`).

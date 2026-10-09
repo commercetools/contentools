@@ -23,8 +23,8 @@
 **Context.** One function turns user options into a configured client plus the filtered tool list, so both adapters (and the stdio entry) behave identically.
 **Pre-conditions.** As above.
 
-- [ ] 1.1 Install dev tools (no runtime deps change): `cd <root>/mcp && yarn add -D tsup@^8.5.1 ai@^6.0.116 @langchain/core@^0.3.80 publint @arethetypeswrong/cli`. (Dev versions pick the **older** end of each peer range; the matrix in section 6 covers the newer end.) **Done when** `npm ls tsup ai @langchain/core` lists them and `yarn gcp-build` still passes (adapters are excluded from it).
-- [ ] 1.2 Create `src/adapters/options.ts`:
+- [x] 1.1 Install dev tools (no runtime deps change): `cd <root>/mcp && yarn add -D tsup@^8.5.1 ai@^6.0.116 @langchain/core@^0.3.80 publint @arethetypeswrong/cli`. (Dev versions pick the **older** end of each peer range; the matrix in section 6 covers the newer end.) **Done when** `npm ls tsup ai @langchain/core` lists them and `yarn gcp-build` still passes (adapters are excluded from it).
+- [x] 1.2 Create `src/adapters/options.ts`:
 ```ts
 import { ContentoolsClient, selectTools, runTool, type AnyToolDefinition, type ToolGroup } from '../core';
 export interface AdapterOptions {
@@ -44,7 +44,7 @@ export function buildToolset(o: AdapterOptions): Toolset {
 }
 ```
   (If M's `ClientOptions.fetchImpl` is typed required-optional, pass `...(o.fetch ? { fetchImpl: o.fetch } : {})`.) **Done when** `npx tsc --noEmit` passes.
-- [ ] 1.3 Unit test `tests/adapters/options.test.ts`: bad URL throws; empty token throws; defaults (24 read tools, BU `default`); `enableWrites: true` -> 44; `groups: ['pages']` read-only -> 8. **Done when** green.
+- [x] 1.3 Unit test `tests/adapters/options.test.ts`: bad URL throws; empty token throws; defaults (24 read tools, BU `default`); `enableWrites: true` -> 44; `groups: ['pages']` read-only -> 8. **Done when** green.
 
 **Pitfalls.** Do **not** validate token length >= 32 here (library users may use dev tokens). Never log `token`. The returned `run` returns text and never throws for service/validation errors (that is `runTool`'s contract).
 **Verification.** `npx jest tests/adapters/options`. **Rollback.** Delete `src/adapters/options.ts`.
@@ -55,7 +55,7 @@ export function buildToolset(o: AdapterOptions): Toolset {
 
 **Context.** `ai` exports `tool({ description, inputSchema, execute })`; the result goes into `generateText({ tools })`.
 
-- [ ] 2.1 Create `src/adapters/ai-sdk/index.ts` (shape verified against ai 6.0.116 and 7.0.134):
+- [x] 2.1 Create `src/adapters/ai-sdk/index.ts` (shape verified against ai 6.0.116 and 7.0.134):
 ```ts
 import { tool, type Tool } from 'ai';
 import { z } from 'zod';
@@ -75,7 +75,7 @@ export function createAiSdkTools(options: AdapterOptions): Record<string, Tool> 
 }
 ```
   **Done when** `npx tsc --noEmit` passes.
-- [ ] 2.2 Test `tests/adapters/ai-sdk.test.ts` with msw: default is 24 tools and has no `create_puck_page`; with `enableWrites` has it; call `tools.get_puck_page.execute({ key: 'a b' }, { toolCallId: '1', messages: [] })` -> msw saw `GET http://svc.test/service/default/puck-pages/a%20b` with `Authorization: Bearer <token>`; 404 -> resolves (does not reject) to a string starting `Service returned 404`; extra key `token` -> string starting `Invalid input`. Use msw's `setupServer` with `onUnhandledRequest: 'error'` (no supertest here). **Done when** green.
+- [x] 2.2 Test `tests/adapters/ai-sdk.test.ts` with msw: default is 24 tools and has no `create_puck_page`; with `enableWrites` has it; call `tools.get_puck_page.execute({ key: 'a b' }, { toolCallId: '1', messages: [] })` -> msw saw `GET http://svc.test/service/default/puck-pages/a%20b` with `Authorization: Bearer <token>`; 404 -> resolves (does not reject) to a string starting `Service returned 404`; extra key `token` -> string starting `Invalid input`. Use msw's `setupServer` with `onUnhandledRequest: 'error'` (no supertest here). **Done when** green.
 
 **Pitfalls.** `execute`'s second argument differs between ai versions; do not use it. Do not pass `strict` flags that exist only in v7.
 **Rollback.** Delete `src/adapters/ai-sdk`.
@@ -84,7 +84,7 @@ export function createAiSdkTools(options: AdapterOptions): Record<string, Tool> 
 
 ## 3. LangChain adapter
 
-- [ ] 3.1 Create `src/adapters/langchain/index.ts`:
+- [x] 3.1 Create `src/adapters/langchain/index.ts`:
 ```ts
 import { DynamicStructuredTool } from '@langchain/core/tools';
 import { z } from 'zod';
@@ -98,7 +98,7 @@ export function createLangChainTools(options: AdapterOptions): DynamicStructured
   }));
 }
 ```
-- [ ] 3.2 Test `tests/adapters/langchain.test.ts`: `tools.find(t => t.name==='get_puck_page').invoke({ key: 'k' })` -> service saw `GET .../default/puck-pages/k`; names equal the AI SDK adapter's names; unknown-key input rejects (LangChain throws a `ToolInputParsingException` for schema failures: assert `rejects.toThrow()`; document that difference in the npm README). **Done when** green.
+- [x] 3.2 Test `tests/adapters/langchain.test.ts`: `tools.find(t => t.name==='get_puck_page').invoke({ key: 'k' })` -> service saw `GET .../default/puck-pages/k`; names equal the AI SDK adapter's names; unknown-key input rejects (LangChain throws a `ToolInputParsingException` for schema failures: assert `rejects.toThrow()`; document that difference in the npm README). **Done when** green.
 
 **Pitfalls.** `@langchain/core` 0.3 and 1.x both accept a zod object `schema`; if a future major wants a different schema type, only this file changes.
 **Rollback.** Delete `src/adapters/langchain`.
@@ -109,8 +109,8 @@ export function createLangChainTools(options: AdapterOptions): DynamicStructured
 
 **Context.** Lets users run the same tools in their own MCP server (any transport) or via `npx contentools-mcp` over stdio, the successor of the source's `bin/run-mcp.cjs`.
 
-- [ ] 4.1 Create `src/mcp/index.ts`: `export { createContentoolsMcpServer } from './server'; export type { /* options type from server.ts */ } from './server';`. Ensure `src/mcp/server.ts` has no import of Express/logger (M requirement). **Done when** `grep -n "express\|server/logger" src/mcp/*.ts` prints nothing.
-- [ ] 4.2 Create `src/stdio/index.ts`:
+- [x] 4.1 Create `src/mcp/index.ts`: `export { createContentoolsMcpServer } from './server'; export type { /* options type from server.ts */ } from './server';`. Ensure `src/mcp/server.ts` has no import of Express/logger (M requirement). **Done when** `grep -n "express\|server/logger" src/mcp/*.ts` prints nothing.
+- [x] 4.2 Create `src/stdio/index.ts`:
 ```ts
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { ContentoolsClient, selectTools, parseGroups } from '../core';
@@ -127,7 +127,7 @@ async function main() {
 main().catch((e: unknown) => { process.stderr.write(`contentools-mcp error: ${e instanceof Error ? e.message : 'unknown'}\n`); process.exit(1); });
 ```
   **Pitfall:** stdout belongs to JSON-RPC; **never** `console.log` here or in imported modules.
-- [ ] 4.3 Test `tests/stdio/stdio.test.ts`: after the build (task 5), spawn `node dist/stdio/index.js` with env pointing at a local msw-less fake service (reuse `tests/support/fake-service.ts` from M on a random port) using the SDK's `StdioClientTransport` (`@modelcontextprotocol/sdk/client/stdio.js`): `listTools` -> 24; with `MCP_ENABLE_WRITES=true` -> 44; `callTool get_puck_page` works; without `SERVICE_API_TOKEN` the process exits 1 and stderr names it. Mark the test `beforeAll(() => run build:npm)`. **Done when** green.
+- [x] 4.3 Test `tests/stdio/stdio.test.ts`: after the build (task 5), spawn `node dist/stdio/index.js` with env pointing at a local msw-less fake service (reuse `tests/support/fake-service.ts` from M on a random port) using the SDK's `StdioClientTransport` (`@modelcontextprotocol/sdk/client/stdio.js`): `listTools` -> 24; with `MCP_ENABLE_WRITES=true` -> 44; `callTool get_puck_page` works; without `SERVICE_API_TOKEN` the process exits 1 and stderr names it. Mark the test `beforeAll(() => run build:npm)`. **Done when** green.
 
 **Verification.** `npx -y @modelcontextprotocol/inspector --cli node dist/stdio/index.js --method tools/list` with env set -> JSON with the tool list.
 **Rollback.** Delete `src/stdio`, `src/mcp/index.ts`.
@@ -138,7 +138,7 @@ main().catch((e: unknown) => { process.stderr.write(`contentools-mcp error: ${e 
 
 **Context.** Produce `dist/` and a correct manifest. Everything here was verified in a scratch package (explore 4.1-4.2): CJS is `.js`, ESM is `.mjs`, declarations `.d.ts`/`.d.mts`.
 
-- [ ] 5.1 Create `tsup.config.ts`:
+- [x] 5.1 Create `tsup.config.ts`:
 ```ts
 import { defineConfig } from 'tsup';
 const external = ['ai', '@langchain/core', 'zod', '@modelcontextprotocol/sdk', /^@modelcontextprotocol\/sdk\//, /^@langchain\/core\//];
@@ -150,8 +150,8 @@ export default defineConfig([
 ]);
 ```
   Add scripts to `mcp/package.json`: `"build:npm": "tsup"`, `"verify:package": "node scripts/verify-package.mjs"`, `"publish:npm": "node scripts/publish.mjs"`. Add `src/stdio` to `tsconfig.build.json` `exclude`. Add `dist`, `.publish` to `.gitignore`. **Done when** `yarn build:npm` creates exactly: `dist/{index,ai-sdk/index,langchain/index,mcp/index}.{js,mjs,d.ts,d.mts}`, `dist/stdio/index.js` (+ maps and one shared `client-*.d.ts`/`.d.mts` chunk) and `head -1 dist/stdio/index.js` is the shebang. Then `yarn gcp-build` still passes and `ls build` contains no `adapters` or `stdio` folder.
-- [ ] 5.2 Make the stdio file executable in the tarball: tsup does not set modes; npm sets bin permissions on install, so no action. **Done when** `tar -tvf` of the packed tarball (task 6) shows the bin path present.
-- [ ] 5.3 Create `publish/package.template.json` (no `name`/`version`: injected):
+- [x] 5.2 Make the stdio file executable in the tarball: tsup does not set modes; npm sets bin permissions on install, so no action. **Done when** `tar -tvf` of the packed tarball (task 6) shows the bin path present.
+- [x] 5.3 Create `publish/package.template.json` (no `name`/`version`: injected):
 ```json
 {
   "description": "AI SDK, LangChain and MCP tools for the Contentools content service",
@@ -172,7 +172,7 @@ export default defineConfig([
 }
 ```
   Expand `exports` fully (copy the block from `design.md` D5, writing the `./langchain` and `./mcp` entries out; JSON has no ellipsis). The repository URL is the Q-08 default; if the owner changes it, edit here. **Done when** `node -e "JSON.parse(require('fs').readFileSync('publish/package.template.json','utf8'))"` exits 0.
-- [ ] 5.4 Write `publish/README.md` (npm landing page): unsupported banner (same text as spec P standard), what/why, install (`npm i @commercetools-labs/contentools-mcp zod ai`), three snippets (AI SDK with `generateText`, LangChain, MCP/stdio with `npx -y @commercetools-labs/contentools-mcp` and the env table), **options table** (from design D3), **security** (token sent only to `baseUrl`; writes off by default and why; do not expose the token to browsers), **error behaviour** (service/validation errors are returned as text; LangChain throws on schema failures), **migration table** from `@commercetools-demo/contenttools-mcp` (`ContentToolsAgent({authConfig})` -> `createAiSdkTools({baseUrl, token})`; `projectKey`, `jwtToken`, tenant tools removed; tool names changed: list from `m-mcp-connect-app/design.md`; media listing is cursor-paginated (`list_media` takes `limit`/`cursor`/`extensions`, returns `pagination.nextCursor`/`hasMore`; no `page`)), link to the Connect app docs (`mcp/README.md`). **No Mastra mention.** **Done when** `grep -ni mastra publish/README.md` is empty.
+- [x] 5.4 Write `publish/README.md` (npm landing page): unsupported banner (same text as spec P standard), what/why, install (`npm i @commercetools-labs/contentools-mcp zod ai`), three snippets (AI SDK with `generateText`, LangChain, MCP/stdio with `npx -y @commercetools-labs/contentools-mcp` and the env table), **options table** (from design D3), **security** (token sent only to `baseUrl`; writes off by default and why; do not expose the token to browsers), **error behaviour** (service/validation errors are returned as text; LangChain throws on schema failures), **migration table** from `@commercetools-demo/contenttools-mcp` (`ContentToolsAgent({authConfig})` -> `createAiSdkTools({baseUrl, token})`; `projectKey`, `jwtToken`, tenant tools removed; tool names changed: list from `m-mcp-connect-app/design.md`; media listing is cursor-paginated (`list_media` takes `limit`/`cursor`/`extensions`, returns `pagination.nextCursor`/`hasMore`; no `page`)), link to the Connect app docs (`mcp/README.md`). **No Mastra mention.** **Done when** `grep -ni mastra publish/README.md` is empty.
 
 **Pitfalls.** (1) tsup treats an `external` regex array fine; do not bundle `zod` (would break instance sharing). (2) `typesVersions` is required for node10 subpaths (attw fails without it). (3) Do not set `"type": "module"`; the `.mjs`/`.js` naming relies on CJS default.
 **Rollback.** `rm -rf dist tsup.config.ts publish`; revert `package.json` scripts and `.gitignore`.
@@ -183,7 +183,7 @@ export default defineConfig([
 
 **Context.** One command proves the tarball works for real consumers, with both ends of the peer ranges.
 
-- [ ] 6.1 Create `scripts/verify-package.mjs` taking `--dir .publish` (default). Steps, each printing `== <name> ==` and aborting non-zero on failure:
+- [x] 6.1 Create `scripts/verify-package.mjs` taking `--dir .publish` (default). Steps, each printing `== <name> ==` and aborting non-zero on failure:
   1. `npx publint <dir>` -> must print no "Errors"/"Warnings" (suggestions allowed).
   2. `npx @arethetypeswrong/cli --pack <dir>` (default profile) -> must contain `No problems found`.
   3. `npm pack <dir> --pack-destination <tmp>`; list files with `tar -tzf`; fail if any path outside `package/{dist,README.md,LICENSE,package.json}` appears (spec scenario "tarball contents").
@@ -201,7 +201,7 @@ export default defineConfig([
 
 **Context.** No CI exists (owner decision). A person runs this on their machine; it defaults to a dry run.
 
-- [ ] 7.1 Create `scripts/publish.mjs` with flags `--publish` (real), `--tag <t>` (override), default dry-run. Implement the D7 steps in order, using `execFileSync` and printing each step:
+- [x] 7.1 Create `scripts/publish.mjs` with flags `--publish` (real), `--tag <t>` (override), default dry-run. Implement the D7 steps in order, using `execFileSync` and printing each step:
   1. `node --version` major >= 22; cwd basename is `mcp`.
   2. `npm whoami` (only required when `--publish`; dry-run skips).
   3. `yarn check:app` and `yarn build:npm`.
@@ -211,8 +211,8 @@ export default defineConfig([
   7. Tag: prerelease (`/-/.test(version)`) -> `next`, else `latest` (unless `--tag`).
   8. Without `--publish`: `npm publish ./.publish --access public --tag <tag> --dry-run` and print "DRY RUN OK; re-run with --publish". With `--publish`: print package, version, tag, tarball file count; ask `Type "publish <name>@<version>" to continue:` via `readline`; mismatch -> abort; then `npm publish ./.publish --access public --tag <tag>` with `stdio: 'inherit'` so npm can ask for the OTP. **No** `--provenance`.
   **Done when** `node scripts/publish.mjs` (dry-run) completes, prints the file list (only `dist/**`, README, LICENSE, package.json) and exits 0.
-- [ ] 7.2 Add `tests/publish/assemble.test.ts` exporting and testing the pure helper `assembleManifest(template, pkg)` (move it to `scripts/lib/manifest.mjs`): rejects `private`, `scripts`, `workspace:` values; injects name/version; prerelease tag selection function `tagFor(version)` (`1.0.0-rc.0` -> `next`, `1.0.0` -> `latest`). **Done when** green.
-- [ ] 7.3 Do **not** run `--publish` as part of implementation. The final publish is a human step (manual.md MN-1..MN-3); record "dry run output attached" in the PR.
+- [x] 7.2 Add `tests/publish/assemble.test.ts` exporting and testing the pure helper `assembleManifest(template, pkg)` (move it to `scripts/lib/manifest.mjs`): rejects `private`, `scripts`, `workspace:` values; injects name/version; prerelease tag selection function `tagFor(version)` (`1.0.0-rc.0` -> `next`, `1.0.0` -> `latest`). **Done when** green.
+- [x] 7.3 Do **not** run `--publish` as part of implementation. The final publish is a human step (manual.md MN-1..MN-3); record "dry run output attached" in the PR.
 
 **Pitfalls.** (0) Dev workflow is Yarn 1 (`yarn.lock`, `yarn <script>`), but the **publish step deliberately stays `npm publish ./.publish`** (owner decision; `yarn publish` has different semantics, and the derived manifest has no lockfile). Consumer simulations in `verify-package.mjs` use `npm install` in temp dirs on purpose (what most users run). (1) `npm publish ./.publish` publishes the directory (not `mcp/`), so `files` and `private` of the app manifest are irrelevant; do not run plain `npm publish` in `mcp/` (it would fail on `private`, intentionally). (2) npm may print a "bin script name was cleaned" warning; ignore. (3) Never write an npm token into the repo or `.npmrc`; use `npm login`.
 **Rollback.** Delete `scripts/publish.mjs`, `scripts/lib`, `.publish`. A wrong real publish: `npm deprecate` and publish a fixed patch (design Migration).
@@ -221,16 +221,16 @@ export default defineConfig([
 
 ## 8. Cleanup of legacy artefacts and Mastra
 
-- [ ] 8.1 Confirm nothing of the old package remains in `mcp/` (M task 1.1 deleted it): `ls mcp` must not show `bin`, `ai-sdk`, `langchain`, `mastra` (a regenerated `yarn.lock` is expected and must be committed). If the old `clean` script or `.gitignore` entries `ai-sdk/*`, `langchain/*`, `mastra/*` exist, delete them. Add `"clean": "rm -rf dist build .publish"`.
-- [ ] 8.2 Grep gates (all must print nothing): `grep -rniE "mastra|zod-to-json-schema|AvailableNamespaces|contenttools|commercetools-demo|\bcms\b" <root>/mcp --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=build --exclude-dir=.publish`.
-- [ ] 8.3 SPDX check: `cd <root>/mcp && grep -L "SPDX-License-Identifier: MIT" $(git ls-files -co --exclude-standard 'src/**/*.ts' 'tests/**/*.ts' 'scripts/*.mjs' 'scripts/lib/*.mjs' tsup.config.ts)` prints nothing.
+- [x] 8.1 Confirm nothing of the old package remains in `mcp/` (M task 1.1 deleted it): `ls mcp` must not show `bin`, `ai-sdk`, `langchain`, `mastra` (a regenerated `yarn.lock` is expected and must be committed). If the old `clean` script or `.gitignore` entries `ai-sdk/*`, `langchain/*`, `mastra/*` exist, delete them. Add `"clean": "rm -rf dist build .publish"`.
+- [x] 8.2 Grep gates (all must print nothing): `grep -rniE "mastra|zod-to-json-schema|AvailableNamespaces|contenttools|commercetools-demo|\bcms\b" <root>/mcp --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=build --exclude-dir=.publish`.
+- [x] 8.3 SPDX check: `cd <root>/mcp && grep -L "SPDX-License-Identifier: MIT" $(git ls-files -co --exclude-standard 'src/**/*.ts' 'tests/**/*.ts' 'scripts/*.mjs' 'scripts/lib/*.mjs' tsup.config.ts)` prints nothing.
 
 ---
 
 ## 9. Documentation hooks
 
-- [ ] 9.1 In `mcp/README.md` (written by M) add a short "npm package" section: package name, install line, link to `publish/README.md`, and the sentence "Published manually with `yarn publish:npm` (dry run by default); there is no CI."
-- [ ] 9.2 Tell spec P that the npm README lives at `mcp/publish/README.md` and spec O/Q that the local checks for this spec are `yarn check:app && yarn build:npm && yarn verify:package` (after `node scripts/publish.mjs` created `.publish`). No workflow files are created or referenced.
+- [x] 9.1 In `mcp/README.md` (written by M) add a short "npm package" section: package name, install line, link to `publish/README.md`, and the sentence "Published manually with `yarn publish:npm` (dry run by default); there is no CI."
+- [x] 9.2 Tell spec P that the npm README lives at `mcp/publish/README.md` and spec O/Q that the local checks for this spec are `yarn check:app && yarn build:npm && yarn verify:package` (after `node scripts/publish.mjs` created `.publish`). No workflow files are created or referenced.
 
 ---
 
