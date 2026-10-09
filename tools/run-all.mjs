@@ -10,6 +10,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { TARGETS } from './lib/targets.mjs';
+import { yarnCommand } from './lib/yarn.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -43,8 +44,10 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   for (const step of plan(TARGETS, scripts, scriptsOf)) {
     if (step.action === 'skip') { console.log(`skip  ${step.name}: no "${step.script}" script`); continue; }
     console.log(`\n== ${step.name}: ${step.script}`);
-    const [cmd, args] = commandFor(step);
-    const r = spawnSync(cmd, args, { cwd: join(ROOT, step.dir), stdio: 'inherit' });
+    const [cmd0, args0] = commandFor(step);
+    // Yarn 4 trees (puck) run through corepack with Yarn 1's injected PATH removed.
+    const { cmd, args, env } = cmd0 === 'yarn' ? yarnCommand(ROOT, step.dir, args0) : { cmd: cmd0, args: args0, env: process.env };
+    const r = spawnSync(cmd, args, { cwd: join(ROOT, step.dir), stdio: 'inherit', env });
     if (r.status !== 0) failed.push(`${step.name}:${step.script}`);
   }
   if (failed.length) { console.error(`\nFAILED: ${failed.join(', ')}`); process.exit(1); }

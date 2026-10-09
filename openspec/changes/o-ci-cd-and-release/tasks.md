@@ -12,9 +12,9 @@
 
 Context: O wraps scripts defined by other specs. Pre-conditions: A, C archived; H, I, L, M archived (their `connect.yaml` blocks and scripts exist). If one is missing, the matching step shows `SKIP` and Section 7 is the point where everything must be green.
 
-- [ ] 1.1 Confirm inputs exist: `ls connect.yaml tools/check-forbidden-terms.mjs tools/check-legacy-route-calls.mjs tools/lib/targets.mjs tools/check-spdx-headers.mjs puck/package.json service/package.json mcp/package.json admin-app/package.json` (all present) and `node -e "const s=require('./puck/package.json').scripts;console.log(s['release:bump'],s['release:publish'])"` prints the two script lines from spec I.
-- [ ] 1.2 Check tools: `node -v` (v22+), `corepack --version` (needed for puck's Yarn 4), `docker --version` (only for the Connect step), `commercetools --version` (install: `npm install -g @commercetools/cli`; if absent the Connect step is skipped outside strict mode).
-- [ ] 1.3 `ls .github 2>&1` must say "No such file or directory". If a `.github` exists (someone added it), delete it: the owner decided against workflows.
+- [x] 1.1 Confirm inputs exist: `ls connect.yaml tools/check-forbidden-terms.mjs tools/check-legacy-route-calls.mjs tools/lib/targets.mjs tools/check-spdx-headers.mjs puck/package.json service/package.json mcp/package.json admin-app/package.json` (all present) and `node -e "const s=require('./puck/package.json').scripts;console.log(s['release:bump'],s['release:publish'])"` prints the two script lines from spec I.
+- [x] 1.2 Check tools: `node -v` (v22+), `corepack --version` (needed for puck's Yarn 4), `docker --version` (only for the Connect step), `commercetools --version` (install: `npm install -g @commercetools/cli`; if absent the Connect step is skipped outside strict mode).
+- [x] 1.3 `ls .github 2>&1` must say "No such file or directory". If a `.github` exists (someone added it), delete it: the owner decided against workflows.
 
 Rollback: nothing changed yet.
 
@@ -22,7 +22,7 @@ Rollback: nothing changed yet.
 
 Context: with no workflows, the "no secrets / no CI files" promise is enforced on the files themselves. Pre-condition: 1.x.
 
-- [ ] 2.1 Create `tools/check-repo-hygiene.mjs` (zero dependencies, SPDX header):
+- [x] 2.1 Create `tools/check-repo-hygiene.mjs` (zero dependencies, SPDX header):
   ```js
   #!/usr/bin/env node
   import { readFileSync } from 'node:fs';
@@ -101,9 +101,9 @@ Context: with no workflows, the "no secrets / no CI files" promise is enforced o
   }
   ```
   Note: `package-lock.json` is forbidden everywhere (always), while the required-`yarn.lock` check runs only with `--strict`/`verify:strict` because owners generate their lockfiles when they first install. Important: `listFiles` (spec A) skips `node_modules`, `public`, `dist`, `build`, so they are not flagged; the "tracked node_modules" rule matters only inside a git index (R's single commit).
-- [ ] 2.2 Test `tools/test/repo-hygiene.test.mjs`: `pathFindings(['.github/workflows/ci.yml'])` has rule `no CI files...`; `pathFindings(['service/package-lock.json'])` is flagged (`no package-lock.json`); `lockfileFindings(['service/package.json','mcp/package.json','mcp/yarn.lock'])` reports `service/yarn.lock` only; `pathFindings(['service/src/_pending/a.ts'])` is `[]` but with `{ strict: true }` has rule `no _pending folder at release`; `['service/.env']` flagged, `['service/.env.example']` not; `['service/LICENSE']` flagged, `['LICENSE']` not; `Dockerfile` flagged; `secretFindings('src/a.ts', "const k = 'AIza" + 'x'.repeat(35) + "'")` returns one finding and the finding object has no `text` field; `secretFindings('service/tests/a.test.ts', ...)` returns `[]`; a line with `// hygiene-ok` returns `[]`; assemble token-like test strings from fragments so the test file itself does not trip the check (the file is excluded by `^tools/test/` anyway).
+- [x] 2.2 Test `tools/test/repo-hygiene.test.mjs`: `pathFindings(['.github/workflows/ci.yml'])` has rule `no CI files...`; `pathFindings(['service/package-lock.json'])` is flagged (`no package-lock.json`); `lockfileFindings(['service/package.json','mcp/package.json','mcp/yarn.lock'])` reports `service/yarn.lock` only; `pathFindings(['service/src/_pending/a.ts'])` is `[]` but with `{ strict: true }` has rule `no _pending folder at release`; `['service/.env']` flagged, `['service/.env.example']` not; `['service/LICENSE']` flagged, `['LICENSE']` not; `Dockerfile` flagged; `secretFindings('src/a.ts', "const k = 'AIza" + 'x'.repeat(35) + "'")` returns one finding and the finding object has no `text` field; `secretFindings('service/tests/a.test.ts', ...)` returns `[]`; a line with `// hygiene-ok` returns `[]`; assemble token-like test strings from fragments so the test file itself does not trip the check (the file is excluded by `^tools/test/` anyway).
   Command: `yarn test:tools` -> pass.
-- [ ] 2.3 Add root scripts: `"check:hygiene": "node tools/check-repo-hygiene.mjs"`. Run `yarn check:hygiene` -> `hygiene: OK (<n> files)`. Fix real findings (Dockerfile etc. should be absent since A).
+- [x] 2.3 Add root scripts: `"check:hygiene": "node tools/check-repo-hygiene.mjs"`. Run `yarn check:hygiene` -> `hygiene: OK (<n> files)`. Fix real findings (Dockerfile etc. should be absent since A).
   Done when: it exits 0; creating `.github/workflows/x.yml` makes it exit 1 (try, then delete).
 
 Pitfalls: never print the matched secret; `AIza...` patterns in docs must carry `hygiene-ok` if they are examples. `.env.example` files may hold placeholders only.
@@ -113,7 +113,7 @@ Rollback: delete script, test, package.json entry.
 
 Context: `connect.yaml` is the install contract; most mistakes (secret under the wrong key, wrong folder name, forgotten endpoint) can be caught in seconds without Docker. Pre-condition: H (and L, M) wrote their blocks into the root `connect.yaml`.
 
-- [ ] 3.1 Create `tools/lib/connect-blocks.mjs` (pure, tested): parses the documented subset.
+- [x] 3.1 Create `tools/lib/connect-blocks.mjs` (pure, tested): parses the documented subset.
   ```js
   /** Split connect.yaml text into { apps: [{name, applicationType, endpoint, start, end, lines}], inheritAs: {start,end,lines} }.
       Supported subset: the `deployAs:` list written with two-space indentation (`  - name: x`), scalar `key: value` lines,
@@ -141,7 +141,7 @@ Context: `connect.yaml` is the install contract; most mistakes (secret under the
   }
   ```
   Also export `scopesOf(inherit)`: collect the `- <scope>` list items under `scopes:` (accepts inline `[a, b]` arrays too).
-- [ ] 3.2 Create `tools/check-connect-contract.mjs` implementing the rules of the spec, each as a small function returning `{n, msg}` problems; main prints `connect.yaml:<n>: <msg>` and exits 1 on any. Rules (exact):
+- [x] 3.2 Create `tools/check-connect-contract.mjs` implementing the rules of the spec, each as a small function returning `{n, msg}` problems; main prints `connect.yaml:<n>: <msg>` and exits 1 on any. Rules (exact):
   1. file `connect.yaml` exists at the root (else `connect.yaml missing`).
   2. for each app: folder `<name>/` with `package.json` exists (`app folder missing: <name>`).
   3. `applicationType` is `service` or `merchant-center-custom-application` (`unsupported applicationType`).
@@ -153,8 +153,8 @@ Context: `connect.yaml` is the install contract; most mistakes (secret under the
   9. for `postDeploy`/`preUndeploy` commands matching `^(yarn run|yarn)\s+(\S+)`: that script name exists in the app's `package.json`.
   10. if `tools/check-admin-app-connect.mjs` exists, run it with `spawnSync(process.execPath, [...])` and add its output as a problem when it exits non-zero.
   Print `connect-contract: OK (<apps> apps)` on success.
-- [ ] 3.3 Tests `tools/test/connect-contract.test.mjs` with inline YAML strings (write temp dirs with `mkdtempSync`; create folder + package.json stubs): a valid two-app file passes; `SERVICE_API_TOKEN` under `standardConfiguration` fails with the secret message; a `CTP_CLIENT_ID` key fails; a missing folder fails; `endpoint: /svc` on `service` fails; MC block with `endpoint:` fails; `postDeploy: yarn connector:post-deploy` with no such script fails; `workspaces` in an app `package.json` fails.
-- [ ] 3.4 Add root script `"check:connect": "node tools/check-connect-contract.mjs"`. Run `yarn check:connect` on the real tree -> `connect-contract: OK (3 apps)` (`service`, `admin-app`, `mcp`). Fix real findings by editing `connect.yaml` only in coordination with the owning spec (H/L/M): record the discrepancy in the PR instead of silently changing their block.
+- [x] 3.3 Tests `tools/test/connect-contract.test.mjs` with inline YAML strings (write temp dirs with `mkdtempSync`; create folder + package.json stubs): a valid two-app file passes; `SERVICE_API_TOKEN` under `standardConfiguration` fails with the secret message; a `CTP_CLIENT_ID` key fails; a missing folder fails; `endpoint: /svc` on `service` fails; MC block with `endpoint:` fails; `postDeploy: yarn connector:post-deploy` with no such script fails; `workspaces` in an app `package.json` fails.
+- [x] 3.4 Add root script `"check:connect": "node tools/check-connect-contract.mjs"`. Run `yarn check:connect` on the real tree -> `connect-contract: OK (3 apps)` (`service`, `admin-app`, `mcp`). Fix real findings by editing `connect.yaml` only in coordination with the owning spec (H/L/M): record the discrepancy in the PR instead of silently changing their block.
   Done when: exit 0; mutation test: move `SERVICE_API_TOKEN` into `standardConfiguration` in a scratch copy of `connect.yaml` (never the real one) and see exit 1.
 
 Pitfalls: `default:` values and multi-line strings are not parsed (ignored by design). Comments (`# ...`) inside lists are ignored. Indentation must be the two-space style used by H/L/M; a different indentation makes rule 2 report "no apps found" - then fix the checker or the file, do not skip the rule.
@@ -164,7 +164,7 @@ Rollback: delete the two scripts, test and package.json entry.
 
 Context: one command for all gates, strict mode for releases. Pre-condition: Sections 2 and 3, plus A's `tools/lib/targets.mjs`.
 
-- [ ] 4.1 Create `tools/lib/verify-steps.mjs` (pure):
+- [x] 4.1 Create `tools/lib/verify-steps.mjs` (pure):
   ```js
   import { TARGETS } from './targets.mjs';
 
@@ -192,19 +192,19 @@ Context: one command for all gates, strict mode for releases. Pre-condition: Sec
   const installCmd = (t) => ({ cwd: t.dir, cmd: 'yarn', args: t.dir === 'puck' ? ['install', '--immutable'] : ['install', '--frozen-lockfile'] });
   ```
   Note: Node 22 expands the quoted glob itself (no shell needed). Keep tool test files named `*.test.mjs`.
-- [ ] 4.2 Create `tools/verify.mjs`:
+- [x] 4.2 Create `tools/verify.mjs`:
   * parse flags: `--only a,b`, `--skip a,b`, `--fail-fast`, `--install`, `--connect`, `--strict`, `--help`.
   * for each step: if `skip` -> row `SKIP (<reason>)` (becomes `FAIL (strict: nothing to run)` under `--strict`); if `requires` and the executable is missing (`spawnSync('command',['-v',x])` or `which`) -> `SKIP (install: npm install -g @commercetools/cli)` / `FAIL` under strict; else spawn, capture stdout+stderr into `.verify-logs/<id>.log` (mkdir -p), measure seconds, `PASS`/`FAIL`.
   * `seq` steps run each command in order and stop at the first failure.
   * print the table at the end: `step  status  seconds` plus the path of the log of each FAIL; exit 1 when any FAIL (also stop early with `--fail-fast`).
-- [ ] 4.3 Test `tools/test/verify-steps.test.mjs`: with a fake `scriptsOf` (admin-app has `verify`, service has typecheck+test, mcp null, puck has verify): `buildSteps({}, ...)` gives admin-app `seq` of one `yarn run verify`, service `seq` of typecheck then test, mcp `skip` 'no package.json'; `--strict` adds `connect-validate`, `--require-empty-pending` for forbidden and `--strict` for hygiene; `--install` adds `service:install` with `--frozen-lockfile` and `puck:install` with `--immutable`, `mcp:install` with `--frozen-lockfile`; every install command starts with `yarn`; `--only spdx` keeps only spdx; `--skip puck` drops puck steps.
-- [ ] 4.4 Root `package.json` scripts (replace A's `verify`): 
+- [x] 4.3 Test `tools/test/verify-steps.test.mjs`: with a fake `scriptsOf` (admin-app has `verify`, service has typecheck+test, mcp null, puck has verify): `buildSteps({}, ...)` gives admin-app `seq` of one `yarn run verify`, service `seq` of typecheck then test, mcp `skip` 'no package.json'; `--strict` adds `connect-validate`, `--require-empty-pending` for forbidden and `--strict` for hygiene; `--install` adds `service:install` with `--frozen-lockfile` and `puck:install` with `--immutable`, `mcp:install` with `--frozen-lockfile`; every install command starts with `yarn`; `--only spdx` keeps only spdx; `--skip puck` drops puck steps.
+- [x] 4.4 Root `package.json` scripts (replace A's `verify`): 
   ```json
   "verify": "node tools/verify.mjs",
   "verify:strict": "node tools/verify.mjs --strict",
   ```
   keep `verify:service` (spec H) untouched; keep `install:all`, `build`, `typecheck`, `lint`, `test`, `test:e2e` from A. Add `.verify-logs/` to the root `.gitignore`.
-- [ ] 4.5 Run: `yarn verify --only tools,spdx,forbidden,legacy-calls,hygiene,connect-contract` -> six `PASS` rows, exit 0 (this subset needs no installs). Then `yarn verify --install` (needs network; first run 10+ minutes) -> all apps `PASS`; record the table in the PR notes.
+- [x] 4.5 Run: `yarn verify --only tools,spdx,forbidden,legacy-calls,hygiene,connect-contract` -> six `PASS` rows, exit 0 (this subset needs no installs). Then `yarn verify --install` (needs network; first run 10+ minutes) -> all apps `PASS`; record the table in the PR notes.
   Done when: both runs exit 0; `ls .verify-logs` shows one log per executed step.
 
 Pitfalls: `yarn run verify` inside `admin-app` is K's long chain (including `build`); that is intended. Do not put secrets in step output; the logs are git-ignored but may be shared. On Windows use WSL (Node `spawnSync('yarn')` needs `yarn.cmd`; not supported natively).
@@ -216,8 +216,8 @@ Context: Connect itself is the CI. Every Connect app must satisfy the same scrip
 
 - [ ] 5.1 Install the CLI and try it: `npm install -g @commercetools/cli && commercetools --version`; then `commercetools connect validate .` from the repo root (Docker running; 15 min first run). Record: (a) whether it required `commercetools auth login` (answers Q-O2; if it does, note in `tools/release/README.md` step 1 and manual M-05), (b) duration, (c) output summary. Done when: it exits 0 (fix findings in the owning spec's files, not here).
 - [ ] 5.2 Per-app test command check (documentation + proof): from `service/` run `commercetools connect application test` (expected: runs `yarn test`/jest offline and exits 0), from `mcp/` the same (`yarn test`), and note that `admin-app` is a Merchant Center custom application: its tests run through `yarn test` and the Connect build, `connect application test` may be unsupported for that app type (record the actual CLI message; L's A5 step has the same note).
-- [ ] 5.3 Write the conventions into `tools/release/README.md` section "Connect conventions" (the file is created in 6.4): each `service`/`mcp` app has `build`, `gcp-build` (Connect's build entry), `start`, `test`, `typecheck`, `lint`; lifecycle scripts `connector:post-deploy` / `connector:pre-undeploy`; Node 22; no workspaces; `commercetools connect application test` must pass offline; `commercetools connect validate .` is mandatory before `connectorstaged create`.
-- [ ] 5.4 Wire `verify --connect` / `--strict` behaviour already covered by 4.1/4.2; test it: `yarn verify --only connect-validate --connect` -> PASS (or SKIP with the install hint when the CLI is absent).
+- [x] 5.3 Write the conventions into `tools/release/README.md` section "Connect conventions" (the file is created in 6.4): each `service`/`mcp` app has `build`, `gcp-build` (Connect's build entry), `start`, `test`, `typecheck`, `lint`; lifecycle scripts `connector:post-deploy` / `connector:pre-undeploy`; Node 22; no workspaces; `commercetools connect application test` must pass offline; `commercetools connect validate .` is mandatory before `connectorstaged create`.
+- [x] 5.4 Wire `verify --connect` / `--strict` behaviour already covered by 4.1/4.2; test it: `yarn verify --only connect-validate --connect` -> PASS (or SKIP with the install hint when the CLI is absent).
 
 Pitfalls: first `validate` run pulls several GB of build images; do not run it on a metered connection. `connect validate` also runs static analysis and a dependency scan: HIGH/CRITICAL advisories fail it (fix in the owning app by upgrading or `resolutions`).
 Rollback: none (read-only commands).
@@ -226,7 +226,7 @@ Rollback: none (read-only commands).
 
 Context: puck packages are published to npm from a maintainer's machine using spec I's scripts; the repository state is tagged `v<version>`; the owner pushes (checkpoint CP-3 of spec R). Pre-condition: Section 4 and spec I.
 
-- [ ] 6.1 Create `tools/release/versions.mjs`:
+- [x] 6.1 Create `tools/release/versions.mjs`:
   ```js
   import { readFileSync, readdirSync, existsSync } from 'node:fs';
   import { join } from 'node:path';
@@ -256,8 +256,8 @@ Context: puck packages are published to npm from a maintainer's machine using sp
 
   export const distTag = (version) => (version.includes('-') ? 'next' : 'latest');
   ```
-- [ ] 6.2 Create `tools/release/preflight.mjs`: (1) run `node tools/verify.mjs --strict` (inherit stdio; fail if non-zero); (2) `collectVersions` + `checkLockstep` (print the problems); (3) print `release version: <v>`, `dist-tag: <next|latest>`, `tag: v<v>`; (4) if `.git` exists: `git status --porcelain` must be empty (else `git tree is not clean`), and `git rev-parse --abbrev-ref HEAD` printed; if no `.git` print `warning: not a git repository (R creates the release repository)` and continue. Exit 1 on any failure; final line `preflight: OK`.
-- [ ] 6.3 Create `tools/release/tag.mjs` (supports release candidates `v1.0.0-rc.N` and iterating on them):
+- [x] 6.2 Create `tools/release/preflight.mjs`: (1) run `node tools/verify.mjs --strict` (inherit stdio; fail if non-zero); (2) `collectVersions` + `checkLockstep` (print the problems); (3) print `release version: <v>`, `dist-tag: <next|latest>`, `tag: v<v>`; (4) if `.git` exists: `git status --porcelain` must be empty (else `git tree is not clean`), and `git rev-parse --abbrev-ref HEAD` printed; if no `.git` print `warning: not a git repository (R creates the release repository)` and continue. Exit 1 on any failure; final line `preflight: OK`.
+- [x] 6.3 Create `tools/release/tag.mjs` (supports release candidates `v1.0.0-rc.N` and iterating on them):
   ```js
   // usage: node tools/release/tag.mjs <version | --next-rc> [--execute]
   //   --next-rc : base = lockstep version without prerelease part; find existing tags `v<base>-rc.*` (git tag -l) and use rc.(max+1), starting at rc.0.
@@ -277,7 +277,7 @@ Context: puck packages are published to npm from a maintainer's machine using sp
   ```
   Iteration rule (owner decision): Connect is tested from the SAME public repository using `v1.0.0-rc.N` tags. After the repo is public (right after R's gate) fix commits are allowed ONLY when the labs gate is clean on the new commit; squashing/recreating the repository is reserved for leaks. Each fix -> `yarn verify:strict` -> gate (R) -> bump to the next rc -> `tag.mjs --next-rc --execute` -> the owner pushes the tag -> `connectorstaged create --repository-tag v1.0.0-rc.N` (or redeploy with the new tag). Tags are never moved or deleted once pushed.
   Implement the pure parts (`planTag(version, lockstep)` returning the commands/errors) separately so they can be tested.
-- [ ] 6.4 Create `tools/release/README.md` (the runbook; numbered, each with the exact command):
+- [x] 6.4 Create `tools/release/README.md` (the runbook; numbered, each with the exact command):
   1. `yarn verify:strict` (needs Docker + `commercetools` CLI; record date/CLI version).
   2. Choose the version: first `1.0.0-rc.0` (dist-tag `next`), then `1.0.0`.
   3. Bump all packages (lockstep): `yarn release:puck:bump 1.0.0-rc.0` (spec I script; also bump the root, `service`, `admin-app`, `mcp` versions to the same value with `yarn version --new-version <v> --no-git-tag-version` in each; `release/versions.mjs` verifies).
@@ -293,20 +293,20 @@ Context: puck packages are published to npm from a maintainer's machine using sp
   13. Connect: `commercetools connect connectorstaged create --repository-url <url> --repository-tag v1.0.0 --creator-email <email> --name contentools` (spec H README, manual M-05); `deployment create` per region.
   14. Rollback: never `npm unpublish`; `npm deprecate @commercetools-labs/<pkg>@<version> "<reason>"`, publish a patch; delete an unpushed local tag with `git tag -d v<version>`.
   Plus the "Connect conventions" section from 5.3 and the explicit statement "There is no CI in this repository; `yarn verify:strict` is the gate."
-- [ ] 6.5 Root `package.json` scripts: `"release:puck:bump": "yarn --cwd puck release:bump"`, `"release:puck:publish": "yarn --cwd puck release:publish"`, `"release:preflight": "node tools/release/preflight.mjs"`, `"release:tag": "node tools/release/tag.mjs"`. (`yarn release:puck:publish --execute` forwards `--execute`.)
-- [ ] 6.6 Tests: `tools/test/release-versions.test.mjs` (lockstep ok/drift; invalid semver; `distTag('1.0.0-rc.0') === 'next'`, `distTag('1.0.0') === 'latest'`), `tools/test/release-tag.test.mjs` (`planTag('1.0.0', ...)` yields the two commands; `nextRc('1.0.0', ['v1.0.0-rc.0','v1.0.0-rc.1'])` returns `1.0.0-rc.2` and `nextRc('1.0.0', [])` returns `1.0.0-rc.0`; and never contains `git push` as an executed command; mismatching version errors; dirty tree error via an injected `git` runner).
+- [x] 6.5 Root `package.json` scripts: `"release:puck:bump": "yarn --cwd puck release:bump"`, `"release:puck:publish": "yarn --cwd puck release:publish"`, `"release:preflight": "node tools/release/preflight.mjs"`, `"release:tag": "node tools/release/tag.mjs"`. (`yarn release:puck:publish --execute` forwards `--execute`.)
+- [x] 6.6 Tests: `tools/test/release-versions.test.mjs` (lockstep ok/drift; invalid semver; `distTag('1.0.0-rc.0') === 'next'`, `distTag('1.0.0') === 'latest'`), `tools/test/release-tag.test.mjs` (`planTag('1.0.0', ...)` yields the two commands; `nextRc('1.0.0', ['v1.0.0-rc.0','v1.0.0-rc.1'])` returns `1.0.0-rc.2` and `nextRc('1.0.0', [])` returns `1.0.0-rc.0`; and never contains `git push` as an executed command; mismatching version errors; dirty tree error via an injected `git` runner).
   Command: `yarn test:tools` -> pass.
-- [ ] 6.7 Smoke: `yarn release:puck:publish` (dry run; needs a prior `cd puck && yarn build`) prints 10 dry-run results and publishes nothing; `node tools/release/tag.mjs 1.0.0` prints the two commands and `git tag -l v1.0.0` (in a scratch repo) is empty. Done when both behave so.
+- [x] 6.7 Smoke: `yarn release:puck:publish` (dry run; needs a prior `cd puck && yarn build`) prints 10 dry-run results and publishes nothing; `node tools/release/tag.mjs 1.0.0` prints the two commands and `git tag -l v1.0.0` (in a scratch repo) is empty. Done when both behave so.
 
 Pitfalls: never run `--execute` of the publish script from this task (that is spec R's checkpoint). Do not add `npm publish` anywhere in O. If versions are intentionally different for the playground (private), exclude it from `versionFiles` (it is not listed).
 Rollback: delete `tools/release/`, the four scripts and their tests.
 
 ## 7. Verification and Definition of Done
 
-- [ ] 7.1 `yarn test:tools` -> pass (all new tests).
-- [ ] 7.2 `yarn verify` -> table all `PASS` (apps may `SKIP` only if their owning spec is not implemented yet); exit 0.
+- [x] 7.1 `yarn test:tools` -> pass (all new tests).
+- [x] 7.2 `yarn verify` -> table all `PASS` (apps may `SKIP` only if their owning spec is not implemented yet); exit 0.
 - [ ] 7.3 `yarn verify:strict` (Docker + CLI present) -> all `PASS`, no `SKIP`, `forbidden` reports `0 pending`; exit 0. Record date, CLI version, duration. If it cannot run here (no Docker), record "not run: no Docker" and R must run it.
-- [ ] 7.4 Negative proofs (scratch copies only): create an empty-file folder `service/src/_pending/x.ts` -> `yarn check:hygiene` passes but `node tools/check-repo-hygiene.mjs --strict` and `yarn verify:strict` fail with `no _pending folder at release` (delete it afterwards); add `.github/workflows/a.yml` -> `yarn check:hygiene` fails; put a token-shaped string into a scratch source file -> hygiene fails without echoing it; move a `*_TOKEN` key to `standardConfiguration` in a scratch `connect.yaml` -> `check:connect` fails; make `service/package.json` version differ -> `node tools/release/preflight.mjs` fails with the drift list.
-- [ ] 7.5 `ls .github 2>&1` -> "No such file or directory".
+- [x] 7.4 Negative proofs (scratch copies only): create an empty-file folder `service/src/_pending/x.ts` -> `yarn check:hygiene` passes but `node tools/check-repo-hygiene.mjs --strict` and `yarn verify:strict` fail with `no _pending folder at release` (delete it afterwards); add `.github/workflows/a.yml` -> `yarn check:hygiene` fails; put a token-shaped string into a scratch source file -> hygiene fails without echoing it; move a `*_TOKEN` key to `standardConfiguration` in a scratch `connect.yaml` -> `check:connect` fails; make `service/package.json` version differ -> `node tools/release/preflight.mjs` fails with the drift list.
+- [x] 7.5 `ls .github 2>&1` -> "No such file or directory".
 
 Definition of Done (scenario mapping): Green run / one failure does not hide others / per-app contract / strict skip / pending must be empty / installs explicit / no hosted CI -> 4.x, 7.2, 7.3, 7.5. Secret in wrong section / folder missing / missing start script / L's checker / CLI missing -> 3.x, 5.x. Version drift / prerelease tag rule / dry run default / dirty tree refused / wrappers / runbook -> 6.x, 7.4. Workflow file added / env file / token committed / help text -> 2.x, 7.4. `openspec validate o-ci-cd-and-release --strict` passes.
