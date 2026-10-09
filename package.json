@@ -27,6 +27,7 @@
     "release:puck:publish": "node tools/release/puck-script.mjs release:publish",
     "release:preflight": "node tools/release/preflight.mjs",
     "release:tag": "node tools/release/tag.mjs",
+    "docs:check": "node tools/check-docs-lint.mjs && node tools/check-docs-config.mjs && node tools/check-docs-postman.mjs",
     "test:tools": "node --test \"tools/test/*.test.mjs\"",
     "gate": "node tools/labs-publish.mjs gate",
     "check:admin-app-connect": "node tools/check-admin-app-connect.mjs",

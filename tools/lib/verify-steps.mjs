@@ -25,6 +25,7 @@ export function buildSteps(opts, scriptsOf) {
     { id: 'legacy-calls', cmd: 'node', args: ['tools/check-legacy-route-calls.mjs'], cwd: '.' },
     { id: 'hygiene', cmd: 'node', args: ['tools/check-repo-hygiene.mjs', ...(opts.strict ? ['--strict'] : [])], cwd: '.' },
     { id: 'connect-contract', cmd: 'node', args: ['tools/check-connect-contract.mjs'], cwd: '.' },
+    { id: 'docs', cmd: 'yarn', args: ['-s', 'docs:check'], cwd: '.' },
   ];
   for (const t of TARGETS) {
     const scripts = scriptsOf(t.dir);

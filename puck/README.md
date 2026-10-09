@@ -6,23 +6,42 @@ A set of `@commercetools-labs/puck-*` packages that add a Puck-based visual page
 editor, content manager, theme manager and renderer to a commercetools project.
 This guide covers **how to consume the packages from a host application**.
 
-For the internal architecture and build workflow, see the package sources under
-`packages/*` and the reference test app in `playground/`.
+For how the packages fit with the service and the Merchant Center app, see
+[docs/architecture.md](../docs/architecture.md); the reference wiring is [playground/](playground/README.md).
 
 ---
 
 ## Packages
 
+Each package has its own README with install, usage, API and peer dependencies.
+
 | Package | Import | What it gives you |
 | --- | --- | --- |
-| `@commercetools-labs/puck-page-manager` | `PageManager` | Page list + editor/preview routes |
-| `@commercetools-labs/puck-content-manager` | `ContentManager` | Standalone content-block list + editor |
-| `@commercetools-labs/puck-theme-manager` | `ThemeManager` | Design-token editor |
-| `@commercetools-labs/puck-renderer` | `PuckRenderer`, `PuckDataRenderer` | Storefront rendering (data-fetching / pure) |
-| `@commercetools-labs/puck-editor` | `PuckEditor`, `createDefaultPuckConfig`, built-in component factories | Raw editor + Puck config for custom compositions |
+| [`@commercetools-labs/puck-page-manager`](packages/puck-page-manager/README.md) | `PageManager` | Page list + editor/preview routes |
+| [`@commercetools-labs/puck-content-manager`](packages/puck-content-manager/README.md) | `ContentManager` | Standalone content-block list + editor |
+| [`@commercetools-labs/puck-theme-manager`](packages/puck-theme-manager/README.md) | `ThemeManager`, `ImportContentTypes` | Design-token editor and content-type import |
+| [`@commercetools-labs/puck-renderer`](packages/puck-renderer/README.md) | `PuckRenderer`, `PuckDataRenderer`, `loadPuckData` | Storefront rendering (data-fetching / pure / server side) |
+| [`@commercetools-labs/puck-editor`](packages/puck-editor/README.md) | `PuckEditor`, `createDefaultPuckConfig`, built-in component factories | Raw editor + Puck config for custom compositions |
 | [`@commercetools-labs/puck-components`](packages/puck-components/README.md) | `defaultRenderConfig`, render fns | Nimbus-free component render layer shared by the editor + renderer ([rich-text theming variables](packages/puck-components/README.md#theming-rich-text-puck-rich-text-content)) |
-| `@commercetools-labs/puck-api` | `PuckApiProvider`, hooks | Data layer (pages, contents, media, datasource, theme) |
-| `@commercetools-labs/puck-types` | types only | Shared TypeScript types |
+| [`@commercetools-labs/puck-api`](packages/puck-api/README.md) | `PuckApiProvider`, `createPuckClient`, hooks | Data layer (pages, contents, media, datasource, theme) |
+| [`@commercetools-labs/puck-version-history`](packages/puck-version-history/README.md) | `VersionHistoryButton`, hooks | Version history panel and diff |
+| [`@commercetools-labs/puck-image-picker`](packages/puck-image-picker/README.md) | `ImagePickerField`, `ImagePickerProvider` | Image picker with a media library |
+| [`@commercetools-labs/puck-types`](packages/puck-types/README.md) | types only | Shared TypeScript types |
+
+Dependency graph (an arrow means "depends on"):
+
+```
+puck-types                 (base)
+puck-api                 -> puck-types
+puck-components          -> puck-api
+puck-version-history     -> puck-types
+puck-image-picker        -> puck-api, puck-types
+puck-theme-manager       -> puck-api, puck-types
+puck-editor              -> puck-api, puck-components, puck-version-history, puck-types
+puck-renderer            -> puck-api, puck-components, puck-types
+puck-page-manager        -> puck-api, puck-editor, puck-renderer, puck-version-history, puck-types
+puck-content-manager     -> puck-api, puck-editor, puck-renderer, puck-version-history, puck-types
+```
 
 `PageManager`, `ContentManager`, `ThemeManager`, `PuckEditor` and `PuckRenderer`
 are **self-contained**: each mounts its own data + UI context internally, so you
@@ -340,8 +359,9 @@ a project key is described in [docs/migration-1.0.md](docs/migration-1.0.md).
 ## Localization (i18n)
 
 All manager UIs are localized with **react-intl**. Shipped languages: English
-(`en`), Spanish (`es`) and German (`de`). The Spanish and German catalogs are
-machine translated (see below) and have not been reviewed by a native speaker. The
+(`en`), German (`de`) and Spanish (`es`). The German catalog is machine-translated and has not been
+reviewed by a native speaker; the Spanish catalog was carried over from earlier code and has not been
+reviewed either (see below for how catalogs are generated). The
 `locale` prop selects the language; a full locale falls back to its base language
 (`en-US` → `en`, `es-PE` → `es`, `de-DE` → `de`, anything else → `en`):
 
@@ -383,23 +403,40 @@ a new language with `--locale <code>`.
 
 ## Backend
 
-The managers talk to a service backend exposing (per business unit):
+The managers talk to the Contentools service, which exposes (per business unit) routes such as
 
 ```
 /:businessUnitKey/puck-pages
 ```
 
-see the Contentools service documentation. Pages are stored as
+The complete list is [docs/api-reference.md](../docs/api-reference.md). Pages are stored as
 `PuckPageValue` `{ key, businessUnitKey, name, slug, puckData, meta, createdAt,
 updatedAt }` in custom objects. See `service/` for the controller, routes and
 container constants.
 
 ---
 
+## Building and releasing
+
+```bash
+corepack enable                    # Yarn 4.5.1, pinned by "packageManager"
+yarn install --immutable
+yarn build                         # all packages, topological order, then the playground
+yarn verify                        # headers, metadata, build, typecheck, consumer check, lint, tests
+```
+
+Releases are local and manual (there is no CI): from `puck/`, `node scripts/bump-versions.mjs <patch|minor|major|x.y.z[-pre.N]>`
+changes all versions in lockstep (`yarn release:bump`), and `node scripts/publish-packages.mjs` packs and publishes the ten
+packages in dependency order (`yarn release:publish`). It is a **dry run unless you pass `--execute`**, which needs a clean git
+tree, an `npm login` session and a typed confirmation; pre-releases go to the `next` dist-tag. The runbook is the header
+comment of `scripts/publish-packages.mjs`.
+
+---
+
 ## Reference app
 
-`playground/` is a Vite + React + TypeScript app that mounts all managers and the
-renderer. It runs against the bundled mock service (no real backend needed):
+[`playground/`](playground/README.md) is a Vite + React + TypeScript app that mounts all managers and the
+renderer. It runs against the bundled mock service (no real backend needed) or against a real Contentools service:
 
 ```bash
 yarn install

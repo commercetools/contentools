@@ -27,6 +27,8 @@ Authentication: reads of published pages, published contents and configuration a
 
 Error bodies are `{ "message", "statusCode", "correlationId", "code"?, "errors"? }`.
 
+Every route with its payloads and success codes: [../docs/api-reference.md](../docs/api-reference.md). Architecture and the data model: [../docs/architecture.md](../docs/architecture.md). Day-2 operations: [../docs/runbook.md](../docs/runbook.md). A Postman collection is in [postman/](postman).
+
 ## Run locally
 
 Without Connect (plain Node 22 and Yarn 1):

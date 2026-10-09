@@ -1,14 +1,36 @@
-> **UNSUPPORTED - commercetools-labs.** Freely available, AS IS and UNSUPPORTED. See [LICENSE](https://github.com/commercetools/contentools/blob/main/LICENSE). Not covered by commercetools support.
-
 # @commercetools-labs/puck-components
 
-Nimbus-free "visualize" layer for Puck page content: the component render functions,
-their prop types, shared render helpers, the i18n catalogs, and a render-only
-Puck config (`defaultRenderConfig` / `createRenderConfig`). Storefronts consume
-this through [`@commercetools-labs/puck-renderer`](../puck-renderer); the editor
-composes these render functions with its own field widgets.
+> commercetools-labs reference code. MIT, AS IS and UNSUPPORTED. See the
+> [repository](https://github.com/commercetools/contentools) for [SUPPORT.md](https://github.com/commercetools/contentools/blob/main/SUPPORT.md).
 
-Nothing here imports `@commercetools/nimbus` or `@chakra-ui/react`.
+Nimbus-free render layer for Puck page content: the component render functions, their prop types, shared helpers, the message catalogs and a render-only Puck config.
+
+## Install
+
+```bash
+yarn add @commercetools-labs/puck-components react react-dom react-intl
+```
+
+## Usage
+
+```tsx
+import { Render } from '@measured/puck';
+import { defaultRenderConfig } from '@commercetools-labs/puck-components';
+
+<Render config={defaultRenderConfig} data={puckData} />;
+```
+
+Storefronts normally use [`@commercetools-labs/puck-renderer`](https://github.com/commercetools/contentools/blob/main/puck/packages/puck-renderer/README.md), which fetches and renders for you.
+
+## API
+
+| Export | Kind | What it does |
+| --- | --- | --- |
+| `defaultRenderConfig`, `createRenderConfig` | const, function | Render-only Puck config matching the editor's default components |
+| `RichTextContent`, `sanitizeHtml` | component, function | Sanitized rich-text output with a themeable stylesheet |
+| `intlCatalogs` | const | The `intlCatalogs` export holds the message catalogs for `en`, `de` and `es`. The `de` catalog is machine-translated and has not been reviewed by a native speaker. |
+| `getLocalizedText`, `formatPrice`, `getFirstPrice`, `getProductImage`, `getProductName`, `getProductSlug`, `getProductSku`, `resolveProductLink`, `productLinkDefaults`, `colors` | functions | Shared render helpers |
+| the block render functions (`export * from ./components`) | functions | Hero, rich text, grid, columns, image, button, card, spacer and product blocks |
 
 ## Theming rich text (`.puck-rich-text-content`)
 
@@ -116,3 +138,11 @@ Grouped selectors use one representative key — `strong` covers `<strong>`/`<b>
 >   (e.g. `--puck-rich-text-content--h1--margin: 0.67em 0`).
 > - A value containing commas (font stacks, `rgba(...)`) is a valid `var()`
 >   fallback and equally valid as an override.
+
+## Peer dependencies
+
+- `react` `>=19.0.0`
+- `react-dom` `>=19.0.0`
+- `react-intl` `>=6.0.0`
+
+Part of [Contentools](https://github.com/commercetools/contentools). Package list: [puck/README.md](https://github.com/commercetools/contentools/blob/main/puck/README.md).

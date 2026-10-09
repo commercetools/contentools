@@ -1,6 +1,6 @@
 # @commercetools-labs/contentools-mcp
 
-> Unsupported: this is a commercetools-labs project, provided AS IS without support. See [LICENSE](./LICENSE).
+> Unsupported: this is a commercetools-labs project, provided AS IS without support. See [LICENSE](https://github.com/commercetools/contentools/blob/main/LICENSE).
 
 Tools for the Contentools content service (Puck pages, content items, templates, configuration, datasources, media, product search) for AI agents. One tool catalog (44 tools: 24 read, 20 write), four entry points:
 

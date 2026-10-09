@@ -18,7 +18,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const LOGS = join(ROOT, '.verify-logs');
 
 const HELP = `usage: node tools/verify.mjs [flags]
-  --only a,b     run only these steps (ids: tools spdx forbidden legacy-calls hygiene connect-contract puck service mcp admin-app admin-app-connect-build connect-validate)
+  --only a,b     run only these steps (ids: tools spdx forbidden legacy-calls hygiene connect-contract docs puck service mcp admin-app admin-app-connect-build connect-validate)
   --skip a,b     skip these steps
   --fail-fast    stop at the first failure (default: run everything, report all)
   --install      run each app's frozen install first (network; slow the first time)

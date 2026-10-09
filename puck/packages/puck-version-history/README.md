@@ -1,11 +1,40 @@
-> **UNSUPPORTED - commercetools-labs.** Freely available, AS IS and UNSUPPORTED. See [LICENSE](https://github.com/commercetools/contentools/blob/main/LICENSE). Not covered by commercetools support.
-
 # @commercetools-labs/puck-version-history
 
-Version history panel and hooks for Puck editor integrations.
+> commercetools-labs reference code. MIT, AS IS and UNSUPPORTED. See the
+> [repository](https://github.com/commercetools/contentools) for [SUPPORT.md](https://github.com/commercetools/contentools/blob/main/SUPPORT.md).
+
+Version history panel, diff and hooks for Puck editor integrations.
+
+## Install
 
 ```bash
-npm install @commercetools-labs/puck-version-history
+yarn add @commercetools-labs/puck-version-history @commercetools/nimbus @commercetools/nimbus-icons react react-dom react-intl
 ```
 
-Part of [Contentools](https://github.com/commercetools/contentools). Usage, peer dependencies and the connection API are documented in the [puck README](https://github.com/commercetools/contentools/blob/main/puck/README.md).
+## Usage
+
+```tsx
+import { VersionHistoryProvider, VersionHistoryButton, VersionHistorySidebarContent, useVersionHistoryPanel } from '@commercetools-labs/puck-version-history';
+```
+
+The editor package wires these in already (`PuckEditor`); use this package directly only to build your own editor shell.
+
+## API
+
+| Export | Kind | What it does |
+| --- | --- | --- |
+| `VersionHistoryProvider`, `useVersionHistoryContext` | component, hook | Context for the panel |
+| `VersionHistoryButton`, `VersionHistorySidebarContent`, `VersionCard`, `DiffSummary`, `VersionPreviewBanner`, `VersionAwareFieldsPanel` | components | Panel parts |
+| `useVersionHistoryPanel`, `useVersionDiff` | hooks | Panel state and the diff between two versions |
+| `ComponentDiff`, `PuckDataDiff`, `VersionEntry` | type | Diff and version shapes |
+| `intlCatalogs` | const | The `intlCatalogs` export holds the message catalogs for `en`, `de` and `es`. The `de` catalog is machine-translated and has not been reviewed by a native speaker. |
+
+## Peer dependencies
+
+- `@commercetools/nimbus` `^3.2.0`
+- `@commercetools/nimbus-icons` `^3.2.0`
+- `react` `>=19.0.0`
+- `react-dom` `>=19.0.0`
+- `react-intl` `>=6.0.0`
+
+Part of [Contentools](https://github.com/commercetools/contentools). Package list: [puck/README.md](https://github.com/commercetools/contentools/blob/main/puck/README.md).
