@@ -1,0 +1,2148 @@
+{
+  "info": {
+    "name": "Contentools Service API",
+    "description": "Health, status, published reads and configuration reads need no token. Everything else needs Authorization: Bearer {{service_api_token}}: the SERVICE_API_TOKEN configured on the deployment (a Merchant Center session token cannot be minted in Postman).",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{service_api_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080/service",
+      "type": "string"
+    },
+    {
+      "key": "business_unit_key",
+      "value": "default",
+      "type": "string"
+    },
+    {
+      "key": "datasource_key",
+      "value": "sample-datasource",
+      "type": "string"
+    },
+    {
+      "key": "puck_page_key",
+      "value": "homepage",
+      "type": "string"
+    },
+    {
+      "key": "puck_content_key",
+      "value": "sample-puck-content",
+      "type": "string"
+    },
+    {
+      "key": "puck_template_key",
+      "value": "sample-template",
+      "type": "string"
+    },
+    {
+      "key": "service_api_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Configuration",
+      "item": [
+        {
+          "name": "Get All Configurations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration"
+              ]
+            },
+            "description": "Get all configuration slices for the business unit.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Configurations (alias)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configurations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configurations"
+              ]
+            },
+            "description": "Alias for GET /configuration — returns all configuration slices for the business unit.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Theme",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/theme",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "theme"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Theme",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/theme",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "theme"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Theme",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/theme",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "theme"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Theme",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/theme",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "theme"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Header",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/header",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "header"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Header",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/header",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "header"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Header",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/header",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "header"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Header",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/header",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "header"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Facet",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/facet",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "facet"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Facet",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/facet",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "facet"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Facet",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/facet",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "facet"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Facet",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/facet",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "facet"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Footer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/footer",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "footer"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Footer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/footer",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "footer"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Footer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/footer",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "footer"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Footer",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/footer",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "footer"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Site Metadata",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/site-metadata",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "site-metadata"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Site Metadata",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/site-metadata",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "site-metadata"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Site Metadata",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/site-metadata",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "site-metadata"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Site Metadata",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/site-metadata",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "site-metadata"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category Listing",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/category-listing",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "category-listing"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category Listing",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/category-listing",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "category-listing"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category Listing",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/category-listing",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "category-listing"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category Listing",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/category-listing",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "category-listing"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Translations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/translations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "translations"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Translations",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/translations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "translations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Translations",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/translations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "translations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Translations",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/translations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "translations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get B2B Account Menu Links",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/b2b-account-menu-links",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "b2b-account-menu-links"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create B2B Account Menu Links",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": []\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/b2b-account-menu-links",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "b2b-account-menu-links"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update B2B Account Menu Links",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": []\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/b2b-account-menu-links",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "b2b-account-menu-links"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete B2B Account Menu Links",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/b2b-account-menu-links",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "configuration",
+                "b2b-account-menu-links"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Content Types",
+      "item": [
+        {
+          "name": "Import Default Content Types",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/content-type/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "content-type",
+                "import"
+              ]
+            },
+            "description": "Import default content types from samples. Requires Bearer token."
+          },
+          "response": []
+        },
+        {
+          "name": "Import Default Content Types (business unit)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/content-type/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "content-type",
+                "import"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "File Management",
+      "item": [
+        {
+          "name": "Upload File",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "title",
+                  "value": "Sample Image",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "A sample image for testing",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/upload-file",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "upload-file"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Media Library",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/media-library?extensions=jpg,png,gif&limit=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "media-library"
+              ],
+              "query": [
+                {
+                  "key": "extensions",
+                  "value": "jpg,png,gif"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Datasources",
+      "item": [
+        {
+          "name": "Get All Datasources",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/datasource",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "datasource"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Datasource by Key",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/datasource/{{datasource_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "datasource",
+                "{{datasource_key}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Datasource",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {\n    \"name\": \"Sample datasource\",\n    \"params\": [{ \"key\": \"id\", \"type\": \"string\", \"required\": true }]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/datasource/{{datasource_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "datasource",
+                "{{datasource_key}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Datasource",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {\n    \"name\": \"Updated sample datasource\",\n    \"params\": [{ \"key\": \"id\", \"type\": \"string\", \"required\": true }]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/datasource/{{datasource_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "datasource",
+                "{{datasource_key}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Datasource",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/datasource/{{datasource_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "datasource",
+                "{{datasource_key}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test Datasource",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"params\": {\n    \"id\": \"123\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/datasource/{{datasource_key}}/test",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "datasource",
+                "{{datasource_key}}",
+                "test"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Puck Pages",
+      "description": "Puck-editor page management (CRUD, states, versions, published/preview).",
+      "item": [
+        {
+          "name": "Get All Puck Pages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-pages",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-pages"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Puck Page by Key",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-pages/{{puck_page_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-pages",
+                "{{puck_page_key}}"
+              ]
+            },
+            "description": "Returns the page object together with its draft and published states."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Puck Page",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {\n    \"name\": \"Homepage\",\n    \"slug\": \"/home\",\n    \"puckData\": { \"content\": [], \"root\": {} }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-pages",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-pages"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Puck Page",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {\n    \"name\": \"Updated Homepage\",\n    \"slug\": \"/home\",\n    \"puckData\": { \"content\": [], \"root\": {} }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-pages/{{puck_page_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-pages",
+                "{{puck_page_key}}"
+              ]
+            },
+            "description": "Auto-saves a draft state and a version entry."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Puck Page",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-pages/{{puck_page_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-pages",
+                "{{puck_page_key}}"
+              ]
+            },
+            "description": "Removes the page together with all its states and versions."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Published Puck Page",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/published/puck-pages/{{puck_page_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "published",
+                "puck-pages",
+                "{{puck_page_key}}"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Preview Puck Page",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/preview/puck-pages/{{puck_page_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "preview",
+                "puck-pages",
+                "{{puck_page_key}}"
+              ]
+            },
+            "description": "Returns draft state if available, falls back to published."
+          },
+          "response": []
+        },
+        {
+          "name": "Query Published Puck Pages",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"slug = \\\"/home\\\"\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/published/puck-pages/query",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "published",
+                "puck-pages",
+                "query"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Query Preview Puck Pages",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"slug = \\\"/home\\\"\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/preview/puck-pages/query",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "preview",
+                "puck-pages",
+                "query"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Puck Page States",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-pages/{{puck_page_key}}/states",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-pages",
+                "{{puck_page_key}}",
+                "states"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Publish Puck Page",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-pages/{{puck_page_key}}/states/published?clearDraft=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-pages",
+                "{{puck_page_key}}",
+                "states",
+                "published"
+              ],
+              "query": [
+                {
+                  "key": "clearDraft",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Promotes the draft state to published. ?clearDraft=true removes the draft afterwards."
+          },
+          "response": []
+        },
+        {
+          "name": "Revert Puck Page Draft",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-pages/{{puck_page_key}}/states/draft",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-pages",
+                "{{puck_page_key}}",
+                "states",
+                "draft"
+              ]
+            },
+            "description": "Deletes the draft state, reverting the page to the last published version."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Puck Page Versions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-pages/{{puck_page_key}}/versions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-pages",
+                "{{puck_page_key}}",
+                "versions"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Puck Contents",
+      "description": "Puck-editor content item management (CRUD, states, versions, published/preview).",
+      "item": [
+        {
+          "name": "Get All Puck Contents",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-contents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-contents"
+              ],
+              "query": [
+                {
+                  "key": "contentType",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Optional query param: ?contentType=hero to filter by content type."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Puck Content by Key",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-contents/{{puck_content_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-contents",
+                "{{puck_content_key}}"
+              ]
+            },
+            "description": "Returns the content item together with its draft and published states."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Puck Content",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {\n    \"contentType\": \"hero-banner\",\n    \"name\": \"Sample Puck Content\",\n    \"data\": {}\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-contents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-contents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Puck Content",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {\n    \"contentType\": \"hero-banner\",\n    \"name\": \"Updated Puck Content\",\n    \"data\": {}\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-contents/{{puck_content_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-contents",
+                "{{puck_content_key}}"
+              ]
+            },
+            "description": "Auto-saves a draft state and a version entry."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Puck Content",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-contents/{{puck_content_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-contents",
+                "{{puck_content_key}}"
+              ]
+            },
+            "description": "Removes the content item together with all its states and versions."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Published Puck Content",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/published/puck-contents/{{puck_content_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "published",
+                "puck-contents",
+                "{{puck_content_key}}"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Preview Puck Content",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/preview/puck-contents/{{puck_content_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "preview",
+                "puck-contents",
+                "{{puck_content_key}}"
+              ]
+            },
+            "description": "Returns draft state if available, falls back to published."
+          },
+          "response": []
+        },
+        {
+          "name": "Query Published Puck Contents",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"contentType = \\\"hero-banner\\\"\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/published/puck-contents/query",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "published",
+                "puck-contents",
+                "query"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Query Preview Puck Contents",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"contentType = \\\"hero-banner\\\"\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/preview/puck-contents/query",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "preview",
+                "puck-contents",
+                "query"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Puck Content States",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-contents/{{puck_content_key}}/states",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-contents",
+                "{{puck_content_key}}",
+                "states"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Publish Puck Content",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-contents/{{puck_content_key}}/states/published?clearDraft=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-contents",
+                "{{puck_content_key}}",
+                "states",
+                "published"
+              ],
+              "query": [
+                {
+                  "key": "clearDraft",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Promotes the draft state to published. ?clearDraft=true removes the draft afterwards."
+          },
+          "response": []
+        },
+        {
+          "name": "Revert Puck Content Draft",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-contents/{{puck_content_key}}/states/draft",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-contents",
+                "{{puck_content_key}}",
+                "states",
+                "draft"
+              ]
+            },
+            "description": "Deletes the draft state, reverting the content to the last published version."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Puck Content Versions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-contents/{{puck_content_key}}/versions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-contents",
+                "{{puck_content_key}}",
+                "versions"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "status"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Puck Templates",
+      "item": [
+        {
+          "name": "List Templates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-templates?kind=page",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-templates?kind=page"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Template",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-templates/{{puck_template_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-templates",
+                "{{puck_template_key}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Template",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": { \"name\": \"Landing\", \"kind\": \"page\", \"puckData\": { \"content\": [], \"root\": {} } }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-templates",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-templates"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Template",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-templates/{{puck_template_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "{{business_unit_key}}",
+                "puck-templates",
+                "{{puck_template_key}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Search Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/search?text=shoe&limit=20&locale=en-US",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "search?text=shoe&limit=20&locale=en-US"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

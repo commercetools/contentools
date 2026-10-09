@@ -1,24 +1,25 @@
-> **UNSUPPORTED - commercetools-labs.** Freely available, AS IS and UNSUPPORTED. See [LICENSE](https://github.com/commercetools/contentools/blob/main/LICENSE). Not covered by commercetools support.
-
 # @commercetools-labs/puck-api
 
-API client and React hooks for the Puck page content integration.
+> commercetools-labs reference code. MIT, AS IS and UNSUPPORTED. See the
+> [repository](https://github.com/commercetools/contentools) for [SUPPORT.md](https://github.com/commercetools/contentools/blob/main/SUPPORT.md).
+
+API client and React hooks for the Contentools content API: a React-free `createPuckClient`, a provider, hooks for pages, content items, templates, datasources and the media library.
+
+## Install
 
 ```bash
-npm install @commercetools-labs/puck-api
+yarn add @commercetools-labs/puck-api react
 ```
 
-Part of [Contentools](https://github.com/commercetools/contentools). Usage, peer dependencies and the connection API are documented in the [puck README](https://github.com/commercetools/contentools/blob/main/puck/README.md).
-
-## Connect
+## Usage
 
 ```tsx
-import { PuckApiProvider, createPuckClient, listPuckPagesApi } from '@commercetools-labs/puck-api';
+import { PuckApiProvider, createPuckClient, listPuckPagesApi, usePuckPages } from '@commercetools-labs/puck-api';
 
 const connection = {
-  baseURL: 'https://your-service.example.com/service',
-  businessUnitKey: 'your-business-unit-key',
-  jwtToken: 'optional-token', // or getAuthHeaders / fetcher
+  baseURL: 'https://<your-service-host>/service',
+  businessUnitKey: 'my-business-unit',
+  jwtToken: token, // or getAuthHeaders / fetcher; not needed for published reads
 };
 
 // React: hooks read the client from the provider
@@ -29,4 +30,23 @@ const client = createPuckClient(connection);
 const pages = await listPuckPagesApi(client);
 ```
 
-Errors are `PuckHttpError` (and `PuckAuthError` for 401/403 or a missing auth source). See the puck README, section Authentication.
+Connection props: `baseURL`, `businessUnitKey`, optional `locale`, `jwtToken`, `getAuthHeaders`, `fetcher`, `publicDatasourceResolve`. Errors are `PuckHttpError` (`PuckAuthError` for 401 and 403 or a missing auth source). See the [Authentication section of the puck README](https://github.com/commercetools/contentools/blob/main/puck/README.md#authentication).
+
+## API
+
+| Export | Kind | What it does |
+| --- | --- | --- |
+| `PuckApiProvider`, `PuckApiContext`, `usePuckApiContext`, `usePuckApiContextOptional`, `usePuckClient` | component, hooks | Provides one client to the tree; props are `PuckConnection` plus `children` |
+| `createPuckClient`, `fetcherFromFetch`, `PuckClient` | function | React-free client; adapt anything fetch-shaped with `fetcherFromFetch` |
+| `PuckHttpError`, `PuckAuthError` | class | Rejection types (`status`, `body`, `serverMessage`, `code`, `correlationId`; `authCode` for auth errors) |
+| `PUCK_AUTH_POLICY` | const | Which operations need credentials |
+| `usePuckPages`, `usePuckPage`, `usePuckStateManagement` | hooks | Pages, a single page with auto-save, publish and revert |
+| `usePuckContents`, `usePuckContent`, `usePuckTemplates` | hooks | Content items and templates |
+| `useMediaLibrary` | hook | Media library with cursor pagination and a `notConfigured` state |
+| `resolveDatasourceApi` and the raw `*Api` functions (`listPuckPagesApi`, `getPublishedPuckPageApi`, `publishPuckPageApi`, ...) | function | One function per service route; take the client as first argument |
+
+## Peer dependencies
+
+- `react` `>=19.0.0`
+
+Part of [Contentools](https://github.com/commercetools/contentools). Package list: [puck/README.md](https://github.com/commercetools/contentools/blob/main/puck/README.md).

@@ -64,6 +64,8 @@ Tunnel URLs change on restart: update both places.
 
 ## Deploy
 
+The whole first-deployment walk-through (all three applications, Merchant Center registration, verification) is [../INSTALL.md](../INSTALL.md); this section is the admin-app part of it.
+
 The admin app is the `admin-app` application of the root `connect.yaml` (type
 `merchant-center-custom-application`: static files, no `endpoint`, no secrets, no lifecycle scripts).
 Connect runs `yarn install --frozen-lockfile` and `yarn build` in this folder and hosts `public/`.

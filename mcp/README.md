@@ -95,6 +95,22 @@ claude mcp add --transport http contentools https://<mcp-app-url>/mcp \
   --header "Authorization: Bearer <MCP_ACCESS_TOKEN>"
 ```
 
+Or, for clients configured with a JSON file (the field names differ slightly between clients; this is the common remote-HTTP shape):
+
+```json
+{
+  "mcpServers": {
+    "contentools": {
+      "type": "http",
+      "url": "https://<mcp-app-url>/mcp",
+      "headers": { "Authorization": "Bearer <MCP_ACCESS_TOKEN>" }
+    }
+  }
+}
+```
+
+The whole first deployment (all three applications) is described in [../INSTALL.md](../INSTALL.md); operations in [../docs/runbook.md](../docs/runbook.md).
+
 ## Deployment notes
 
 Deploy the `service` application first and copy its URL (ending in `/service`) into `CONTENT_SERVICE_URL` of the `mcp` deployment: Connect provides no variable holding a sibling application's URL. Set `SERVICE_API_TOKEN` to the same value on both applications. The post-deploy script (`yarn connector:post-deploy`) is a read-only probe: it checks that the service answers and accepts the token (a 404 for a probe page counts as accepted); it fails the deployment on 401 or 403 and only warns when the service is unreachable. A cold start on a sandbox can take about 15 seconds, so a first MCP call may need a retry.
