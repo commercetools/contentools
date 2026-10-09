@@ -1,5 +1,3 @@
 # Spec O requires this file to be empty.
 # Files still containing tenant/store terms, owned by a later spec. Format: <path or dir/>  # owner spec
 admin-app/  # K
-mcp/src/shared/functions.ts  # M
-mcp/src/types/auth.ts  # M
