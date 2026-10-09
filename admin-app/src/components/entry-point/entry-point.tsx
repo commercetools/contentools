@@ -12,8 +12,7 @@ import {
 } from '@commercetools-frontend/application-shell';
 import type { ApplicationWindow } from '@commercetools-frontend/constants';
 import loadMessages from '../../load-messages';
-import { AuthProvider } from '../../contexts/auth';
-import { ConnectProvider } from '../../contexts/connect';
+import { ServiceProvider } from '../../contexts/service';
 import { BusinessUnitProvider } from '../../contexts/business-unit';
 
 declare let window: ApplicationWindow;
@@ -37,13 +36,11 @@ const EntryPoint = () => (
   >
     {/* loadFonts={false}: the Merchant Center app-kit already loads Inter. */}
     <NimbusProvider loadFonts={false}>
-      <AuthProvider>
-        <ConnectProvider>
-          <BusinessUnitProvider>
-            <AsyncApplicationRoutes />
-          </BusinessUnitProvider>
-        </ConnectProvider>
-      </AuthProvider>
+      <ServiceProvider>
+        <BusinessUnitProvider>
+          <AsyncApplicationRoutes />
+        </BusinessUnitProvider>
+      </ServiceProvider>
     </NimbusProvider>
   </ApplicationShell>
 );

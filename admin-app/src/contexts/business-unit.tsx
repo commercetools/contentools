@@ -50,7 +50,6 @@ export const BusinessUnitProvider: React.FC<BusinessUnitProviderProps> = ({
     return [DEFAULT_OPTION, ...mapped];
   }, [fetchedUnits]);
 
-
   const value: BusinessUnitContextValue = useMemo(
     () => ({
       isLoading: loading,
@@ -59,10 +58,8 @@ export const BusinessUnitProvider: React.FC<BusinessUnitProviderProps> = ({
       selectedBusinessUnitKey,
       setSelectedBusinessUnitKey,
     }),
-    [businessUnits, selectedBusinessUnitKey]
+    [businessUnits, selectedBusinessUnitKey, loading]
   );
-
-
 
   return (
     <BusinessUnitContext.Provider value={value}>
