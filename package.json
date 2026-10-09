@@ -14,6 +14,7 @@
     "test:e2e": "node tools/run-all.mjs test:e2e",
     "verify": "node tools/run-all.mjs lint typecheck test build",
     "verify:service": "yarn --cwd service install --frozen-lockfile && yarn --cwd service typecheck && yarn --cwd service lint && yarn --cwd service test && yarn --cwd service build",
+    "verify:mcp": "yarn --cwd mcp install --frozen-lockfile && yarn --cwd mcp check:app && yarn --cwd mcp check:connect-block",
     "headers": "node tools/labs-publish.mjs ossify --apply",
     "dev:fake-ct": "node --experimental-strip-types tools/fake-ct/server.mjs",
     "check:spdx": "node tools/check-spdx-headers.mjs",

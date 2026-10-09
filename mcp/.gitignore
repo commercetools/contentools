@@ -1,2 +1,5 @@
-ai-sdk/*
-langchain/*
+node_modules
+build
+.env
+.env.e2e
+coverage

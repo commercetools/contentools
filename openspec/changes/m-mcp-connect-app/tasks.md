@@ -20,8 +20,8 @@
 **Context.** Create an empty but buildable Node 22 TypeScript package in `mcp/`. It must be self-contained because Connect builds each app from its own folder (no workspaces, no imports from siblings).
 **Pre-conditions.** Specs A (repo skeleton) and C (legacy `mcp` tools pruned/legacy removed) archived; `<root>/mcp/` exists (A copied the source tree there) or you create it. Node 22 (`node -v` prints `v22.x`), npm 10+. Specs E, F, H need not be archived to *write* code (contracts are in `design.md`), but E/F must be done before section 11 (live e2e).
 
-- [ ] 1.1 Clear the source copy. If `mcp/` still contains the old tree (`src/shared`, `src/ai-sdk`, `src/langchain`, `src/modelcontextprotocol`, `src/types`, `bin/`, `tsup.config.ts`, `yarn.lock` (the old one is stale: regenerate), `README.md`), delete all of it: `cd <root>/mcp && rm -rf src bin tsup.config.ts yarn.lock README.md node_modules ai-sdk langchain mastra`. (Reason: the legacy tools are removed by Q-02; the adapters come back in spec N from the new core; the Mastra mentions were stale, see `explore.md` section 2.) **Done when** `ls <root>/mcp` shows at most `package.json`, `tsconfig.json`, `.gitignore`.
-- [ ] 1.2 Create `package.json`:
+- [x] 1.1 Clear the source copy. If `mcp/` still contains the old tree (`src/shared`, `src/ai-sdk`, `src/langchain`, `src/modelcontextprotocol`, `src/types`, `bin/`, `tsup.config.ts`, `yarn.lock` (the old one is stale: regenerate), `README.md`), delete all of it: `cd <root>/mcp && rm -rf src bin tsup.config.ts yarn.lock README.md node_modules ai-sdk langchain mastra`. (Reason: the legacy tools are removed by Q-02; the adapters come back in spec N from the new core; the Mastra mentions were stale, see `explore.md` section 2.) **Done when** `ls <root>/mcp` shows at most `package.json`, `tsconfig.json`, `.gitignore`.
+- [x] 1.2 Create `package.json`:
 ```json
 {
   "name": "@commercetools-labs/contentools-mcp",
@@ -56,7 +56,7 @@
 }
 ```
   `private: true` is deliberate and permanent: this is the Connect app manifest (spec N publishes a derived manifest instead). Note: Connect's build step compiles TypeScript, so `typescript` must be installable at build time (devDependencies are installed by the platform build; the template does the same). **Done when** `yarn install` succeeds and creates `yarn.lock` (Yarn 1 classic; commit it).
-- [ ] 1.3 Create `tsconfig.json` (editor/tests) and `tsconfig.build.json` (Connect build):
+- [x] 1.3 Create `tsconfig.json` (editor/tests) and `tsconfig.build.json` (Connect build):
 ```json
 // tsconfig.json
 { "compilerOptions": { "target": "ES2022", "module": "NodeNext", "moduleResolution": "NodeNext", "strict": true,
@@ -67,7 +67,7 @@
   "include": ["src"], "exclude": ["src/adapters", "**/*.test.ts"] }
 ```
   (The package is CommonJS: no `"type": "module"`, so imports are extensionless. Spec N adds `src/adapters` and excludes it from this build.) **Done when** `npx tsc --noEmit` exits 0 (it may report "no inputs" until 2.x exist; create `src/core/index.ts` containing only the header and `export {};` first).
-- [ ] 1.4 Create `jest.config.cjs`. msw 2 ships ESM-only helper packages, so they must be transformed (this exact config was verified):
+- [x] 1.4 Create `jest.config.cjs`. msw 2 ships ESM-only helper packages, so they must be transformed (this exact config was verified):
 ```js
 module.exports = {
   testEnvironment: 'node',
@@ -79,7 +79,7 @@ module.exports = {
 };
 ```
   **Done when** a trivial `tests/unit/smoke.test.ts` (`test('ok',()=>expect(1).toBe(1))`) passes with `yarn test` (delete it after 4.x exist).
-- [ ] 1.5 Create `.nvmrc` (`22`), `.gitignore` (`node_modules`, `build`, `.env`, `.env.e2e`, `coverage`), `.env.example`:
+- [x] 1.5 Create `.nvmrc` (`22`), `.gitignore` (`node_modules`, `build`, `.env`, `.env.e2e`, `coverage`), `.env.example`:
 ```
 CONTENT_SERVICE_URL=http://localhost:8080/service
 MCP_ACCESS_TOKEN=change-me-to-a-random-value-of-32-chars-or-more
@@ -103,7 +103,7 @@ MCP_REQUEST_TIMEOUT_MS=15000
 **Context.** `src/core` is the transport-neutral heart (later reused by npm adapters, spec N): tool *definitions* are data (name, zod schema, a pure function that builds the service request), and one small client performs the HTTP call. It must import only `zod` and Node built-ins, never `express` or the MCP SDK, so adapters stay light. (Design D1, D4.)
 **Pre-conditions.** Section 1 done.
 
-- [ ] 2.1 Create `src/core/types.ts` (the exact contract from `design.md` D4):
+- [x] 2.1 Create `src/core/types.ts` (the exact contract from `design.md` D4):
 ```ts
 import type { z } from 'zod';
 export const TOOL_GROUPS = ['pages','contents','templates','configuration','datasources','products','media','content-types'] as const;
@@ -127,7 +127,7 @@ export function defineTool<S extends z.ZodRawShape>(def: ToolDefinition<S>): Any
 }
 ```
   **Done when** `npx tsc --noEmit` passes.
-- [ ] 2.2 Create `src/core/predicate.ts` (injection defence, design D6):
+- [x] 2.2 Create `src/core/predicate.ts` (injection defence, design D6):
 ```ts
 const CONTROL = /[\u0000-\u001f\u007f]/;
 export class ToolInputError extends Error {}
@@ -139,8 +139,8 @@ export function quote(value: string): string {
 export const buildEqualsPredicate = (field: string, value: string): string => `${field} = ${quote(value)}`;
 ```
   **Done when** unit test (task 4.1) proves `buildEqualsPredicate('slug','/x" OR key = "y')` === `slug = "/x\" OR key = \"y"`.
-- [ ] 2.3 Create `src/core/client.ts` with `ServiceError` and `ContentoolsClient` (verified shape). Requirements: constructor options `{ baseUrl, token, timeoutMs, fetchImpl? }`; `execute(req, correlationId?)` sets headers `Authorization: Bearer <token>`, `x-source: mcp`, `Accept: application/json`, optional `x-correlation-id`; JSON body -> `Content-Type: application/json`; multipart -> `FormData` with `file` built from `Buffer.from(base64,'base64')`; `AbortSignal.timeout(timeoutMs)`; maps timeout -> `ServiceError(504,'Service request timed out after N ms')`, network error -> `ServiceError(502,'Service is unreachable')` (never include the cause: it may contain the URL); non-2xx -> `ServiceError(status, text)` where, for the spec-E error body `{ message, statusCode, correlationId, code?, errors? }`, `text` = `Service returned <status>` + (` <code>` if present) + `: <message>` + (` (correlationId <id>)` if present) + (` ` + compact JSON of `errors` if present), truncated to 500 chars in total; a non-JSON body uses the raw text instead of `<message>`; 2xx with empty body (204) -> `undefined`. Use Node 22 global `fetch`/`FormData`/`Blob` (no dependency). Copy the body from the scratch prototype shape in `design.md` D4/D8 and this list. **Done when** typecheck passes and task 4.2 tests pass.
-- [ ] 2.4 Create `src/core/errors.ts` re-exporting `ServiceError` and `ToolInputError` (so adapters import from one place), `src/core/run.ts` and `src/core/format.ts`. `run.ts` is the single place that turns a tool call into text, used by the MCP server now and by the npm adapters in spec N:
+- [x] 2.3 Create `src/core/client.ts` with `ServiceError` and `ContentoolsClient` (verified shape). Requirements: constructor options `{ baseUrl, token, timeoutMs, fetchImpl? }`; `execute(req, correlationId?)` sets headers `Authorization: Bearer <token>`, `x-source: mcp`, `Accept: application/json`, optional `x-correlation-id`; JSON body -> `Content-Type: application/json`; multipart -> `FormData` with `file` built from `Buffer.from(base64,'base64')`; `AbortSignal.timeout(timeoutMs)`; maps timeout -> `ServiceError(504,'Service request timed out after N ms')`, network error -> `ServiceError(502,'Service is unreachable')` (never include the cause: it may contain the URL); non-2xx -> `ServiceError(status, text)` where, for the spec-E error body `{ message, statusCode, correlationId, code?, errors? }`, `text` = `Service returned <status>` + (` <code>` if present) + `: <message>` + (` (correlationId <id>)` if present) + (` ` + compact JSON of `errors` if present), truncated to 500 chars in total; a non-JSON body uses the raw text instead of `<message>`; 2xx with empty body (204) -> `undefined`. Use Node 22 global `fetch`/`FormData`/`Blob` (no dependency). Copy the body from the scratch prototype shape in `design.md` D4/D8 and this list. **Done when** typecheck passes and task 4.2 tests pass.
+- [x] 2.4 Create `src/core/errors.ts` re-exporting `ServiceError` and `ToolInputError` (so adapters import from one place), `src/core/run.ts` and `src/core/format.ts`. `run.ts` is the single place that turns a tool call into text, used by the MCP server now and by the npm adapters in spec N:
 ```ts
 import type { AnyToolDefinition, RequestContext } from './types';
 import { ContentoolsClient, ServiceError } from './client';
@@ -178,7 +178,7 @@ export function formatToolOutput(result: unknown): string {
 **Context.** Author the catalog exactly as the table in `design.md` ("Tool catalog"). Reference material: route behaviour in `explore.md` section 3; source shapes to borrow descriptions/schemas from: `/Users/behnam/code/cms/mcp/src/shared/configuration/tools.ts`, `datasource/tools.ts`, `file/tools.ts` (everything else is new). Puck value types: `/Users/behnam/code/cms/puck/packages/puck-types/src/{puck-page,puck-content,puck-template}.types.ts`.
 **Pre-conditions.** Section 2 done.
 
-- [ ] 3.1 Create `src/core/schemas.ts` with shared schemas:
+- [x] 3.1 Create `src/core/schemas.ts` with shared schemas:
 ```ts
 import { z } from 'zod';
 export const businessUnitKey = z.string().min(1).max(128).optional()
@@ -194,7 +194,7 @@ export const seg = encodeURIComponent;
 export const bu = (input: { businessUnitKey?: string | undefined }, def: string) => `/${seg(input.businessUnitKey ?? def)}`;
 ```
   **Done when** it compiles.
-- [ ] 3.2 Create `src/core/tools/pages.ts` with the 13 page tools. Because `puck-contents` has the same 13 routes, write a local factory only if it stays readable; otherwise write both files explicitly (explicit is preferred for greppable routes). Two verified examples (read and write):
+- [x] 3.2 Create `src/core/tools/pages.ts` with the 13 page tools. Because `puck-contents` has the same 13 routes, write a local factory only if it stays readable; otherwise write both files explicitly (explicit is preferred for greppable routes). Two verified examples (read and write):
 ```ts
 defineTool({
   name: 'get_puck_page', title: 'Get Puck page', group: 'pages', access: 'read',
@@ -218,12 +218,12 @@ defineTool({
 }),
 ```
   Implement the remaining page tools (rows 1-13 of the table) the same way: `list_puck_pages`, `get_published_puck_page`, `get_preview_puck_page`, `query_preview_puck_page`, `get_puck_page_states`, `get_puck_page_versions`, `update_puck_page` (`value` = same fields all optional, `.refine(v => Object.keys(v).length > 0, 'at least one field')`), `delete_puck_page`, `publish_puck_page` (path suffix `?clearDraft=true` only when `clearDraft === true`), `revert_puck_page_draft`. Descriptions must say "PUBLISHED", "PREVIEW (draft if present)" or "WRITES data" so an LLM chooses correctly. **Done when** the catalog test (4.3) lists these 13.
-- [ ] 3.3 Create `src/core/tools/contents.ts` (13 tools, rows 14-26): same as pages with `puck-contents`, `contentType` instead of `slug`, `value: { name, contentType, data?: PuckData, meta?: { description?, tags?: string[] }.passthrough() }`; `list_puck_contents` takes optional `contentType` -> `?contentType=<encoded>`; `query_*_puck_content` take `field: z.enum(['key','name','contentType'])` + `value: z.string()` -> `buildEqualsPredicate(i.field, i.value)`. **Done when** catalog test passes.
-- [ ] 3.4 Create `src/core/tools/templates.ts` (rows 27-30): `list_puck_templates` (`kind?: z.enum(['page','content'])` -> `?kind=`), `get_puck_template`, `create_puck_template` (`value: { name, kind, puckData: PuckDataSchema }`), `delete_puck_template`.
-- [ ] 3.5 Create `src/core/tools/configuration.ts` (rows 31-34) with `slice: z.enum(CONFIG_SLICES)`: `list_configurations` -> `GET /:bu/configuration`; `get_configuration`, `upsert_configuration` (`value: z.union([z.record(z.string(), z.unknown()), z.array(z.unknown())])`, `PUT`), `delete_configuration`. Description of `upsert_configuration` must list what each slice holds (theme = design tokens object; b2b-account-menu-links = array of `{label, href}`; others free JSON).
-- [ ] 3.6 Create `src/core/tools/datasources.ts` (rows 35-40). Datasource paths have **no BU segment**. Schema for create/update `value`: `{ name: string, key: string, params: {key:string,type:string,required:boolean}[], deployedUrl: string.url() }` (borrow from `/Users/behnam/code/cms/mcp/src/shared/datasource/tools.ts`). Add to descriptions: "the service calls `deployedUrl`; only register URLs you trust".
-- [ ] 3.7 Create `src/core/tools/products.ts` (row 41): `search_products` -> `GET /products/search?text=<enc>&limit=<n>&locale=<enc>` (protected read since spec E; works because the app sends the service token) (omit params the caller left out: the service defaults limit 20, locale `en-US`). Constraints from `service/src/routes/product.route.ts`: limit max 50.
-- [ ] 3.8 Create `src/core/tools/media.ts` (rows 42-43): `list_media` and `upload_media`. **`list_media` follows spec G's cursor pagination** (`/Users/behnam/code/commercetools-labs/contentools/openspec/changes/g-service-media-storage/specs/media-library/spec.md`; there is **no** `page`, `totalItems` or `totalPages`; the source tool's `page` argument is dropped):
+- [x] 3.3 Create `src/core/tools/contents.ts` (13 tools, rows 14-26): same as pages with `puck-contents`, `contentType` instead of `slug`, `value: { name, contentType, data?: PuckData, meta?: { description?, tags?: string[] }.passthrough() }`; `list_puck_contents` takes optional `contentType` -> `?contentType=<encoded>`; `query_*_puck_content` take `field: z.enum(['key','name','contentType'])` + `value: z.string()` -> `buildEqualsPredicate(i.field, i.value)`. **Done when** catalog test passes.
+- [x] 3.4 Create `src/core/tools/templates.ts` (rows 27-30): `list_puck_templates` (`kind?: z.enum(['page','content'])` -> `?kind=`), `get_puck_template`, `create_puck_template` (`value: { name, kind, puckData: PuckDataSchema }`), `delete_puck_template`.
+- [x] 3.5 Create `src/core/tools/configuration.ts` (rows 31-34) with `slice: z.enum(CONFIG_SLICES)`: `list_configurations` -> `GET /:bu/configuration`; `get_configuration`, `upsert_configuration` (`value: z.union([z.record(z.string(), z.unknown()), z.array(z.unknown())])`, `PUT`), `delete_configuration`. Description of `upsert_configuration` must list what each slice holds (theme = design tokens object; b2b-account-menu-links = array of `{label, href}`; others free JSON).
+- [x] 3.6 Create `src/core/tools/datasources.ts` (rows 35-40). Datasource paths have **no BU segment**. Schema for create/update `value`: `{ name: string, key: string, params: {key:string,type:string,required:boolean}[], deployedUrl: string.url() }` (borrow from `/Users/behnam/code/cms/mcp/src/shared/datasource/tools.ts`). Add to descriptions: "the service calls `deployedUrl`; only register URLs you trust".
+- [x] 3.7 Create `src/core/tools/products.ts` (row 41): `search_products` -> `GET /products/search?text=<enc>&limit=<n>&locale=<enc>` (protected read since spec E; works because the app sends the service token) (omit params the caller left out: the service defaults limit 20, locale `en-US`). Constraints from `service/src/routes/product.route.ts`: limit max 50.
+- [x] 3.8 Create `src/core/tools/media.ts` (rows 42-43): `list_media` and `upload_media`. **`list_media` follows spec G's cursor pagination** (`/Users/behnam/code/commercetools-labs/contentools/openspec/changes/g-service-media-storage/specs/media-library/spec.md`; there is **no** `page`, `totalItems` or `totalPages`; the source tool's `page` argument is dropped):
 ```ts
 shape: { businessUnitKey,
   limit: z.number().int().min(1).max(100).optional(),
@@ -243,9 +243,9 @@ request: (i, c) => {
 },
 ```
   (The service multipart field names are `file`, `title`, `description`: `service/src/routes/file.route.ts` lines 15-45.)
-- [ ] 3.9 Create `src/core/tools/content-types.ts` (row 44): `import_default_content_types` -> `POST /:bu/content-type/import` with body `{}` (spec F serves both `/:bu/content-type/import` and `/content-type/import`; the BU-scoped one is used).
-- [ ] 3.9b Datasource and query notes: `create_datasource`/`update_datasource`/`delete_datasource` may receive `409` for built-in datasources (spec F); mention it in the descriptions. The page/content `query_*` tools emit exactly one clause of the service grammar (`/Users/behnam/code/commercetools-labs/contentools/openspec/changes/f-service-content-api/design.md` section 5: `field = "value"`, `\"` and `\\` escapes, fields pages `slug|name|key`, contents `contentType|name|key`, max 512 chars), so the service never answers `400 Invalid query` for them.
-- [ ] 3.10 Create `src/core/registry.ts`:
+- [x] 3.9 Create `src/core/tools/content-types.ts` (row 44): `import_default_content_types` -> `POST /:bu/content-type/import` with body `{}` (spec F serves both `/:bu/content-type/import` and `/content-type/import`; the BU-scoped one is used).
+- [x] 3.9b Datasource and query notes: `create_datasource`/`update_datasource`/`delete_datasource` may receive `409` for built-in datasources (spec F); mention it in the descriptions. The page/content `query_*` tools emit exactly one clause of the service grammar (`/Users/behnam/code/commercetools-labs/contentools/openspec/changes/f-service-content-api/design.md` section 5: `field = "value"`, `\"` and `\\` escapes, fields pages `slug|name|key`, contents `contentType|name|key`, max 512 chars), so the service never answers `400 Invalid query` for them.
+- [x] 3.10 Create `src/core/registry.ts`:
 ```ts
 import { TOOL_GROUPS, type AnyToolDefinition, type ToolGroup } from './types';
 import { pagesTools } from './tools/pages'; /* ...the other seven imports... */
@@ -269,9 +269,9 @@ export function parseGroups(raw: string | undefined): 'all' | ToolGroup[] { /* '
 **Context.** Because `request()` is pure, every one of the 44 tools is tested without HTTP, plus the client with msw.
 **Pre-conditions.** Section 3 done.
 
-- [ ] 4.1 `tests/unit/predicate.test.ts`: cases: plain, embedded `"`, backslash `\`, injection string from the design, empty, 201 chars, newline, NUL. Expect escapes/`ToolInputError`. **Done when** `npx jest tests/unit/predicate` passes.
-- [ ] 4.2 `tests/unit/client.test.ts` with msw `setupServer` (`onUnhandledRequest: 'error'`; no supertest here so no localhost carve-out needed). Cases: sends `Authorization: Bearer <token>`, `x-source: mcp`, `x-correlation-id`; JSON body; 204 -> `undefined`; 404 JSON `{message:'nope'}` -> `ServiceError(404,'Service returned 404: nope')`; 500 HTML text truncated to 500; timeout (`delay('infinite')` with `timeoutMs: 50`) -> status 504; connection refused (`HttpResponse.error()`) -> 502 and message has no URL; spec-E error body `{message:'Media storage is not configured', statusCode:501, correlationId:'c-1', code:'MEDIA_NOT_CONFIGURED'}` -> text `Service returned 501 MEDIA_NOT_CONFIGURED: Media storage is not configured (correlationId c-1)`; body with `errors:[{path:'slug',message:'required'}]` appended compactly and total <= 500; multipart upload: handler reads `await request.formData()` and asserts `file` name/bytes and `title`.
-- [ ] 4.3 `tests/support/catalog-fixture.ts` exporting `EXPECTED: Array<{name, access, method, path, input, body?}>` with **all 44 rows of the design table** using BU `default`; `tests/unit/catalog.test.ts`:
+- [x] 4.1 `tests/unit/predicate.test.ts`: cases: plain, embedded `"`, backslash `\`, injection string from the design, empty, 201 chars, newline, NUL. Expect escapes/`ToolInputError`. **Done when** `npx jest tests/unit/predicate` passes.
+- [x] 4.2 `tests/unit/client.test.ts` with msw `setupServer` (`onUnhandledRequest: 'error'`; no supertest here so no localhost carve-out needed). Cases: sends `Authorization: Bearer <token>`, `x-source: mcp`, `x-correlation-id`; JSON body; 204 -> `undefined`; 404 JSON `{message:'nope'}` -> `ServiceError(404,'Service returned 404: nope')`; 500 HTML text truncated to 500; timeout (`delay('infinite')` with `timeoutMs: 50`) -> status 504; connection refused (`HttpResponse.error()`) -> 502 and message has no URL; spec-E error body `{message:'Media storage is not configured', statusCode:501, correlationId:'c-1', code:'MEDIA_NOT_CONFIGURED'}` -> text `Service returned 501 MEDIA_NOT_CONFIGURED: Media storage is not configured (correlationId c-1)`; body with `errors:[{path:'slug',message:'required'}]` appended compactly and total <= 500; multipart upload: handler reads `await request.formData()` and asserts `file` name/bytes and `title`.
+- [x] 4.3 `tests/support/catalog-fixture.ts` exporting `EXPECTED: Array<{name, access, method, path, input, body?}>` with **all 44 rows of the design table** using BU `default`; `tests/unit/catalog.test.ts`:
 ```ts
 test('catalog equals the contract', () => {
   expect(ALL_TOOLS.map((t) => t.name).sort()).toEqual(EXPECTED.map((e) => e.name).sort());
@@ -300,9 +300,9 @@ test('selectTools', ...); // default read-only 24; writes on 44; groups 'pages,p
 **Context.** Turn environment variables into a validated, typed config *once* at startup, and implement bearer auth. (Spec `mcp-auth`, `mcp-http-endpoint` fail-fast requirement.)
 **Pre-conditions.** Section 4 done.
 
-- [ ] 5.1 `src/server/config.ts`: `loadConfig(env = process.env): Config` returning `{ port: 8080, serviceUrl: string, tokens: string[], serviceToken: string, defaultBusinessUnitKey, enableWrites: boolean, groups, allowedOrigins: Set<string>, timeoutMs }`. Collect **all** problems into one array and throw `new Error('Invalid environment configuration: ' + problems.join('; '))` (names only, never values). Rules: `CONTENT_SERVICE_URL` parses as URL, protocol `https:` or (`http:` and hostname `localhost`/`127.0.0.1`), strip trailing `/`; `MCP_ACCESS_TOKEN` split on `,`, trimmed, each >= 32 chars, at least one; `SERVICE_API_TOKEN` >= 32; `MCP_ENABLE_WRITES` in `true|false` (default `false`); `MCP_TOOL_GROUPS` via `parseGroups`; `MCP_REQUEST_TIMEOUT_MS` integer 1000..120000 (default 15000); `MCP_ALLOWED_ORIGINS` split on `,`; `DEFAULT_BUSINESS_UNIT_KEY` default `default`. **Done when** tests (5.4) pass.
-- [ ] 5.2 `src/server/logger.ts` (20 lines): `log(entry: Record<string, string|number|boolean|undefined>)` -> `process.stdout.write(JSON.stringify({ ts: new Date().toISOString(), ...entry }) + '\n')`. Callers pass only: `msg, correlationId, method, tool, outcome, status, ms`. **Pitfall:** never pass `args`, `body`, headers or tokens.
-- [ ] 5.3 `src/server/auth.ts`:
+- [x] 5.1 `src/server/config.ts`: `loadConfig(env = process.env): Config` returning `{ port: 8080, serviceUrl: string, tokens: string[], serviceToken: string, defaultBusinessUnitKey, enableWrites: boolean, groups, allowedOrigins: Set<string>, timeoutMs }`. Collect **all** problems into one array and throw `new Error('Invalid environment configuration: ' + problems.join('; '))` (names only, never values). Rules: `CONTENT_SERVICE_URL` parses as URL, protocol `https:` or (`http:` and hostname `localhost`/`127.0.0.1`), strip trailing `/`; `MCP_ACCESS_TOKEN` split on `,`, trimmed, each >= 32 chars, at least one; `SERVICE_API_TOKEN` >= 32; `MCP_ENABLE_WRITES` in `true|false` (default `false`); `MCP_TOOL_GROUPS` via `parseGroups`; `MCP_REQUEST_TIMEOUT_MS` integer 1000..120000 (default 15000); `MCP_ALLOWED_ORIGINS` split on `,`; `DEFAULT_BUSINESS_UNIT_KEY` default `default`. **Done when** tests (5.4) pass.
+- [x] 5.2 `src/server/logger.ts` (20 lines): `log(entry: Record<string, string|number|boolean|undefined>)` -> `process.stdout.write(JSON.stringify({ ts: new Date().toISOString(), ...entry }) + '\n')`. Callers pass only: `msg, correlationId, method, tool, outcome, status, ms`. **Pitfall:** never pass `args`, `body`, headers or tokens.
+- [x] 5.3 `src/server/auth.ts`:
 ```ts
 import { createHash, timingSafeEqual } from 'node:crypto';
 const digest = (s: string) => createHash('sha256').update(s).digest(); // fixed length => timingSafeEqual is safe
@@ -317,7 +317,7 @@ export function makeBearerMatcher(tokens: readonly string[]) {
 }
 ```
   Origin check is inline in `app.ts` (6.2). **Done when** unit tests pass: matrix `undefined`, `''`, `'Basic x'`, `'Bearer'`, `'Bearer '`, `'bearer <ok>'` (lowercase scheme: accept? DEFAULT: reject, RFC allows case-insensitive but keep strict; document), `'Bearer wrong'`, prefix of the real token, real token + trailing space, real token with inner space -> false; real token -> true; either of two rotation tokens -> true.
-- [ ] 5.4 `tests/unit/config.test.ts`: valid minimal env; each missing/invalid variable produces a message containing the variable **name**; the thrown message never contains a token value (assert with a recognisable token `'T'.repeat(40)`); `MCP_TOOL_GROUPS=nope` fails; `http://example.com` fails, `http://localhost:8080/service` passes.
+- [x] 5.4 `tests/unit/config.test.ts`: valid minimal env; each missing/invalid variable produces a message containing the variable **name**; the thrown message never contains a token value (assert with a recognisable token `'T'.repeat(40)`); `MCP_TOOL_GROUPS=nope` fails; `http://example.com` fails, `http://localhost:8080/service` passes.
 
 **Pitfalls.** `timingSafeEqual` throws on unequal lengths: hashing first avoids it. Do not log `Authorization`. Treat `MCP_ACCESS_TOKEN` equal to `SERVICE_API_TOKEN` as a configuration **problem** (separate secrets by design D3).
 **Verification.** `npx jest tests/unit` green. **Rollback.** Delete the three files + tests.
@@ -329,15 +329,15 @@ export function makeBearerMatcher(tokens: readonly string[]) {
 **Context.** Wire the core to the MCP SDK and Express, statelessly.
 **Pre-conditions.** Section 5 done.
 
-- [ ] 6.1 `src/mcp/server.ts`: `createContentoolsMcpServer(o: { tools; client; ctx; correlationId?: string; onToolResult?: (e: { tool: string; ok: boolean; ms: number }) => void }): McpServer` (an `onToolResult` hook instead of importing the logger). For each tool: `server.registerTool(t.name, { title, description, inputSchema: z.object(t.shape).strict() }, handler)`. Handler: `const r = await runTool(t, args, { client, ctx, correlationId }); o.onToolResult?.({ tool: t.name, ok: r.ok, ms }); return r.ok ? { content:[{type:'text', text:r.text}] } : { isError:true, content:[{type:'text', text:r.text}] };` (`src/server/app.ts` passes `onToolResult` that calls `log({ msg:'mcp.tool', tool, outcome, ms, correlationId })`; `src/mcp/server.ts` therefore stays importable by spec N without Express). Verified: with `.strict()`, an extra `jwtToken` argument yields a result `isError: true` with `MCP error -32602: Input validation error ... Unrecognized key(s) in object: 'jwtToken'`.
-- [ ] 6.2 `src/server/app.ts`: `buildApp(deps)` where `deps = { config, client }`. Order (matters):
+- [x] 6.1 `src/mcp/server.ts`: `createContentoolsMcpServer(o: { tools; client; ctx; correlationId?: string; onToolResult?: (e: { tool: string; ok: boolean; ms: number }) => void }): McpServer` (an `onToolResult` hook instead of importing the logger). For each tool: `server.registerTool(t.name, { title, description, inputSchema: z.object(t.shape).strict() }, handler)`. Handler: `const r = await runTool(t, args, { client, ctx, correlationId }); o.onToolResult?.({ tool: t.name, ok: r.ok, ms }); return r.ok ? { content:[{type:'text', text:r.text}] } : { isError:true, content:[{type:'text', text:r.text}] };` (`src/server/app.ts` passes `onToolResult` that calls `log({ msg:'mcp.tool', tool, outcome, ms, correlationId })`; `src/mcp/server.ts` therefore stays importable by spec N without Express). Verified: with `.strict()`, an extra `jwtToken` argument yields a result `isError: true` with `MCP error -32602: Input validation error ... Unrecognized key(s) in object: 'jwtToken'`.
+- [x] 6.2 `src/server/app.ts`: `buildApp(deps)` where `deps = { config, client }`. Order (matters):
   1. `app.disable('x-powered-by')`.
   2. `app.get('/mcp/status', (_q, r) => r.json({ status: 'ok' }))` (before auth).
   3. `app.use('/mcp', gate)` where `gate` only acts when `req.path === '/'`: non-POST -> `405`, header `Allow: POST`, body `rpcError(-32000,'Method not allowed')`; `Origin` present and not allowed -> `403`; bearer invalid -> `401` + `WWW-Authenticate: Bearer realm="contentools-mcp"` + `rpcError(-32001,'Unauthorized')`; else `next()`. (Auth runs **before** body parsing so unauthenticated callers cannot make the server buffer 8 MB.)
   4. `app.post('/mcp', express.json({ limit: '8mb' }), handler)`; handler creates `selectTools({groups, enableWrites})` (compute once at boot, not per request), `randomUUID()` correlation id, a new MCP server and `new StreamableHTTPServerTransport({ sessionIdGenerator: undefined, enableJsonResponse: true })`, `res.on('close', () => { void transport.close(); void server.close(); })`, `await server.connect(transport); await transport.handleRequest(req, res, req.body);`, and logs `{msg:'mcp.request', correlationId, method: req.body?.method, ms}` on close.
   5. Error middleware: `err.type === 'entity.parse.failed'` -> 400 `-32700`; `'entity.too.large'` -> 413 `-32600`; anything else -> log `{msg:'mcp.error', correlationId?, error: err.message}` (stack to stderr only) and `500 {"jsonrpc":"2.0","error":{"code":-32603,"message":"Internal server error"},"id":null}`.
   Router mount path must equal `connect.yaml` `endpoint: /mcp` (Connect checklist "route path matches endpoint"). **Done when** the integration tests (7.x) pass. A verified prototype of this file exists in the design discussion; reproduce its structure.
-- [ ] 6.3 `src/server/index.ts`:
+- [x] 6.3 `src/server/index.ts`:
 ```ts
 import { loadConfig } from './config';
 import { buildApp } from './app';
@@ -348,7 +348,7 @@ const app = buildApp({ config, client: new ContentoolsClient({ baseUrl: config.s
 app.listen(config.port, () => log({ msg: 'mcp.listening', port: config.port, writes: config.enableWrites }));
 ```
   Port is fixed `8080` (Connect convention; the template and service use it). **Done when** `cp .env.example .env && npx tsx --env-file=.env src/server/index.ts` prints a `mcp.listening` JSON line, and with `MCP_ACCESS_TOKEN` removed it prints `Invalid environment configuration: MCP_ACCESS_TOKEN ...` and exits 1.
-- [ ] 6.4 `src/server/post-deploy.ts` (read-only, idempotent):
+- [x] 6.4 `src/server/post-deploy.ts` (read-only, idempotent):
 ```ts
 // GET <CONTENT_SERVICE_URL>/<bu>/preview/puck-pages/__contentools_mcp_probe__ with the service token.
 // Step 0: GET <CONTENT_SERVICE_URL>/health (public, spec E; alias /status). Not reachable -> warn + exit 0.
@@ -368,17 +368,17 @@ app.listen(config.port, () => log({ msg: 'mcp.listening', port: config.port, wri
 **Context.** Router-level tests per `plans/03-testing-strategy.md` and the Connect skill `references/testing.md`: drive the Express app, mock the *service* with msw.
 **Pre-conditions.** Section 6 done.
 
-- [ ] 7.1 `tests/support/app.ts`: helper `makeTestApp(overrides?)` building `buildApp` with `CONTENT_SERVICE_URL=http://svc.test/service`, tokens `'a'.repeat(40)` / `'S'.repeat(40)`, writes on/off param; helper `rpc(method, params)`; constant `H` = `{ Authorization, Accept: 'application/json, text/event-stream' }`.
-- [ ] 7.2 msw lifecycle in each integration file. **Known trap (verified):** msw also intercepts supertest's own loopback requests and, with `onUnhandledRequest: 'error'`, fails them. Use:
+- [x] 7.1 `tests/support/app.ts`: helper `makeTestApp(overrides?)` building `buildApp` with `CONTENT_SERVICE_URL=http://svc.test/service`, tokens `'a'.repeat(40)` / `'S'.repeat(40)`, writes on/off param; helper `rpc(method, params)`; constant `H` = `{ Authorization, Accept: 'application/json, text/event-stream' }`.
+- [x] 7.2 msw lifecycle in each integration file. **Known trap (verified):** msw also intercepts supertest's own loopback requests and, with `onUnhandledRequest: 'error'`, fails them. Use:
 ```ts
 svc.listen({ onUnhandledRequest: (req, print) => { const h = new URL(req.url).hostname; if (h === '127.0.0.1' || h === 'localhost') return; print.error(); } });
 ```
   so only requests to unmocked *non-local* hosts (i.e. the service) fail the test.
-- [ ] 7.3 `tests/integration/endpoint.test.ts` -> scenarios of `mcp-http-endpoint`: `initialize` then `tools/list` as separate requests without session header -> 200 JSON; 405 on `GET /mcp` and `DELETE /mcp` with `Allow: POST`; invalid JSON -> 400; body over 8 MB -> 413; `GET /mcp/status` -> 200 `{status:'ok'}`; error middleware 500 body exact and contains no stack (force by a tool list that throws? inject a `buildApp` dependency that throws -> expect generic message).
-- [ ] 7.4 `tests/integration/auth.test.ts` -> `mcp-auth`: parameterised rejection matrix (task 5.3 list) all `401` with `WWW-Authenticate`; msw handler counters assert **zero** service calls and that `tools/list` also requires auth; rotation; `Origin: https://evil.example` -> 403 even with the right token; allowed origin passes; **no passthrough**: call `get_preview_puck_page` with inbound token A and assert the msw handler saw `authorization === 'Bearer ' + 'S'.repeat(40)` and `x-source: mcp` and a UUID `x-correlation-id`; strict-schema test (`jwtToken`, `projectKey`, `baseUrl` extras) -> `isError` / `-32602` and msw counter 0.
-- [ ] 7.5 `tests/integration/tools.test.ts` -> `mcp-tool-catalog`: default (writes off) lists exactly 24 tools; `enableWrites` lists 44; groups `pages,products` lists 9; calling a write tool when disabled -> JSON-RPC error (unknown tool) and no service call; for a representative tool per group assert the outbound request (method, URL incl. `default` BU and encoding, body); injection slug escaped (body `query` equals `slug = "/x\" OR key = \"y"`); newline slug -> `isError` and 0 service calls; service 404 -> `isError`, text starts `Service returned 404`; `list_media` with `{limit:20,cursor:'abc',extensions:['png','jpg']}` -> `GET .../default/media-library?limit=20&cursor=abc&extensions=png%2Cjpg` and `{page:2}` rejected with 0 calls; `upload_media` answered `501 MEDIA_NOT_CONFIGURED` -> `isError` text contains the code; service JSON `{message}` surfaces; service stalls beyond `timeoutMs` -> `isError` text contains `timed out` while HTTP status is 200; upload > 5 MiB -> `isError`, 0 calls; upload small file -> msw handler parses `formData()` and finds the file; 204 delete -> text `OK (no content)`.
-- [ ] 7.6 `tests/integration/post-deploy.test.ts`: msw returns 404 -> exit code 0 (export a `run(env): Promise<number>` from `post-deploy.ts` and call it; the file's `main` only does `process.exit(await run(process.env))`); 401 -> 1; 403 -> 1; network error -> 0 with warning; 500 -> 0.
-- [ ] 7.7 Log hygiene test: capture `process.stdout.write`, call `create_puck_page` with name `'Secret launch'` and both tokens configured; assert captured output contains `create_puck_page` and `outcome` but not `Secret launch`, `'a'.repeat(40)` or `'S'.repeat(40)`.
+- [x] 7.3 `tests/integration/endpoint.test.ts` -> scenarios of `mcp-http-endpoint`: `initialize` then `tools/list` as separate requests without session header -> 200 JSON; 405 on `GET /mcp` and `DELETE /mcp` with `Allow: POST`; invalid JSON -> 400; body over 8 MB -> 413; `GET /mcp/status` -> 200 `{status:'ok'}`; error middleware 500 body exact and contains no stack (force by a tool list that throws? inject a `buildApp` dependency that throws -> expect generic message).
+- [x] 7.4 `tests/integration/auth.test.ts` -> `mcp-auth`: parameterised rejection matrix (task 5.3 list) all `401` with `WWW-Authenticate`; msw handler counters assert **zero** service calls and that `tools/list` also requires auth; rotation; `Origin: https://evil.example` -> 403 even with the right token; allowed origin passes; **no passthrough**: call `get_preview_puck_page` with inbound token A and assert the msw handler saw `authorization === 'Bearer ' + 'S'.repeat(40)` and `x-source: mcp` and a UUID `x-correlation-id`; strict-schema test (`jwtToken`, `projectKey`, `baseUrl` extras) -> `isError` / `-32602` and msw counter 0.
+- [x] 7.5 `tests/integration/tools.test.ts` -> `mcp-tool-catalog`: default (writes off) lists exactly 24 tools; `enableWrites` lists 44; groups `pages,products` lists 9; calling a write tool when disabled -> JSON-RPC error (unknown tool) and no service call; for a representative tool per group assert the outbound request (method, URL incl. `default` BU and encoding, body); injection slug escaped (body `query` equals `slug = "/x\" OR key = \"y"`); newline slug -> `isError` and 0 service calls; service 404 -> `isError`, text starts `Service returned 404`; `list_media` with `{limit:20,cursor:'abc',extensions:['png','jpg']}` -> `GET .../default/media-library?limit=20&cursor=abc&extensions=png%2Cjpg` and `{page:2}` rejected with 0 calls; `upload_media` answered `501 MEDIA_NOT_CONFIGURED` -> `isError` text contains the code; service JSON `{message}` surfaces; service stalls beyond `timeoutMs` -> `isError` text contains `timed out` while HTTP status is 200; upload > 5 MiB -> `isError`, 0 calls; upload small file -> msw handler parses `formData()` and finds the file; 204 delete -> text `OK (no content)`.
+- [x] 7.6 `tests/integration/post-deploy.test.ts`: msw returns 404 -> exit code 0 (export a `run(env): Promise<number>` from `post-deploy.ts` and call it; the file's `main` only does `process.exit(await run(process.env))`); 401 -> 1; 403 -> 1; network error -> 0 with warning; 500 -> 0.
+- [x] 7.7 Log hygiene test: capture `process.stdout.write`, call `create_puck_page` with name `'Secret launch'` and both tokens configured; assert captured output contains `create_puck_page` and `outcome` but not `Secret launch`, `'a'.repeat(40)` or `'S'.repeat(40)`.
 
 **Verification.** `yarn test` -> all suites green (expect roughly 90-120 tests). `yarn test --coverage` shows core + server > 90% lines.
 **Rollback.** Delete `tests/integration`.
@@ -390,10 +390,10 @@ svc.listen({ onUnhandledRequest: (req, print) => { const h = new URL(req.url).ho
 **Context.** Declare the app. File lives at `<root>/connect.yaml` (not in `mcp/`).
 **Pre-conditions.** Section 6 done. Spec H may or may not have created the file.
 
-- [ ] 8.1 If `<root>/connect.yaml` exists (from H), append the `mcp` entry from `design.md` D9 under `deployAs` (keep H's `service` entry untouched; do not touch root `inheritAs`). If it does not exist yet, create it with `deployAs:` containing **only** the `mcp` entry (H merges later; record in `docs` nothing). Paste the block verbatim from design D9. **Done when** `grep -c "name: mcp" <root>/connect.yaml` -> `1` and the folder `mcp/` exists.
+- [x] 8.1 If `<root>/connect.yaml` exists (from H), append the `mcp` entry from `design.md` D9 under `deployAs` (keep H's `service` entry untouched; do not touch root `inheritAs`). If it does not exist yet, create it with `deployAs:` containing **only** the `mcp` entry (H merges later; record in `docs` nothing). Paste the block verbatim from design D9. **Done when** `grep -c "name: mcp" <root>/connect.yaml` -> `1` and the folder `mcp/` exists.
 - [ ] 8.2 Validate: `cd <root> && commercetools connect validate` (CLI from `npm i -g @commercetools/cli`; if not installed, record that and rely on 8.3). Expected: validation passes. **Done when** exit 0 (or the CLI-absence note is in the PR).
-- [ ] 8.3 Offline sanity check of the block: from the repo root run `yarn check:connect` (the canonical static `connect.yaml` check owned by spec O; it needs no extra tooling). **Done when** it exits 0 and reports the `mcp` app with `endpoint: /mcp`, `applicationType: service`, 6 standard keys and 2 secured keys.
-- [ ] 8.4 Check no secret is in `standardConfiguration`: `MCP_ACCESS_TOKEN` and `SERVICE_API_TOKEN` appear only under `securedConfiguration` (Connect checklist). **Done when** the python check above shows them in the second list only.
+- [x] 8.3 Offline sanity check of the block: from the repo root run `yarn check:connect` (the canonical static `connect.yaml` check owned by spec O; it needs no extra tooling). **Done when** it exits 0 and reports the `mcp` app with `endpoint: /mcp`, `applicationType: service`, 6 standard keys and 2 secured keys.
+- [x] 8.4 Check no secret is in `standardConfiguration`: `MCP_ACCESS_TOKEN` and `SERVICE_API_TOKEN` appear only under `securedConfiguration` (Connect checklist). **Done when** the python check above shows them in the second list only.
 
 **Pitfalls.** Folder name must equal `name: mcp`. `default` values must be strings (`"false"`, `"15000"`). Do not declare any `CTP_*` key for this app (it never calls commercetools; if H's root `inheritAs.apiClient` injects them they are simply unused). `scripts.postDeploy` is a read-only probe, so there is no `preUndeploy` (nothing is registered in the project to clean up).
 **Rollback.** Remove the `mcp` entry.
@@ -405,9 +405,9 @@ svc.listen({ onUnhandledRequest: (req, print) => { const h = new URL(req.url).ho
 **Context.** The Connect checklist requires the README to state config table, scopes, fail-open/closed and replay information; the labs rules require the unsupported banner.
 **Pre-conditions.** Section 8 done.
 
-- [ ] 9.1 Write `mcp/README.md` with: (1) banner `> **Unsupported.** This project is freely available, AS IS and UNSUPPORTED. See LICENSE and SUPPORT.md.` (the exact banner text spec P standardises; align if P differs); (2) what it is and the 44-tool table grouped (copy names + one-line purpose; mark write tools); (3) **Configuration table** (6 standard + 2 secured keys, columns: key, secured?, required, default, purpose) mirroring `connect.yaml`; (4) **Authentication** (inbound bearer, outbound service token, no passthrough, rotation procedure: set `MCP_ACCESS_TOKEN="new,old"`, move clients, remove old); (5) **Scopes:** "None. This application never calls the commercetools API; it uses no API client. Authority comes from `SERVICE_API_TOKEN`, so treat `MCP_ENABLE_WRITES=true` like handing the service token to every MCP client"; (6) **Failure behaviour:** *fail-closed* on missing/invalid config (process exits), on bad bearer (401), and on service outage (tool returns `isError`, no cached/fallback data, no retries); (7) **Replay runbook:** "Not applicable: synchronous, stateless, no queue, no events; a failed tool call is retried by the caller; writes are as idempotent as the service routes (create fails if the key exists; update/publish are repeatable)"; (8) Local development (`.env`, `yarn start:dev`, `yarn dev:fake`); (9) Verify with Inspector / `yarn verify`; (10) Connect client examples (Claude Code command from `manual.md` MM-4); (11) cold start note (sandbox ~15 s) and deploy order.
-- [ ] 9.2 Confirm each source file has the SPDX header: `cd <root>/mcp && grep -L "SPDX-License-Identifier: MIT" $(git ls-files -co --exclude-standard 'src/**/*.ts' 'tests/**/*.ts' 'scripts/*.mjs')` prints nothing. **Done when** empty output.
-- [ ] 9.3 Confirm no forbidden words: `grep -rniE "\bcms\b|demo|poc|pre-?sales|contenttools|commercetools-demo" <root>/mcp --include='*.{ts,mjs,md,json}' --exclude-dir=node_modules` prints nothing (the old package typo `contenttools` must not survive).
+- [x] 9.1 Write `mcp/README.md` with: (1) banner `> **Unsupported.** This project is freely available, AS IS and UNSUPPORTED. See LICENSE and SUPPORT.md.` (the exact banner text spec P standardises; align if P differs); (2) what it is and the 44-tool table grouped (copy names + one-line purpose; mark write tools); (3) **Configuration table** (6 standard + 2 secured keys, columns: key, secured?, required, default, purpose) mirroring `connect.yaml`; (4) **Authentication** (inbound bearer, outbound service token, no passthrough, rotation procedure: set `MCP_ACCESS_TOKEN="new,old"`, move clients, remove old); (5) **Scopes:** "None. This application never calls the commercetools API; it uses no API client. Authority comes from `SERVICE_API_TOKEN`, so treat `MCP_ENABLE_WRITES=true` like handing the service token to every MCP client"; (6) **Failure behaviour:** *fail-closed* on missing/invalid config (process exits), on bad bearer (401), and on service outage (tool returns `isError`, no cached/fallback data, no retries); (7) **Replay runbook:** "Not applicable: synchronous, stateless, no queue, no events; a failed tool call is retried by the caller; writes are as idempotent as the service routes (create fails if the key exists; update/publish are repeatable)"; (8) Local development (`.env`, `yarn start:dev`, `yarn dev:fake`); (9) Verify with Inspector / `yarn verify`; (10) Connect client examples (Claude Code command from `manual.md` MM-4); (11) cold start note (sandbox ~15 s) and deploy order.
+- [x] 9.2 Confirm each source file has the SPDX header: `cd <root>/mcp && grep -L "SPDX-License-Identifier: MIT" $(git ls-files -co --exclude-standard 'src/**/*.ts' 'tests/**/*.ts' 'scripts/*.mjs')` prints nothing. **Done when** empty output.
+- [x] 9.3 Confirm no forbidden words: `grep -rniE "\bcms\b|demo|poc|pre-?sales|contenttools|commercetools-demo" <root>/mcp --include='*.{ts,mjs,md,json}' --exclude-dir=node_modules` prints nothing (the old package typo `contenttools` must not survive).
 
 **Rollback.** Delete README.
 
@@ -418,8 +418,8 @@ svc.listen({ onUnhandledRequest: (req, print) => { const h = new URL(req.url).ho
 **Context.** No browser is involved: the SDK client and the MCP Inspector CLI exercise the real HTTP server. A fake service stands in for the content service so this works before E/F land.
 **Pre-conditions.** Sections 6-9 done.
 
-- [ ] 10.1 `tests/support/fake-service.ts`: tiny Express app mimicking `/service/...` routes with in-memory data: `GET /service/:bu/puck-pages` (returns one fixture page), `GET /service/:bu/puck-pages/:key`, `GET /service/:bu/published/puck-pages/:key`, `GET /service/:bu/preview/puck-pages/:key` (**requires** `Authorization: Bearer <fake token>` else 401), `POST /service/:bu/published/puck-pages/query`, `POST /service/:bu/puck-pages` (requires bearer; returns 201 echo), `GET /service/products/search`, `GET /service/:bu/configuration/theme`, `GET /service/health` (public, `{status:'healthy'}`), `GET /service/:bu/media-library?limit=&cursor=&extensions=` (bearer required; two pages of fixtures: first returns `nextCursor:'c2', hasMore:true`, second `nextCursor:null, hasMore:false`), and a spec-E style 401 body `{message,statusCode:401,correlationId}` for missing/wrong bearer. Unknown route -> 404 JSON `{message:'Path not found.'}`. `tests/support/dev-fake.ts` starts it on 8081 **and** the MCP app on 8080 with env `CONTENT_SERVICE_URL=http://localhost:8081/service`, writes on, tokens `'m'.repeat(40)` and `'s'.repeat(40)`; prints both URLs. **Done when** `yarn dev:fake` prints `fake service :8081, mcp :8080`.
-- [ ] 10.2 `scripts/verify-mcp.mjs` (plain Node, SDK client):
+- [x] 10.1 `tests/support/fake-service.ts`: tiny Express app mimicking `/service/...` routes with in-memory data: `GET /service/:bu/puck-pages` (returns one fixture page), `GET /service/:bu/puck-pages/:key`, `GET /service/:bu/published/puck-pages/:key`, `GET /service/:bu/preview/puck-pages/:key` (**requires** `Authorization: Bearer <fake token>` else 401), `POST /service/:bu/published/puck-pages/query`, `POST /service/:bu/puck-pages` (requires bearer; returns 201 echo), `GET /service/products/search`, `GET /service/:bu/configuration/theme`, `GET /service/health` (public, `{status:'healthy'}`), `GET /service/:bu/media-library?limit=&cursor=&extensions=` (bearer required; two pages of fixtures: first returns `nextCursor:'c2', hasMore:true`, second `nextCursor:null, hasMore:false`), and a spec-E style 401 body `{message,statusCode:401,correlationId}` for missing/wrong bearer. Unknown route -> 404 JSON `{message:'Path not found.'}`. `tests/support/dev-fake.ts` starts it on 8081 **and** the MCP app on 8080 with env `CONTENT_SERVICE_URL=http://localhost:8081/service`, writes on, tokens `'m'.repeat(40)` and `'s'.repeat(40)`; prints both URLs. **Done when** `yarn dev:fake` prints `fake service :8081, mcp :8080`.
+- [x] 10.2 `scripts/verify-mcp.mjs` (plain Node, SDK client):
 ```js
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
@@ -436,8 +436,8 @@ console.log(`OK ${tools.length} tools; list_puck_pages returned ${r.content[0].t
 await c.close();
 ```
   Extra checks in the same script: wrong token -> connection rejected (catch error, assert it mentions 401), `get_preview_puck_page` works (proves the service token is used), a bogus key returns `isError` containing `404`.
-- [ ] 10.3 Run the pair: terminal 1 `yarn dev:fake`; terminal 2 `MCP_ACCESS_TOKEN=$(printf 'm%.0s' {1..40}) EXPECT_WRITES=true yarn verify` -> expected last line `OK 44 tools; ...` and exit 0. **Done when** exit 0.
-- [ ] 10.4 MCP Inspector CLI (verified syntax with `@modelcontextprotocol/inspector@2.10.1`):
+- [x] 10.3 Run the pair: terminal 1 `yarn dev:fake`; terminal 2 `MCP_ACCESS_TOKEN=$(printf 'm%.0s' {1..40}) EXPECT_WRITES=true yarn verify` -> expected last line `OK 44 tools; ...` and exit 0. **Done when** exit 0.
+- [x] 10.4 MCP Inspector CLI (verified syntax with `@modelcontextprotocol/inspector@2.10.1`):
 ```bash
 T=$(printf 'm%.0s' {1..40})
 npx -y @modelcontextprotocol/inspector --cli http://localhost:8080/mcp --transport http \
@@ -446,8 +446,8 @@ npx -y @modelcontextprotocol/inspector --cli http://localhost:8080/mcp --transpo
   --header "Authorization: Bearer $T" --method tools/call --tool-name get_puck_page --tool-arg key=home
 ```
   Expected: first prints JSON with `"tools": [` and 44 names; second prints `content[0].text` JSON of the fixture page. Wrong token (`--header "Authorization: Bearer nope"`) must print a 401/Unauthorized error. **Done when** all three behave as described. (Interactive UI: `npx @modelcontextprotocol/inspector` then Transport "Streamable HTTP", URL `http://localhost:8080/mcp`, header above: optional, needs a browser, not required.)
-- [ ] 10.5 Raw `curl` smoke for the doc: `curl -s -X POST localhost:8080/mcp -H "Authorization: Bearer $T" -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'` -> JSON with `"result":{"tools":[`; without `Authorization` -> HTTP 401 and `WWW-Authenticate` header (`curl -i`).
-- [ ] 10.6 Clean-build check as Connect would run it: `rm -rf node_modules build && yarn install --frozen-lockfile && yarn gcp-build && ls build/server/index.js` then start with env and re-run 10.3. **Done when** works from a clean state (this proves the app is self-contained).
+- [x] 10.5 Raw `curl` smoke for the doc: `curl -s -X POST localhost:8080/mcp -H "Authorization: Bearer $T" -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'` -> JSON with `"result":{"tools":[`; without `Authorization` -> HTTP 401 and `WWW-Authenticate` header (`curl -i`).
+- [x] 10.6 Clean-build check as Connect would run it: `rm -rf node_modules build && yarn install --frozen-lockfile && yarn gcp-build && ls build/server/index.js` then start with env and re-run 10.3. **Done when** works from a clean state (this proves the app is self-contained).
 
 **Pitfalls.** The SDK client needs `Accept` handled automatically; raw curl must send it. `--header` is repeatable. Inspector `--tool-arg` values are strings: use `key=home` only for string params.
 **Rollback.** Stop the processes; delete `scripts/`, `tests/support/dev-fake.ts`.
@@ -459,9 +459,9 @@ npx -y @modelcontextprotocol/inspector --cli http://localhost:8080/mcp --transpo
 **Context.** Proves the contract with specs E/F/G, not just mocks. Skipped unless env vars are set (strategy in `plans/03-testing-strategy.md`).
 **Pre-conditions.** Specs E and F archived; a running service (local `service/` with a sandbox project per M-01, or a Connect sandbox deployment) configured with a known `SERVICE_API_TOKEN`.
 
-- [ ] 11.1 `tests/e2e/live.test.ts` with `const live = process.env.MCP_E2E_SERVICE_URL && process.env.MCP_E2E_SERVICE_TOKEN ? describe : describe.skip;`. Start the real app in-process via `buildApp` with the real service URL/token (no msw). Flow using the SDK `Client` through supertest-free `app.listen(0)`: `create_puck_page` (writes on; unique key/slug with a timestamp) -> `get_preview_puck_page` -> `publish_puck_page` -> `query_published_puck_page` by slug -> `get_puck_page_versions` (>= 1 entry) -> `delete_puck_page`; plus `search_products` (text `a`) and `get_configuration` slice `theme`; always `delete_puck_page` in `afterAll`. Add script `"test:e2e": "jest tests/e2e"` and exclude `tests/e2e` from default `yarn test` via `testPathIgnorePatterns` unless `MCP_E2E_SERVICE_URL` is set.
-- [ ] 11.2 Run: `MCP_E2E_SERVICE_URL=http://localhost:8080/service MCP_E2E_SERVICE_TOKEN=<token> yarn test:e2e` -> all pass; with the wrong token the first call yields `isError` `Service returned 401` (also assert this negative test).
-- [ ] 11.3 Record in the PR: service version tested, date, and any route or error-body mismatch found.
+- [x] 11.1 `tests/e2e/live.test.ts` with `const live = process.env.MCP_E2E_SERVICE_URL && process.env.MCP_E2E_SERVICE_TOKEN ? describe : describe.skip;`. Start the real app in-process via `buildApp` with the real service URL/token (no msw). Flow using the SDK `Client` through supertest-free `app.listen(0)`: `create_puck_page` (writes on; unique key/slug with a timestamp) -> `get_preview_puck_page` -> `publish_puck_page` -> `query_published_puck_page` by slug -> `get_puck_page_versions` (>= 1 entry) -> `delete_puck_page`; plus `search_products` (text `a`) and `get_configuration` slice `theme`; always `delete_puck_page` in `afterAll`. Add script `"test:e2e": "jest tests/e2e"` and exclude `tests/e2e` from default `yarn test` via `testPathIgnorePatterns` unless `MCP_E2E_SERVICE_URL` is set.
+- [x] 11.2 Run: `MCP_E2E_SERVICE_URL=http://localhost:8080/service MCP_E2E_SERVICE_TOKEN=<token> yarn test:e2e` -> all pass; with the wrong token the first call yields `isError` `Service returned 401` (also assert this negative test).
+- [x] 11.3 Record in the PR: service version tested, date, and any route or error-body mismatch found.
 
 **Rollback.** Delete `tests/e2e`.
 
@@ -469,7 +469,7 @@ npx -y @modelcontextprotocol/inspector --cli http://localhost:8080/mcp --transpo
 
 ## 12. Hand-off
 
-- [ ] 12.1 There is no CI service (owner decision: no GitHub Actions). Add to `package.json` scripts `"check:app": "yarn typecheck && yarn test && yarn gcp-build"` and make it the one command the root tooling hub (`<root>/package.json` `verify`/`gate` scripts, owned by spec A/O) calls for this app: `cd mcp && yarn install --frozen-lockfile && yarn check:app`; Connect itself runs `commercetools connect application test` (which runs `yarn test`) and `gcp-build`. Also hand the grep gates 9.2/9.3 to the root `gate` script. Tell spec N that `src/core`, `src/mcp/server.ts` and `src/core/index.ts` exports are its inputs and that `package.json` stays `private: true` (N publishes a derived manifest). Tell spec Q the verify commands from section 10.
+- [x] 12.1 There is no CI service (owner decision: no GitHub Actions). Add to `package.json` scripts `"check:app": "yarn typecheck && yarn test && yarn gcp-build"` and make it the one command the root tooling hub (`<root>/package.json` `verify`/`gate` scripts, owned by spec A/O) calls for this app: `cd mcp && yarn install --frozen-lockfile && yarn check:app`; Connect itself runs `commercetools connect application test` (which runs `yarn test`) and `gcp-build`. Also hand the grep gates 9.2/9.3 to the root `gate` script. Tell spec N that `src/core`, `src/mcp/server.ts` and `src/core/index.ts` exports are its inputs and that `package.json` stays `private: true` (N publishes a derived manifest). Tell spec Q the verify commands from section 10.
 - [ ] 12.2 Update `<root>/plans/01-dependency-plan.md` status board for M (Tasks done / Implemented).
 
 ---

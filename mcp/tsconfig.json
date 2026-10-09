@@ -1,19 +1,14 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "lib": ["ES2022"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "strict": true,
+    "noUncheckedIndexedAccess": true,
     "skipLibCheck": true,
-    "declaration": true,
-    "declarationMap": true,
-    "outDir": "./dist",
-    "rootDir": "src",
     "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true
+    "outDir": "build",
+    "rootDir": "."
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "ai-sdk", "langchain"]
+  "include": ["src", "tests", "scripts"]
 }
