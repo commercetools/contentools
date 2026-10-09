@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-labs/puck-theme-manager",
-  "version": "1.0.0",
+  "version": "1.0.0-rc.0",
   "description": "Theme manager and content type import components for Puck",
   "license": "MIT",
   "repository": {

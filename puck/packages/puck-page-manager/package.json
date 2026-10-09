@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-labs/puck-page-manager",
-  "version": "1.0.0",
+  "version": "1.0.0-rc.0",
   "description": "Router-aware page manager UI (list, editor, preview) for the Puck page content integration",
   "license": "MIT",
   "repository": {

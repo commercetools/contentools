@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-labs/puck-content-manager",
-  "version": "1.0.0",
+  "version": "1.0.0-rc.0",
   "description": "UI components for managing standalone Puck content items",
   "license": "MIT",
   "repository": {

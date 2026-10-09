@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-labs/puck-image-picker",
-  "version": "1.0.0",
+  "version": "1.0.0-rc.0",
   "description": "Standalone ImagePickerField component with media library support",
   "license": "MIT",
   "repository": {
