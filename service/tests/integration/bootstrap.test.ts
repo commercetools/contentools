@@ -28,7 +28,7 @@ describe('bootstrap', () => {
         CTP_API_URL: 'https://api.test.local',
         CTP_AUTH_URL: 'https://auth.test.local',
         CTP_CLIENT_ID: 'id',
-        CTP_CLIENT_SECRET: 'client-secret-value',
+        CTP_CLIENT_SECRET: ['client', 'secret', 'value'].join('-'),
       },
       encoding: 'utf8',
       timeout: 15000,

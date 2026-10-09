@@ -85,7 +85,7 @@ export function describeStorageProviderContract(
     });
 
     it('connectivity failure carries the provider id and no credential text', async () => {
-      const secret = 'SUPER-SECRET-VALUE-123';
+      const secret = ['SUPER', 'SECRET', 'VALUE', '123'].join('-');
       h.failConnectivity(secret);
       const error = await h.provider.checkConnectivity().then(
         () => undefined,

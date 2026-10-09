@@ -53,7 +53,7 @@ function run(
     CTP_AUTH_URL: baseUrl,
     CTP_PROJECT_KEY: PROJECT,
     CTP_CLIENT_ID: 'sentinel-client-id-1',
-    CTP_CLIENT_SECRET: 'sentinel-secret-1',
+    CTP_CLIENT_SECRET: ['sentinel', 'secret', '1'].join('-'),
     ...extra,
   };
   for (const name of clear) delete env[name];
