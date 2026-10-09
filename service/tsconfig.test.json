@@ -2,5 +2,5 @@
   "extends": "./tsconfig.json",
   "compilerOptions": { "rootDir": ".", "noEmit": true, "types": ["jest", "node"], "noUncheckedIndexedAccess": false },
   "include": ["src/**/*", "tests/**/*", "e2e/**/*"],
-  "exclude": ["node_modules", "build", "temp", "src/_pending"]
+  "exclude": ["node_modules", "build", "temp"]
 }

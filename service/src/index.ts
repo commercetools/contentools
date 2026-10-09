@@ -9,6 +9,7 @@ import type { Configuration } from './config/env';
 import { createApp } from './app';
 import { logAuthDiagnostics } from './auth/diagnostics';
 import { loadMediaConfig, MediaConfigError } from './media';
+import { createShutdown } from './observability/shutdown';
 import { getLogger } from './utils/logger.utils';
 
 function loadConfiguration(): Configuration {
@@ -49,11 +50,11 @@ function main(): void {
       projectKey: config.ctp.projectKey,
     })
   );
-  const shutdown = (signal: string): void => {
-    logger.info('shutting down', { signal });
-    server.close(() => process.exit(0));
-    setTimeout(() => process.exit(1), 10_000).unref();
-  };
+  const shutdown = createShutdown({
+    server,
+    exit: (code) => process.exit(code),
+    log: (message, meta) => logger.info(message, meta),
+  });
   process.on('SIGTERM', () => shutdown('SIGTERM'));
   process.on('SIGINT', () => shutdown('SIGINT'));
 }

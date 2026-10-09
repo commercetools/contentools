@@ -84,9 +84,9 @@ describe('service runtime', () => {
   it('echoes a valid correlation id and puts it into error bodies', async () => {
     const res = await request(makeApp())
       .get('/nope')
-      .set('X-Correlation-ID', 'abc-123');
-    expect(res.headers['x-correlation-id']).toBe('abc-123');
-    expect(res.body.correlationId).toBe('abc-123');
+      .set('X-Correlation-ID', 'abc12345-test');
+    expect(res.headers['x-correlation-id']).toBe('abc12345-test');
+    expect(res.body.correlationId).toBe('abc12345-test');
   });
 
   it('generates a uuid and replaces an invalid id', async () => {

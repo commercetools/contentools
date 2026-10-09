@@ -6,7 +6,10 @@
 
 import { createApplicationLogger } from '@commercetools-backend/loggers';
 import { getConfiguration } from '../config/env';
-import { correlationFormat } from '../observability/log-format';
+import {
+  correlationFormat,
+  timestampFormat,
+} from '../observability/log-format';
 
 type Logger = ReturnType<typeof createApplicationLogger>;
 
@@ -16,7 +19,7 @@ export const getLogger = (): Logger =>
   (logger ??= createApplicationLogger({
     json: true,
     level: getConfiguration().logLevel,
-    formatters: [correlationFormat],
+    formatters: [timestampFormat, correlationFormat],
   }));
 
 export const resetLoggerForTests = (): void => {

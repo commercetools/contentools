@@ -35,9 +35,9 @@ describe('requestContext', () => {
   it('uses a valid incoming id', async () => {
     const res = await request(makeApp())
       .get('/service/health')
-      .set('X-Correlation-ID', 'abc-123');
-    expect(res.headers['x-correlation-id']).toBe('abc-123');
-    expect(res.body.id).toBe('abc-123');
+      .set('X-Correlation-ID', 'abc12345-test');
+    expect(res.headers['x-correlation-id']).toBe('abc12345-test');
+    expect(res.body.id).toBe('abc12345-test');
   });
 
   it('generates a uuid when absent', async () => {
@@ -73,8 +73,8 @@ describe('correlationFormat', () => {
       inside = correlationFormat.transform({ level: 'info', message: 'm' });
       res.end();
     });
-    await request(app).get('/x').set('X-Correlation-ID', 'cid-1');
-    expect(inside).toMatchObject({ correlationId: 'cid-1' });
+    await request(app).get('/x').set('X-Correlation-ID', 'cid-12345678');
+    expect(inside).toMatchObject({ correlationId: 'cid-12345678' });
   });
 });
 
