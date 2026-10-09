@@ -69,6 +69,17 @@ Scopes are registered in the MC, not taken from the bundle in production; the re
 ### D5. CSP
 Start without `headers.csp`. The Application Shell composes the policy from defaults (`img-src * data:`, MC API host from `cloudIdentifier`, fonts/styles from the shell's CDNs, app origin from `env.production.url`).
 All internal entries of the source CSP disappear: `localhost:8080`, `*.us-central1.run.app`, `*.europe-west1.run.app`, `*.asia-southeast1.run.app`, `frame-src *.ct-poc.net`, `'unsafe-eval'`, `cdn.jsdelivr.net`, `rsms.me`, `blob:`.
+Observed default policy (mc-scripts 27.13.0, `yarn check:admin-app-build`, application URL and region from the simulated environment):
+| Directive | Sources |
+| --- | --- |
+| default-src | `'none'` |
+| script-src | `'self'`, three `sha256-` hashes, the application URL |
+| connect-src | `'self'`, `app.launchdarkly.com`, `clientsdk.launchdarkly.com`, `clientstream.launchdarkly.com`, `events.launchdarkly.com`, `app.getsentry.com`, `*.sentry.io`, `https://mc-api.<region>.commercetools.com`, the application URL |
+| img-src | `*`, `data:` |
+| style-src | `'self'`, `fonts.googleapis.com`, `data:`, `'unsafe-inline'`, the application URL |
+| font-src | `'self'`, `fonts.gstatic.com`, `data:` |
+| frame-src | `'self'` |
+No internal host and no `'unsafe-eval'`; `upgrade-insecure-requests` is set. The simulate tool fails on any host outside this list.
 Rationale: the browser only talks to the MC API (forward-to). If a console CSP violation appears (task B6), add only the minimal directive and record "directive, value, console message" in a table appended to this section. Candidate (unverified): `blob:` in `script-src`/`worker-src` if the editor spawns workers; `style-src` for a font CDN if puck CSS imports one (none found in the puck sources: grep of `jsdelivr|rsms|googleapis` over `puck/packages/*/src` returned nothing).
 
 ### D6. Sequence (register-first / update-URL-last) and who does what

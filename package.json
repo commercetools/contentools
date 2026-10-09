@@ -21,6 +21,8 @@
     "check:legacy-calls": "node tools/check-legacy-route-calls.mjs",
     "test:tools": "node --test \"tools/test/*.test.mjs\"",
     "gate": "node tools/labs-publish.mjs gate",
+    "check:admin-app-connect": "node tools/check-admin-app-connect.mjs",
+    "check:admin-app-build": "node tools/admin-app-simulate-connect-build.mjs",
     "admin-app:local-puck": "node tools/admin-app-use-local-puck.mjs"
   }
 }
