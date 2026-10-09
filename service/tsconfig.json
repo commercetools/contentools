@@ -16,5 +16,5 @@
     "types": ["node", "jest"]
   },
   "include": ["src/**/*.ts", "tests/**/*.ts"],
-  "exclude": ["node_modules", "build", "src/_pending"]
+  "exclude": ["node_modules", "build"]
 }
