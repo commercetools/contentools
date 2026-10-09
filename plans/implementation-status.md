@@ -23,7 +23,7 @@ Per-spec detail: `plans/implementation-log/<spec>.md`. Updated by the coordinato
 | O local gates / release tooling | merged | `verify:strict` and `connect validate` need Docker |
 | P docs | merged | 77-route API reference |
 | Q acceptance | merged (phase 1) | LOCAL ACCEPTED (116 checks); FULL ACCEPTED needs phase 2 |
-| R publish gate + launch | in progress (prep only, no publish) | CP-1/2/3 require your literal replies |
+| R publish gate + launch | prep done, gate CLEAR (716 files, 0 FAIL, 0 WARN); versions 1.0.0-rc.0 | CP-1/2/3 await your literal replies |
 
 ## Blocked on you / the environment (all "not run", never faked)
 
