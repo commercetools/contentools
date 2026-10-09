@@ -4,18 +4,20 @@
  * Freely available, AS IS and UNSUPPORTED. See LICENSE.
  */
 
-import React, { useMemo, useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { NavLink, useRouteMatch } from 'react-router-dom';
+import { useIntl } from 'react-intl';
 import {
-  IconFileText,
-  IconList,
-  IconImageGeneration,
-  IconLayoutSidebarRightExpand,
-  IconLayoutSidebarRightCollapse,
-} from '@tabler/icons-react';
+  Description,
+  ListAlt,
+  Palette,
+  ChevronLeft,
+  ChevronRight,
+} from '@commercetools/nimbus-icons';
 import styles from './admin-layout.module.css';
 import { Select, Stack, Text } from '@commercetools/nimbus';
 import { useBusinessUnit } from '../../contexts/business-unit';
+import messages from '../../i18n/messages';
 
 type NavItem = {
   label: string;
@@ -27,10 +29,9 @@ type AdminLayoutProps = {
   children: ReactNode;
 };
 
-const iconProps = { size: 16 };
-
 const AdminLayout = ({ children }: AdminLayoutProps) => {
   const match = useRouteMatch();
+  const intl = useIntl();
   const [collapsed, setCollapsed] = useState(false);
   const {
     businessUnits,
@@ -47,19 +48,19 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
   const navItems: NavItem[] = [
     {
-      label: 'Pages',
+      label: intl.formatMessage(messages.pages),
       path: `${match.url}/pages`,
-      icon: <IconFileText {...iconProps} />,
+      icon: <Description />,
     },
     {
-      label: 'Items',
+      label: intl.formatMessage(messages.items),
       path: `${match.url}/items`,
-      icon: <IconList {...iconProps} />,
+      icon: <ListAlt />,
     },
     {
-      label: 'Theme',
+      label: intl.formatMessage(messages.theme),
       path: `${match.url}/theme`,
-      icon: <IconImageGeneration {...iconProps} />,
+      icon: <Palette />,
     },
   ];
 
@@ -67,11 +68,13 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     <div className={styles.wrapper}>
       <div className={styles.container}>
         <aside
-          className={`${styles.sidebar} ${collapsed ? styles.sidebarCollapsed : ''}`}
+          className={`${styles.sidebar} ${
+            collapsed ? styles.sidebarCollapsed : ''
+          }`}
         >
           <div className={styles.sidebarHeaderWrapper}>
             <div className={styles.sidebarHeader}>
-              <div className={styles.appBadge}>CMS</div>
+              <div className={styles.appBadge}>CT</div>
               {!collapsed && (
                 <span className={styles.appTitle}>Contentools</span>
               )}
@@ -79,10 +82,10 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             {!collapsed && showDropdown && !isLoading && (
               <Stack direction="column" gap="200">
                 <Text fontSize="sm" fontWeight="medium">
-                  Business unit
+                  {intl.formatMessage(messages.businessUnit)}
                 </Text>
                 <Select.Root
-                  aria-label="Business unit"
+                  aria-label={intl.formatMessage(messages.businessUnit)}
                   selectedKey={selectedBusinessUnitKey}
                   onSelectionChange={(key) => {
                     if (key) setSelectedBusinessUnitKey(String(key));
@@ -90,7 +93,9 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                 >
                   <Select.Options items={selectOptions}>
                     {(item) => (
-                      <Select.Option id={item.value}>{item.label}</Select.Option>
+                      <Select.Option id={item.value}>
+                        {item.label}
+                      </Select.Option>
                     )}
                   </Select.Options>
                 </Select.Root>
@@ -103,7 +108,9 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               <NavLink
                 key={item.path}
                 to={item.path}
-                className={`${styles.navItem} ${collapsed ? styles.navItemCollapsed : ''}`}
+                className={`${styles.navItem} ${
+                  collapsed ? styles.navItemCollapsed : ''
+                }`}
                 activeClassName={styles.navItemActive}
                 title={collapsed ? item.label : undefined}
               >
@@ -116,16 +123,20 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           </nav>
 
           <button
-            className={`${styles.toggleButton} ${collapsed ? styles.toggleButtonCollapsed : ''}`}
+            className={`${styles.toggleButton} ${
+              collapsed ? styles.toggleButtonCollapsed : ''
+            }`}
             onClick={() => setCollapsed((c) => !c)}
-            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            title={intl.formatMessage(
+              collapsed ? messages.expandTitle : messages.collapseTitle
+            )}
           >
             {collapsed ? (
-              <IconLayoutSidebarRightExpand size={18} />
+              <ChevronRight />
             ) : (
               <>
-                <IconLayoutSidebarRightCollapse size={18} />
-                <span>Collapse</span>
+                <ChevronLeft />
+                <span>{intl.formatMessage(messages.collapse)}</span>
               </>
             )}
           </button>

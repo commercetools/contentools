@@ -11,4 +11,9 @@ process.env.ENABLE_NEW_JSX_TRANSFORM = 'true';
  */
 module.exports = {
   preset: '@commercetools-frontend/jest-preset-mc-app/typescript',
+  moduleNameMapper: {
+    // The managers are ESM-only and heavy; tests use stand-ins that print their props.
+    '^@commercetools-labs/puck-(page|content|theme)-manager$':
+      '<rootDir>/src/test-utils/puck-stubs.tsx',
+  },
 };

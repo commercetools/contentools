@@ -49,7 +49,7 @@ export const useBusinessUnits: TUseBusinessUnits = () => {
   });
 
   const businessUnits: BusinessUnit[] =
-    data?.businessUnits?.results?.map((bu) => ({
+    data?.businessUnits?.results?.map((bu: { key: string; name: string }) => ({
       key: bu.key,
       name: bu.name,
     })) ?? [];

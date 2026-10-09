@@ -1,1 +1,12 @@
-{}
+{
+  "Contentools.businessUnit": "Business unit",
+  "Contentools.nav.items": "Items",
+  "Contentools.nav.pages": "Pages",
+  "Contentools.nav.theme": "Theme",
+  "Contentools.notAllowed": "You are not allowed to do this. Ask an administrator for the manage permission.",
+  "Contentools.requestFailed": "The request to the service failed: {message}",
+  "Contentools.serviceNotConfigured": "The service URL is not configured. Set CONTENTOOLS_SERVICE_URL (https, ending in /service) in the deployment configuration and redeploy.",
+  "Contentools.sidebar.collapse": "Collapse",
+  "Contentools.sidebar.collapseTitle": "Collapse sidebar",
+  "Contentools.sidebar.expand": "Expand sidebar"
+}

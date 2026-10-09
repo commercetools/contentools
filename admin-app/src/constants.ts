@@ -7,11 +7,14 @@
 // Make sure to import the helper functions from the `ssr` entry point.
 import { entryPointUriPathToPermissionKeys } from '@commercetools-frontend/application-shell/ssr';
 
-export const entryPointUriPath = 'multitenant-contentools-wrapper';
+// window.app is set by the Merchant Center shell at runtime; ENTRY_POINT_URI_PATH covers SSR/tests.
+const runtimePath =
+  typeof window === 'undefined'
+    ? undefined
+    : (window as { app?: { entryPointUriPath?: string } }).app
+        ?.entryPointUriPath;
+
+export const entryPointUriPath: string =
+  runtimePath ?? process.env['ENTRY_POINT_URI_PATH'] ?? 'contentools';
 
 export const PERMISSIONS = entryPointUriPathToPermissionKeys(entryPointUriPath);
-
-/** Contentools: custom object container and keys (align with router constants) */
-export const CONFIGURATION_CONTAINER = 'contentools-configuration';
-export const JWT_TOKEN_KEY = 'contentools-jwt-token';
-export const CREDENTIALS_KEY = 'contentools-credentials';

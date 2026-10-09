@@ -11,63 +11,25 @@ import { PERMISSIONS } from './src/constants';
  */
 const config = {
   name: 'Contentools',
+  description:
+    'Manage pages, content items and the theme of your storefront content.',
   entryPointUriPath: '${env:ENTRY_POINT_URI_PATH}',
   cloudIdentifier: '${env:CLOUD_IDENTIFIER}',
   env: {
+    development: { initialProjectKey: '${env:CTP_INITIAL_PROJECT_KEY}' },
     production: {
       applicationId: '${env:CUSTOM_APPLICATION_ID}',
       url: '${env:APPLICATION_URL}',
     },
-    development: {
-      initialProjectKey: '${env:INITIAL_PROJECT_KEY}',
-    },
   },
-  additionalEnv: {
-    CMS_API_URL: '${env:CMS_API_URL}',
-  },
-  headers: {
-    csp: {
-      'connect-src': [
-        '*.commercetools.app',
-        '*.commercetools.com',
-        'localhost:8080',
-        "'unsafe-eval'",
-        '*.us-central1.run.app',
-        '*.europe-west1.run.app',
-        '*.asia-southeast1.run.app',
-      ],
-      'script-src': [
-        '*.commercetools.app',
-        '*.commercetools.com',
-        'localhost:8080',
-        'cdn.jsdelivr.net',
-        'blob:',
-        "'unsafe-eval'",
-        '*.us-central1.run.app',
-        '*.europe-west1.run.app',
-        '*.asia-southeast1.run.app',
-      ],
-      'style-src': ['cdn.jsdelivr.net', 'rsms.me'],
-      'font-src': ['cdn.jsdelivr.net', 'rsms.me'],
-      'frame-src': ['*.ct-poc.net'],
-    },
-  },
+  // Read directly: a ${env:} placeholder throws when unset, and the first deployment has no service URL yet.
+  // The value ends up in the public window.app; it is not secret.
+  additionalEnv: { serviceUrl: process.env.CONTENTOOLS_SERVICE_URL ?? '' },
   oAuthScopes: {
-    view: [
-      'view_products',
-      'view_key_value_documents',
-      'view_business_units',
-      'view_project_settings',
-      'view_stores',
-      'view_api_clients',
-    ],
-    manage: [
-      'manage_products',
-      'manage_key_value_documents',
-      'manage_api_clients',
-    ],
+    view: ['view_business_units'],
+    manage: ['manage_key_value_documents'],
   },
-  icon: '${path:@tabler/icons/filled/square-letter-c.svg}',
+  icon: '${path:@commercetools-frontend/assets/application-icons/files.svg}',
   mainMenuLink: {
     defaultLabel: 'Contentools',
     labelAllLocales: [],
