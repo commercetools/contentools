@@ -121,7 +121,7 @@ const TabNav: React.FC<TabNavProps> = ({ activeTab, onChange }) => (
           cursor: 'pointer',
         }}
       >
-        {tab === 'pages' ? 'Pages' : tab === 'contents' ? 'Content Items' : 'Renderer'}
+        {tab === 'pages' ? 'Pages' : tab === 'contents' ? 'Content Items' : tab === 'theme' ? 'Theme' : 'Renderer'}
       </button>
     ))}
   </div>

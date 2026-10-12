@@ -70,3 +70,19 @@ Per-spec detail: `plans/implementation-log/<spec>.md`. Updated by the coordinato
 * `admin-app`: **build FAILS as expected** until the 10 `@commercetools-labs/puck-*@1.0.0` packages are on npm (buildpack runs `yarn install --frozen-lockfile`; confirms Connect uses Yarn from the lockfile).
 * Fixes found by running it for real: (1) the Connect test container holds only the app folder, so service suites that read repo-root files (`connect.yaml`, `docs/`) are skipped there and still run in `yarn verify`; (2) jest workers were OOM-killed in the memory-limited containers (Docker Desktop 7.6 GB): `maxWorkers: 2`, `workerIdleMemoryLimit: 512MB`, ts-jest `isolatedModules` in service and mcp.
 * "Composition Analysis (Dependencies)" and "Code Analysis" were **skipped** by the CLI in every run, so the Trivy/`braces` question (Q-H8) is still open; `--skip` flag semantics need a look.
+
+## Browser verification (Chrome DevTools connector, 2026-10-12): playground against the real service + sandbox
+
+Run: built service on :8080 (sandbox, prefix `contentools-test-ui-*`, token mode), playground on :5174. Data removed afterwards (sweep deleted 3 objects), env file and processes cleaned up.
+
+Verified in a real browser:
+* Playground loads, no JS errors (only a favicon 404 and Nimbus accessibility `aria-label` warnings, 192x).
+* CORS preflight 204 and authenticated reads 200 against the real service; Pages list and templates load.
+* **Create page** via the UI → stored as a custom object in the sandbox; editor opens with the component palette (8 categories, 27 blocks), outline, viewport switches, page properties.
+* **Save** → status "Draft"; **Publish** → both `draft` and `published` states exist (checked via the API); reload shows "Draft" + "Published" and the saved title.
+* API access policy confirmed live: anonymous published read 200, anonymous list 401.
+* **Theme tab** renders (presets selector, theme configuration).
+
+Found and fixed: the playground's fourth tab was labelled "Renderer" instead of "Theme" (`puck/playground/src/App.tsx`).
+
+Not verified (automation limits): Puck drag-and-drop of a block into the canvas (the canvas is inside an iframe; the connector's drag tool cannot target it; keyboard drag reported a drop but the outline stayed empty), Renderer tab rendering a page, Content Items tab, version history/revert, media picker, Merchant Center app.
