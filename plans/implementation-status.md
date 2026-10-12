@@ -86,3 +86,9 @@ Verified in a real browser:
 Found and fixed: the playground's fourth tab was labelled "Renderer" instead of "Theme" (`puck/playground/src/App.tsx`).
 
 Not verified (automation limits): Puck drag-and-drop of a block into the canvas (the canvas is inside an iframe; the connector's drag tool cannot target it; keyboard drag reported a drop but the outline stayed empty), Renderer tab rendering a page, Content Items tab, version history/revert, media picker, Merchant Center app.
+
+## Rename (2026-10-12): `@commercetools-labs/puck-*` → `@commercetools-labs/contentools-*`
+
+Done across code, docs, scripts, package folders (`puck/packages/contentools-*`), the Postman/docs checks and the workspace name. Verified: `puck` `yarn verify` (118 tests), publish dry run lists the 10 new names (all free on npm), `check:forbidden`, `check:hygiene`, `check:spdx`, `check:connect`, `docs:check`, `test:tools`.
+
+**Open finding (not caused by the rename):** `admin-app` jest tests fail 15 of 25 ("Page unauthorized"/missing text) on a fresh local install that re-resolved dependencies without the lockfile (local-puck mode). The same failure reproduces with the pre-rename sources, so it is dependency drift or an environment/permissions-context difference vs. the install the K spec verified. Investigate when `admin-app` gets its real lockfile (after the npm publish): run `yarn install --frozen-lockfile` with the committed lock and re-run `yarn verify`.

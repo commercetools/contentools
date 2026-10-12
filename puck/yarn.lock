@@ -827,9 +827,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-labs/puck-workspace@workspace:.":
+"@commercetools-labs/contentools-workspace@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@commercetools-labs/puck-workspace@workspace:."
+  resolution: "@commercetools-labs/contentools-workspace@workspace:."
   dependencies:
     "@eslint/js": "npm:^9"
     "@testing-library/dom": "npm:^10"
