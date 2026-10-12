@@ -13,7 +13,7 @@ const HELPER = path.resolve(__dirname, '../../scripts/lib/manifest.mjs');
 const template = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '../../publish/package.template.json'), 'utf8')
 );
-const pkg = { version: '1.0.0-rc.0', private: true };
+const pkg = { version: '1.0.0', private: true };
 
 type Result = { ok: true; value: any } | { ok: false; message: string };
 
@@ -34,7 +34,7 @@ test('injects name and version', () => {
   expect(r.ok).toBe(true);
   const m = (r as { value: Record<string, unknown> }).value;
   expect(m.name).toBe('@commercetools-labs/contentools-mcp');
-  expect(m.version).toBe('1.0.0-rc.0');
+  expect(m.version).toBe('1.0.0');
   expect(m.private).toBeUndefined();
   expect(m.scripts).toBeUndefined();
   expect(m.dependencies).toBeUndefined();

@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-labs/puck-editor",
-  "version": "1.0.0-rc.0",
+  "version": "1.0.0",
   "description": "Puck editor wrapper with built-in components and content API integration",
   "license": "MIT",
   "repository": {

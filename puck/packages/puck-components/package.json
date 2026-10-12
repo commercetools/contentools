@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-labs/puck-components",
-  "version": "1.0.0-rc.0",
+  "version": "1.0.0",
   "description": "Nimbus-free Puck component render layer (visualize) + render config for storefronts",
   "license": "MIT",
   "repository": {

@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-labs/puck-renderer",
-  "version": "1.0.0-rc.0",
+  "version": "1.0.0",
   "description": "Lightweight Puck page renderer for storefronts",
   "license": "MIT",
   "repository": {

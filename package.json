@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-labs/contentools",
-  "version": "1.0.0-rc.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Tooling hub for the Contentools reference implementation. Not a workspace root: each Connect app is self-contained.",
   "license": "MIT",

@@ -35,8 +35,8 @@ The root tooling (`yarn test`, `yarn verify`, `release:puck:*`) runs puck throug
 ## Release steps
 
 1. `yarn verify:strict` (needs Docker running and the `commercetools` CLI; record the date and CLI version).
-2. Choose the version: first `1.0.0-rc.0` (dist-tag `next`), then `1.0.0` (`latest`).
-3. Bump all packages in lockstep: `yarn release:puck:bump 1.0.0-rc.0` (puck packages), then in the root, `service/`, `admin-app/` and `mcp/`: `yarn version --new-version 1.0.0-rc.0 --no-git-tag-version`.
+2. Version: owner decision: all packages start at `1.0.0` (dist-tag `latest`), no release candidate. A defect found after publishing means `1.0.1`, never a re-publish.
+3. Bump all packages in lockstep: `yarn release:puck:bump 1.0.0` (puck packages), then in the root, `service/`, `admin-app/` and `mcp/`: `yarn version --new-version 1.0.0 --no-git-tag-version`.
 4. `yarn release:preflight` (strict verify, lockstep versions, dist-tag, clean git tree).
 5. Commit the bump.
 6. Dry run: `yarn release:puck:publish` (prints the `npm publish --dry-run` results for every package, publishes nothing).
