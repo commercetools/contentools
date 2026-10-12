@@ -596,11 +596,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@commercetools-labs/puck-api@workspace:^, @commercetools-labs/puck-api@workspace:packages/puck-api":
+"@commercetools-labs/contentools-api@workspace:^, @commercetools-labs/contentools-api@workspace:packages/contentools-api":
   version: 0.0.0-use.local
-  resolution: "@commercetools-labs/puck-api@workspace:packages/puck-api"
+  resolution: "@commercetools-labs/contentools-api@workspace:packages/contentools-api"
   dependencies:
-    "@commercetools-labs/puck-types": "workspace:^"
+    "@commercetools-labs/contentools-types": "workspace:^"
     "@types/react": "npm:^19"
     tsup: "npm:^8.3.0"
     typescript: "npm:^5.7.2"
@@ -609,11 +609,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-labs/puck-components@workspace:^, @commercetools-labs/puck-components@workspace:packages/puck-components":
+"@commercetools-labs/contentools-components@workspace:^, @commercetools-labs/contentools-components@workspace:packages/contentools-components":
   version: 0.0.0-use.local
-  resolution: "@commercetools-labs/puck-components@workspace:packages/puck-components"
+  resolution: "@commercetools-labs/contentools-components@workspace:packages/contentools-components"
   dependencies:
-    "@commercetools-labs/puck-api": "workspace:^"
+    "@commercetools-labs/contentools-api": "workspace:^"
     "@measured/puck": "npm:^0.18.2"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
@@ -627,15 +627,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-labs/puck-content-manager@workspace:^, @commercetools-labs/puck-content-manager@workspace:packages/puck-content-manager":
+"@commercetools-labs/contentools-content-manager@workspace:^, @commercetools-labs/contentools-content-manager@workspace:packages/contentools-content-manager":
   version: 0.0.0-use.local
-  resolution: "@commercetools-labs/puck-content-manager@workspace:packages/puck-content-manager"
+  resolution: "@commercetools-labs/contentools-content-manager@workspace:packages/contentools-content-manager"
   dependencies:
-    "@commercetools-labs/puck-api": "workspace:^"
-    "@commercetools-labs/puck-editor": "workspace:^"
-    "@commercetools-labs/puck-renderer": "workspace:^"
-    "@commercetools-labs/puck-types": "workspace:^"
-    "@commercetools-labs/puck-version-history": "workspace:^"
+    "@commercetools-labs/contentools-api": "workspace:^"
+    "@commercetools-labs/contentools-editor": "workspace:^"
+    "@commercetools-labs/contentools-renderer": "workspace:^"
+    "@commercetools-labs/contentools-types": "workspace:^"
+    "@commercetools-labs/contentools-version-history": "workspace:^"
     "@measured/puck": "npm:^0.18.2"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
@@ -653,14 +653,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-labs/puck-editor@workspace:^, @commercetools-labs/puck-editor@workspace:packages/puck-editor":
+"@commercetools-labs/contentools-editor@workspace:^, @commercetools-labs/contentools-editor@workspace:packages/contentools-editor":
   version: 0.0.0-use.local
-  resolution: "@commercetools-labs/puck-editor@workspace:packages/puck-editor"
+  resolution: "@commercetools-labs/contentools-editor@workspace:packages/contentools-editor"
   dependencies:
-    "@commercetools-labs/puck-api": "workspace:^"
-    "@commercetools-labs/puck-components": "workspace:^"
-    "@commercetools-labs/puck-types": "workspace:^"
-    "@commercetools-labs/puck-version-history": "workspace:^"
+    "@commercetools-labs/contentools-api": "workspace:^"
+    "@commercetools-labs/contentools-components": "workspace:^"
+    "@commercetools-labs/contentools-types": "workspace:^"
+    "@commercetools-labs/contentools-version-history": "workspace:^"
     "@measured/puck": "npm:^0.18.2"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
@@ -676,12 +676,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-labs/puck-image-picker@workspace:packages/puck-image-picker":
+"@commercetools-labs/contentools-image-picker@workspace:packages/contentools-image-picker":
   version: 0.0.0-use.local
-  resolution: "@commercetools-labs/puck-image-picker@workspace:packages/puck-image-picker"
+  resolution: "@commercetools-labs/contentools-image-picker@workspace:packages/contentools-image-picker"
   dependencies:
-    "@commercetools-labs/puck-api": "workspace:^"
-    "@commercetools-labs/puck-types": "workspace:^"
+    "@commercetools-labs/contentools-api": "workspace:^"
+    "@commercetools-labs/contentools-types": "workspace:^"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
     tsup: "npm:^8.3.0"
@@ -696,15 +696,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-labs/puck-page-manager@workspace:^, @commercetools-labs/puck-page-manager@workspace:packages/puck-page-manager":
+"@commercetools-labs/contentools-page-manager@workspace:^, @commercetools-labs/contentools-page-manager@workspace:packages/contentools-page-manager":
   version: 0.0.0-use.local
-  resolution: "@commercetools-labs/puck-page-manager@workspace:packages/puck-page-manager"
+  resolution: "@commercetools-labs/contentools-page-manager@workspace:packages/contentools-page-manager"
   dependencies:
-    "@commercetools-labs/puck-api": "workspace:^"
-    "@commercetools-labs/puck-editor": "workspace:^"
-    "@commercetools-labs/puck-renderer": "workspace:^"
-    "@commercetools-labs/puck-types": "workspace:^"
-    "@commercetools-labs/puck-version-history": "workspace:^"
+    "@commercetools-labs/contentools-api": "workspace:^"
+    "@commercetools-labs/contentools-editor": "workspace:^"
+    "@commercetools-labs/contentools-renderer": "workspace:^"
+    "@commercetools-labs/contentools-types": "workspace:^"
+    "@commercetools-labs/contentools-version-history": "workspace:^"
     "@measured/puck": "npm:^0.18.2"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
@@ -722,18 +722,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-labs/puck-playground@workspace:playground":
+"@commercetools-labs/contentools-playground@workspace:playground":
   version: 0.0.0-use.local
-  resolution: "@commercetools-labs/puck-playground@workspace:playground"
+  resolution: "@commercetools-labs/contentools-playground@workspace:playground"
   dependencies:
     "@chakra-ui/react": "npm:^3.36.0"
-    "@commercetools-labs/puck-api": "workspace:^"
-    "@commercetools-labs/puck-content-manager": "workspace:^"
-    "@commercetools-labs/puck-editor": "workspace:^"
-    "@commercetools-labs/puck-page-manager": "workspace:^"
-    "@commercetools-labs/puck-renderer": "workspace:^"
-    "@commercetools-labs/puck-theme-manager": "workspace:^"
-    "@commercetools-labs/puck-types": "workspace:^"
+    "@commercetools-labs/contentools-api": "workspace:^"
+    "@commercetools-labs/contentools-content-manager": "workspace:^"
+    "@commercetools-labs/contentools-editor": "workspace:^"
+    "@commercetools-labs/contentools-page-manager": "workspace:^"
+    "@commercetools-labs/contentools-renderer": "workspace:^"
+    "@commercetools-labs/contentools-theme-manager": "workspace:^"
+    "@commercetools-labs/contentools-types": "workspace:^"
     "@commercetools/nimbus": "npm:^3.2.0"
     "@commercetools/nimbus-icons": "npm:^3.2.0"
     "@commercetools/nimbus-tokens": "npm:^3.2.0"
@@ -758,13 +758,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-labs/puck-renderer@workspace:^, @commercetools-labs/puck-renderer@workspace:packages/puck-renderer":
+"@commercetools-labs/contentools-renderer@workspace:^, @commercetools-labs/contentools-renderer@workspace:packages/contentools-renderer":
   version: 0.0.0-use.local
-  resolution: "@commercetools-labs/puck-renderer@workspace:packages/puck-renderer"
+  resolution: "@commercetools-labs/contentools-renderer@workspace:packages/contentools-renderer"
   dependencies:
-    "@commercetools-labs/puck-api": "workspace:^"
-    "@commercetools-labs/puck-components": "workspace:^"
-    "@commercetools-labs/puck-types": "workspace:^"
+    "@commercetools-labs/contentools-api": "workspace:^"
+    "@commercetools-labs/contentools-components": "workspace:^"
+    "@commercetools-labs/contentools-types": "workspace:^"
     "@measured/puck": "npm:^0.18.2"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
@@ -777,12 +777,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-labs/puck-theme-manager@workspace:^, @commercetools-labs/puck-theme-manager@workspace:packages/puck-theme-manager":
+"@commercetools-labs/contentools-theme-manager@workspace:^, @commercetools-labs/contentools-theme-manager@workspace:packages/contentools-theme-manager":
   version: 0.0.0-use.local
-  resolution: "@commercetools-labs/puck-theme-manager@workspace:packages/puck-theme-manager"
+  resolution: "@commercetools-labs/contentools-theme-manager@workspace:packages/contentools-theme-manager"
   dependencies:
-    "@commercetools-labs/puck-api": "workspace:^"
-    "@commercetools-labs/puck-types": "workspace:^"
+    "@commercetools-labs/contentools-api": "workspace:^"
+    "@commercetools-labs/contentools-types": "workspace:^"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
     "@types/react-router-dom": "npm:^5"
@@ -798,9 +798,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-labs/puck-types@workspace:^, @commercetools-labs/puck-types@workspace:packages/puck-types":
+"@commercetools-labs/contentools-types@workspace:^, @commercetools-labs/contentools-types@workspace:packages/contentools-types":
   version: 0.0.0-use.local
-  resolution: "@commercetools-labs/puck-types@workspace:packages/puck-types"
+  resolution: "@commercetools-labs/contentools-types@workspace:packages/contentools-types"
   dependencies:
     "@measured/puck": "npm:^0.18.2"
     tsup: "npm:^8.3.0"
@@ -808,11 +808,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-labs/puck-version-history@workspace:^, @commercetools-labs/puck-version-history@workspace:packages/puck-version-history":
+"@commercetools-labs/contentools-version-history@workspace:^, @commercetools-labs/contentools-version-history@workspace:packages/contentools-version-history":
   version: 0.0.0-use.local
-  resolution: "@commercetools-labs/puck-version-history@workspace:packages/puck-version-history"
+  resolution: "@commercetools-labs/contentools-version-history@workspace:packages/contentools-version-history"
   dependencies:
-    "@commercetools-labs/puck-types": "workspace:^"
+    "@commercetools-labs/contentools-types": "workspace:^"
     "@measured/puck": "npm:^0.18.2"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"

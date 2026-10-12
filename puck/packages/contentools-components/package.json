@@ -1,0 +1,67 @@
+{
+  "name": "@commercetools-labs/contentools-components",
+  "version": "1.0.0",
+  "description": "Nimbus-free Puck component render layer (visualize) + render config for storefronts",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/commercetools/contentools.git",
+    "directory": "puck/packages/contentools-components"
+  },
+  "bugs": {
+    "url": "https://github.com/commercetools/contentools/issues"
+  },
+  "homepage": "https://github.com/commercetools/contentools/tree/main/puck/packages/contentools-components#readme",
+  "keywords": [
+    "commercetools",
+    "puck",
+    "page-builder",
+    "react"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@commercetools-labs/contentools-api": "workspace:^",
+    "@measured/puck": "^0.18.2",
+    "isomorphic-dompurify": "^3.18.0"
+  },
+  "peerDependencies": {
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0",
+    "react-intl": ">=6.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tsup": "^8.3.0",
+    "typescript": "^5.7.2"
+  }
+}

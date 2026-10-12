@@ -18,29 +18,29 @@ const pkg = (rel: string) => fileURLToPath(new URL(rel, import.meta.url));
  *   .vite/deps/, which would cache a stale snapshot and suppress HMR.
  */
 const monorepoPackages = [
-  '@commercetools-labs/puck-api',
-  '@commercetools-labs/puck-components',
-  '@commercetools-labs/puck-editor',
-  '@commercetools-labs/puck-version-history',
-  '@commercetools-labs/puck-content-manager',
-  '@commercetools-labs/puck-page-manager',
-  '@commercetools-labs/puck-renderer',
-  '@commercetools-labs/puck-types',
-  '@commercetools-labs/puck-theme-manager',
-  '@commercetools-labs/puck-image-picker',
+  '@commercetools-labs/contentools-api',
+  '@commercetools-labs/contentools-components',
+  '@commercetools-labs/contentools-editor',
+  '@commercetools-labs/contentools-version-history',
+  '@commercetools-labs/contentools-content-manager',
+  '@commercetools-labs/contentools-page-manager',
+  '@commercetools-labs/contentools-renderer',
+  '@commercetools-labs/contentools-types',
+  '@commercetools-labs/contentools-theme-manager',
+  '@commercetools-labs/contentools-image-picker',
 ];
 
 const sourceAlias: Record<string, string> = {
-  '@commercetools-labs/puck-api':             pkg('../packages/puck-api/src/index.ts'),
-  '@commercetools-labs/puck-components':       pkg('../packages/puck-components/src/index.ts'),
-  '@commercetools-labs/puck-editor':           pkg('../packages/puck-editor/src/index.ts'),
-  '@commercetools-labs/puck-version-history':  pkg('../packages/puck-version-history/src/index.ts'),
-  '@commercetools-labs/puck-content-manager':  pkg('../packages/puck-content-manager/src/index.ts'),
-  '@commercetools-labs/puck-page-manager':     pkg('../packages/puck-page-manager/src/index.ts'),
-  '@commercetools-labs/puck-renderer':         pkg('../packages/puck-renderer/src/index.ts'),
-  '@commercetools-labs/puck-types':            pkg('../packages/puck-types/src/index.ts'),
-  '@commercetools-labs/puck-theme-manager':    pkg('../packages/puck-theme-manager/src/index.ts'),
-  '@commercetools-labs/puck-image-picker':     pkg('../packages/puck-image-picker/src/index.ts'),
+  '@commercetools-labs/contentools-api':             pkg('../packages/contentools-api/src/index.ts'),
+  '@commercetools-labs/contentools-components':       pkg('../packages/contentools-components/src/index.ts'),
+  '@commercetools-labs/contentools-editor':           pkg('../packages/contentools-editor/src/index.ts'),
+  '@commercetools-labs/contentools-version-history':  pkg('../packages/contentools-version-history/src/index.ts'),
+  '@commercetools-labs/contentools-content-manager':  pkg('../packages/contentools-content-manager/src/index.ts'),
+  '@commercetools-labs/contentools-page-manager':     pkg('../packages/contentools-page-manager/src/index.ts'),
+  '@commercetools-labs/contentools-renderer':         pkg('../packages/contentools-renderer/src/index.ts'),
+  '@commercetools-labs/contentools-types':            pkg('../packages/contentools-types/src/index.ts'),
+  '@commercetools-labs/contentools-theme-manager':    pkg('../packages/contentools-theme-manager/src/index.ts'),
+  '@commercetools-labs/contentools-image-picker':     pkg('../packages/contentools-image-picker/src/index.ts'),
 };
 
 export default defineConfig({

@@ -1,26 +1,26 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "description": "Contract documentation for every mutating FE→backend API call in @commercetools-labs/puck-* packages. Each entry traces the payload from UI component through hook/transformer to the final fetch body, and compares it against the backend route's expected schema. Entries with compatible=false are the only ones requiring a contract fix. The auth field mirrors PUCK_AUTH_POLICY in puck-api: public (no credentials needed), protected (the client refuses to send without a token, auth-header provider or fetcher), mode-dependent (public for published reads, protected for preview) or attach (credentials are sent when present and the service decides).",
+  "description": "Contract documentation for every mutating FE→backend API call in @commercetools-labs/contentools-* packages. Each entry traces the payload from UI component through hook/transformer to the final fetch body, and compares it against the backend route's expected schema. Entries with compatible=false are the only ones requiring a contract fix. The auth field mirrors PUCK_AUTH_POLICY in contentools-api: public (no credentials needed), protected (the client refuses to send without a token, auth-header provider or fetcher), mode-dependent (public for published reads, protected for preview) or attach (credentials are sent when present and the service decides).",
   "entries": [
     {
       "apiFunction": "createPuckContentApi",
-      "file": "puck/packages/puck-api/src/api/puck-contents.api.ts",
+      "file": "puck/packages/contentools-api/src/api/puck-contents.api.ts",
       "method": "POST",
       "endpoint": "/:businessUnitKey/puck-contents",
       "transformationChain": [
         {
           "fn": "ContentManager (dialog submit)",
-          "file": "puck/packages/puck-content-manager/src/ContentManager.tsx",
+          "file": "puck/packages/contentools-content-manager/src/ContentManager.tsx",
           "description": "Builds CreatePuckContentInput: { name: createName.trim(), contentType: createType.trim(), data: { content: [], root: { props: {} } } }"
         },
         {
           "fn": "createContent (usePuckContents)",
-          "file": "puck/packages/puck-api/src/hooks/usePuckContents.ts",
+          "file": "puck/packages/contentools-api/src/hooks/usePuckContents.ts",
           "description": "Passes input unchanged to createPuckContentApi"
         },
         {
           "fn": "createPuckContentApi",
-          "file": "puck/packages/puck-api/src/api/puck-contents.api.ts",
+          "file": "puck/packages/contentools-api/src/api/puck-contents.api.ts",
           "description": "Wraps input: body = JSON.stringify({ value: input })"
         }
       ],
@@ -54,28 +54,28 @@
     },
     {
       "apiFunction": "updatePuckContentApi",
-      "file": "puck/packages/puck-api/src/api/puck-contents.api.ts",
+      "file": "puck/packages/contentools-api/src/api/puck-contents.api.ts",
       "method": "PUT",
       "endpoint": "/:businessUnitKey/puck-contents/:key",
       "transformationChain": [
         {
           "fn": "onChange (Puck editor)",
-          "file": "puck/packages/puck-content-manager/src/ContentEditor.tsx",
+          "file": "puck/packages/contentools-content-manager/src/ContentEditor.tsx",
           "description": "Stores Puck Data object in latestDataRef.current on every editor change"
         },
         {
           "fn": "handleSave",
-          "file": "puck/packages/puck-content-manager/src/ContentEditor.tsx",
+          "file": "puck/packages/contentools-content-manager/src/ContentEditor.tsx",
           "description": "Calls saveDraft(latestDataRef.current as PuckData)"
         },
         {
           "fn": "saveDraft (usePuckContent)",
-          "file": "puck/packages/puck-api/src/hooks/usePuckContent.ts:83",
+          "file": "puck/packages/contentools-api/src/hooks/usePuckContent.ts:83",
           "description": "Debounces 1500ms, then builds input: { data, ...(meta !== undefined ? { meta } : {}) } — only data and optionally meta, no name/contentType"
         },
         {
           "fn": "updatePuckContentApi",
-          "file": "puck/packages/puck-api/src/api/puck-contents.api.ts",
+          "file": "puck/packages/contentools-api/src/api/puck-contents.api.ts",
           "description": "Wraps input: body = JSON.stringify({ value: input })"
         }
       ],
@@ -110,23 +110,23 @@
     },
     {
       "apiFunction": "createPuckPageApi",
-      "file": "puck/packages/puck-api/src/api/puck-pages.api.ts",
+      "file": "puck/packages/contentools-api/src/api/puck-pages.api.ts",
       "method": "POST",
       "endpoint": "/:businessUnitKey/puck-pages",
       "transformationChain": [
         {
           "fn": "PageManager (dialog submit)",
-          "file": "puck/packages/puck-page-manager/src/PageManager.tsx",
+          "file": "puck/packages/contentools-page-manager/src/PageManager.tsx",
           "description": "Builds CreatePuckPageInput: { name: newName.trim(), slug: slug.startsWith('/') ? slug : '/' + slug }"
         },
         {
           "fn": "createPage (usePuckPages)",
-          "file": "puck/packages/puck-api/src/hooks/usePuckPages.ts",
+          "file": "puck/packages/contentools-api/src/hooks/usePuckPages.ts",
           "description": "Passes input unchanged to createPuckPageApi"
         },
         {
           "fn": "createPuckPageApi",
-          "file": "puck/packages/puck-api/src/api/puck-pages.api.ts",
+          "file": "puck/packages/contentools-api/src/api/puck-pages.api.ts",
           "description": "Wraps input: body = JSON.stringify({ value: input })"
         }
       ],
@@ -154,28 +154,28 @@
     },
     {
       "apiFunction": "updatePuckPageApi (saveDraft path)",
-      "file": "puck/packages/puck-api/src/api/puck-pages.api.ts",
+      "file": "puck/packages/contentools-api/src/api/puck-pages.api.ts",
       "method": "PUT",
       "endpoint": "/:businessUnitKey/puck-pages/:key",
       "transformationChain": [
         {
           "fn": "onChange (Puck editor)",
-          "file": "puck/packages/puck-editor/src/PuckEditor.tsx",
+          "file": "puck/packages/contentools-editor/src/PuckEditor.tsx",
           "description": "Stores Puck Data in latestDataRef.current on every editor change"
         },
         {
           "fn": "handleSave",
-          "file": "puck/packages/puck-editor/src/PuckEditor.tsx",
+          "file": "puck/packages/contentools-editor/src/PuckEditor.tsx",
           "description": "Calls saveDraft(latestDataRef.current as PuckData)"
         },
         {
           "fn": "saveDraft (usePuckPage)",
-          "file": "puck/packages/puck-api/src/hooks/usePuckPage.ts:83",
+          "file": "puck/packages/contentools-api/src/hooks/usePuckPage.ts:83",
           "description": "Debounces 1500ms, then builds input: { puckData } — note: field name is 'puckData', not 'data'"
         },
         {
           "fn": "updatePuckPageApi",
-          "file": "puck/packages/puck-api/src/api/puck-pages.api.ts",
+          "file": "puck/packages/contentools-api/src/api/puck-pages.api.ts",
           "description": "Wraps input: body = JSON.stringify({ value: input })"
         }
       ],
@@ -209,18 +209,18 @@
     },
     {
       "apiFunction": "updatePuckPageApi (updateMeta path)",
-      "file": "puck/packages/puck-api/src/api/puck-pages.api.ts",
+      "file": "puck/packages/contentools-api/src/api/puck-pages.api.ts",
       "method": "PUT",
       "endpoint": "/:businessUnitKey/puck-pages/:key",
       "transformationChain": [
         {
           "fn": "updateMeta (usePuckPage)",
-          "file": "puck/packages/puck-api/src/hooks/usePuckPage.ts:118",
+          "file": "puck/packages/contentools-api/src/hooks/usePuckPage.ts:118",
           "description": "Receives Omit<UpdatePuckPageInput, 'puckData'> — name, slug, and/or meta — passes directly to updatePuckPageApi"
         },
         {
           "fn": "updatePuckPageApi",
-          "file": "puck/packages/puck-api/src/api/puck-pages.api.ts",
+          "file": "puck/packages/contentools-api/src/api/puck-pages.api.ts",
           "description": "Wraps input: body = JSON.stringify({ value: input })"
         }
       ],
@@ -249,23 +249,23 @@
     },
     {
       "apiFunction": "publishPuckContentApi",
-      "file": "puck/packages/puck-api/src/api/puck-content-states.api.ts",
+      "file": "puck/packages/contentools-api/src/api/puck-content-states.api.ts",
       "method": "PUT",
       "endpoint": "/:businessUnitKey/puck-contents/:key/states/published",
       "transformationChain": [
         {
           "fn": "handlePublish",
-          "file": "puck/packages/puck-content-manager/src/ContentEditor.tsx",
+          "file": "puck/packages/contentools-content-manager/src/ContentEditor.tsx",
           "description": "First calls saveDraft(activeData), then calls publish(false) — clearDraft=false"
         },
         {
           "fn": "publish (usePuckContent)",
-          "file": "puck/packages/puck-api/src/hooks/usePuckContent.ts:120",
+          "file": "puck/packages/contentools-api/src/hooks/usePuckContent.ts:120",
           "description": "Passes clearDraft boolean to publishPuckContentApi"
         },
         {
           "fn": "publishPuckContentApi",
-          "file": "puck/packages/puck-api/src/api/puck-content-states.api.ts",
+          "file": "puck/packages/contentools-api/src/api/puck-content-states.api.ts",
           "description": "No body. Appends ?clearDraft=true if clearDraft=true, otherwise no query param"
         }
       ],
@@ -289,23 +289,23 @@
     },
     {
       "apiFunction": "publishPuckPageApi",
-      "file": "puck/packages/puck-api/src/api/puck-states.api.ts",
+      "file": "puck/packages/contentools-api/src/api/puck-states.api.ts",
       "method": "PUT",
       "endpoint": "/:businessUnitKey/puck-pages/:key/states/published",
       "transformationChain": [
         {
           "fn": "handlePublish (PuckEditor or EditorToolbar)",
-          "file": "puck/packages/puck-editor/src/PuckEditor.tsx",
+          "file": "puck/packages/contentools-editor/src/PuckEditor.tsx",
           "description": "First calls saveDraft(activeData), then calls publish(false)"
         },
         {
           "fn": "publish (usePuckPage)",
-          "file": "puck/packages/puck-api/src/hooks/usePuckPage.ts:142",
+          "file": "puck/packages/contentools-api/src/hooks/usePuckPage.ts:142",
           "description": "Passes clearDraft boolean to publishPuckPageApi"
         },
         {
           "fn": "publishPuckPageApi",
-          "file": "puck/packages/puck-api/src/api/puck-states.api.ts",
+          "file": "puck/packages/contentools-api/src/api/puck-states.api.ts",
           "description": "No body. Appends ?clearDraft=true if clearDraft=true"
         }
       ],
@@ -329,18 +329,18 @@
     },
     {
       "apiFunction": "revertPuckContentDraftApi",
-      "file": "puck/packages/puck-api/src/api/puck-content-states.api.ts",
+      "file": "puck/packages/contentools-api/src/api/puck-content-states.api.ts",
       "method": "DELETE",
       "endpoint": "/:businessUnitKey/puck-contents/:key/states/draft",
       "transformationChain": [
         {
           "fn": "handleRevert",
-          "file": "puck/packages/puck-content-manager/src/ContentEditor.tsx",
+          "file": "puck/packages/contentools-content-manager/src/ContentEditor.tsx",
           "description": "Calls revertToPublished() directly"
         },
         {
           "fn": "revertToPublished (usePuckContent)",
-          "file": "puck/packages/puck-api/src/hooks/usePuckContent.ts:144",
+          "file": "puck/packages/contentools-api/src/hooks/usePuckContent.ts:144",
           "description": "Calls revertPuckContentDraftApi with no body"
         }
       ],
@@ -358,18 +358,18 @@
     },
     {
       "apiFunction": "revertPuckPageDraftApi",
-      "file": "puck/packages/puck-api/src/api/puck-states.api.ts",
+      "file": "puck/packages/contentools-api/src/api/puck-states.api.ts",
       "method": "DELETE",
       "endpoint": "/:businessUnitKey/puck-pages/:key/states/draft",
       "transformationChain": [
         {
           "fn": "handleRevert",
-          "file": "puck/packages/puck-editor/src/PuckEditor.tsx",
+          "file": "puck/packages/contentools-editor/src/PuckEditor.tsx",
           "description": "Calls revertToPublished() directly"
         },
         {
           "fn": "revertToPublished (usePuckPage)",
-          "file": "puck/packages/puck-api/src/hooks/usePuckPage.ts:166",
+          "file": "puck/packages/contentools-api/src/hooks/usePuckPage.ts:166",
           "description": "Calls revertPuckPageDraftApi with no body"
         }
       ],
@@ -387,23 +387,23 @@
     },
     {
       "apiFunction": "uploadMediaFileApi",
-      "file": "puck/packages/puck-api/src/api/media-library.api.ts",
+      "file": "puck/packages/contentools-api/src/api/media-library.api.ts",
       "method": "POST",
       "endpoint": "/:businessUnitKey/upload-file",
       "transformationChain": [
         {
           "fn": "handleUpload",
-          "file": "puck/packages/puck-editor/src/fields/ImagePickerField.tsx",
+          "file": "puck/packages/contentools-editor/src/fields/ImagePickerField.tsx",
           "description": "User selects file in upload modal; calls uploadFile(file, title, description)"
         },
         {
           "fn": "uploadFile (useMediaLibrary)",
-          "file": "puck/packages/puck-api/src/hooks/useMediaLibrary.ts",
+          "file": "puck/packages/contentools-api/src/hooks/useMediaLibrary.ts",
           "description": "Constructs FormData: appends 'file' (File), optionally 'title' (string), optionally 'description' (string)"
         },
         {
           "fn": "uploadMediaFileApi",
-          "file": "puck/packages/puck-api/src/api/media-library.api.ts",
+          "file": "puck/packages/contentools-api/src/api/media-library.api.ts",
           "description": "Sends FormData directly (Content-Type: multipart/form-data set by browser)"
         }
       ],
@@ -431,18 +431,18 @@
     },
     {
       "apiFunction": "queryPuckContentApi",
-      "file": "puck/packages/puck-api/src/api/puck-contents.api.ts",
+      "file": "puck/packages/contentools-api/src/api/puck-contents.api.ts",
       "method": "POST",
       "endpoint": "/:businessUnitKey/:mode/puck-contents/query",
       "transformationChain": [
         {
           "fn": "PuckRenderer (useEffect)",
-          "file": "puck/packages/puck-renderer/src/PuckRenderer.tsx",
+          "file": "puck/packages/contentools-renderer/src/PuckRenderer.tsx",
           "description": "Calls queryPuckContentApi(client, { query }, mode)"
         },
         {
           "fn": "queryPuckContentApi",
-          "file": "puck/packages/puck-api/src/api/puck-contents.api.ts",
+          "file": "puck/packages/contentools-api/src/api/puck-contents.api.ts",
           "description": "Builds body: { query: `contentType = \"${contentType}\"` }"
         }
       ],
@@ -460,18 +460,18 @@
     },
     {
       "apiFunction": "queryPuckPageApi",
-      "file": "puck/packages/puck-api/src/api/puck-pages.api.ts",
+      "file": "puck/packages/contentools-api/src/api/puck-pages.api.ts",
       "method": "POST",
       "endpoint": "/:businessUnitKey/:mode/puck-pages/query",
       "transformationChain": [
         {
           "fn": "PuckRenderer (useEffect)",
-          "file": "puck/packages/puck-renderer/src/PuckRenderer.tsx",
+          "file": "puck/packages/contentools-renderer/src/PuckRenderer.tsx",
           "description": "Calls queryPuckPageApi(client, { query }, mode)"
         },
         {
           "fn": "queryPuckPageApi",
-          "file": "puck/packages/puck-api/src/api/puck-pages.api.ts",
+          "file": "puck/packages/contentools-api/src/api/puck-pages.api.ts",
           "description": "Builds body: { query: `slug = \"${slug}\"` }"
         }
       ],
@@ -489,23 +489,23 @@
     },
     {
       "apiFunction": "resolveDatasourceApi",
-      "file": "puck/packages/puck-api/src/api/datasource.api.ts",
+      "file": "puck/packages/contentools-api/src/api/datasource.api.ts",
       "method": "POST",
       "endpoint": "/datasource/:key/test",
       "transformationChain": [
         {
           "fn": "ProductBanner / ProductSlider / RelatedProductsSlider / CrossSellBlock / ProductTeaser",
-          "file": "puck/packages/puck-editor/src/components/",
+          "file": "puck/packages/contentools-editor/src/components/",
           "description": "Passes product.type and product.skus to useDatasource(type, skus)"
         },
         {
           "fn": "useDatasource",
-          "file": "puck/packages/puck-api/src/hooks/useDatasource.ts:34",
+          "file": "puck/packages/contentools-api/src/hooks/useDatasource.ts:34",
           "description": "Builds params: type==='product-by-sku' → { sku: skus[0] }; else → { skus: skus.join(',') }"
         },
         {
           "fn": "resolveDatasourceApi",
-          "file": "puck/packages/puck-api/src/api/datasource.api.ts:22",
+          "file": "puck/packages/contentools-api/src/api/datasource.api.ts:22",
           "description": "Sends { params } as the body root (fixed; see useDatasource)"
         }
       ],

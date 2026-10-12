@@ -8,6 +8,10 @@ Per-spec detail (and the many already-settled sub-questions) lives in
 `openspec/changes/<id>/questions.md`; this file is the consolidated list of things that are
 **genuinely yours to decide**.
 
+## RENAME (2026-10-12)
+
+npm packages are `@commercetools-labs/contentools-*` (types, api, components, editor, renderer, page-manager, content-manager, theme-manager, version-history, image-picker, playground), not `puck-*`. Package folders are `puck/packages/contentools-*`; the workspace folder stays `puck/`. All names verified free on npm (E404). Older plan/spec text still says `puck-*`.
+
 ## FINAL RELEASE ANSWERS (recorded 2026-10-12)
 
 | Topic | Answer |

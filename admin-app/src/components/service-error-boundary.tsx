@@ -12,7 +12,7 @@ import messages from '../i18n/messages';
 type Props = { children: ReactNode };
 type State = { error: Error | null };
 
-/** puck formats failed calls as `[puck-api] HTTP 403: ...`; the service answers 403 for a missing permission. */
+/** puck formats failed calls as `[contentools-api] HTTP 403: ...`; the service answers 403 for a missing permission. */
 const isForbidden = (error: Error) => /HTTP 403/.test(error.message);
 
 /** Catches errors thrown while a manager renders and shows a translated notice instead of a blank page. */

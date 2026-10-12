@@ -3,7 +3,7 @@
 > Freely available, AS IS and UNSUPPORTED. See the repository `LICENSE`.
 
 A Merchant Center custom application that mounts the Contentools page, content item and theme
-managers (`@commercetools-labs/puck-*`) against the Contentools `service` app. It has no login or
+managers (`@commercetools-labs/contentools-*`) against the Contentools `service` app. It has no login or
 onboarding of its own: the Merchant Center session authenticates every call through its `forward-to`
 proxy, and the service uses its own commercetools API client.
 

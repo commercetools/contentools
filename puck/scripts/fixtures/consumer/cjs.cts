@@ -5,16 +5,16 @@
  */
 
 // Same imports for a CommonJS consumer (require-side `types` condition).
-import type { PuckData } from '@commercetools-labs/puck-types';
-import { PuckApiProvider } from '@commercetools-labs/puck-api';
-import { sanitizeHtml } from '@commercetools-labs/puck-components';
-import { useVersionDiff } from '@commercetools-labs/puck-version-history';
-import { ImagePickerField } from '@commercetools-labs/puck-image-picker';
-import { ThemeManager } from '@commercetools-labs/puck-theme-manager';
-import { PuckEditor } from '@commercetools-labs/puck-editor';
-import { PuckRenderer } from '@commercetools-labs/puck-renderer';
-import { PageManager } from '@commercetools-labs/puck-page-manager';
-import { ContentEditor } from '@commercetools-labs/puck-content-manager';
+import type { PuckData } from '@commercetools-labs/contentools-types';
+import { PuckApiProvider } from '@commercetools-labs/contentools-api';
+import { sanitizeHtml } from '@commercetools-labs/contentools-components';
+import { useVersionDiff } from '@commercetools-labs/contentools-version-history';
+import { ImagePickerField } from '@commercetools-labs/contentools-image-picker';
+import { ThemeManager } from '@commercetools-labs/contentools-theme-manager';
+import { PuckEditor } from '@commercetools-labs/contentools-editor';
+import { PuckRenderer } from '@commercetools-labs/contentools-renderer';
+import { PageManager } from '@commercetools-labs/contentools-page-manager';
+import { ContentEditor } from '@commercetools-labs/contentools-content-manager';
 
 export const used: [
   PuckData | undefined,

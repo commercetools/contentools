@@ -4,7 +4,7 @@
  * Freely available, AS IS and UNSUPPORTED. See LICENSE.
  */
 
-// Contract tests for the mock service. They use the BUILT puck-api (run `yarn build` first), so the
+// Contract tests for the mock service. They use the BUILT contentools-api (run `yarn build` first), so the
 // mock cannot drift from the client: the protected routes are compared with PUCK_AUTH_POLICY.
 
 import { existsSync } from 'node:fs';
@@ -14,7 +14,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { server as msw } from '../../vitest.setup';
 import { PROTECTED_OPS, createMockServer } from './index.mjs';
 
-const distPath = resolve(import.meta.dirname, '../../packages/puck-api/dist/index.mjs');
+const distPath = resolve(import.meta.dirname, '../../packages/contentools-api/dist/index.mjs');
 const built = existsSync(distPath);
 if (!built) {
   console.warn(`mock-server tests skipped: ${distPath} is missing, run "yarn build" in puck/ first`);

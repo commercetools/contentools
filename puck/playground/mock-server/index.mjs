@@ -18,7 +18,7 @@ const CONTAINER_CONTENTS = 'puck-contents';
 
 /**
  * Operations that always need `Authorization: Bearer <token>`. The names are the exported raw
- * API function names of puck-api; a test compares this list with `PUCK_AUTH_POLICY`.
+ * API function names of contentools-api; a test compares this list with `PUCK_AUTH_POLICY`.
  * `queryPuck*Api` is protected only in preview mode and `resolveDatasourceApi` depends on the
  * flag MOCK_PUBLIC_DATASOURCE_RESOLVE, so both are handled in `isProtected`.
  */

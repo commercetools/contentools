@@ -11,10 +11,10 @@ const order = () => topoSort(listPackages()).map((p) => p.name);
 const idx = (names, n) => names.indexOf(`@commercetools-labs/${n}`);
 
 describe('topoSort', () => {
-  it('lists all ten packages, puck-types first', () => {
+  it('lists all ten packages, contentools-types first', () => {
     const names = order();
     expect(names).toHaveLength(10);
-    expect(names[0]).toBe('@commercetools-labs/puck-types');
+    expect(names[0]).toBe('@commercetools-labs/contentools-types');
   });
 
   it('places every internal dependency before its dependants', () => {
@@ -27,9 +27,9 @@ describe('topoSort', () => {
 
   it('publishes editor and renderer before the managers that use them', () => {
     const names = order();
-    for (const consumer of ['puck-content-manager', 'puck-page-manager']) {
-      expect(idx(names, 'puck-editor')).toBeLessThan(idx(names, consumer));
-      expect(idx(names, 'puck-renderer')).toBeLessThan(idx(names, consumer));
+    for (const consumer of ['contentools-content-manager', 'contentools-page-manager']) {
+      expect(idx(names, 'contentools-editor')).toBeLessThan(idx(names, consumer));
+      expect(idx(names, 'contentools-renderer')).toBeLessThan(idx(names, consumer));
     }
   });
 

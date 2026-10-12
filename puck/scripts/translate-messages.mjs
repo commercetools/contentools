@@ -27,7 +27,7 @@
  *   node scripts/translate-messages.mjs --locale es
  *
  *   node scripts/translate-messages.mjs --locale es --force
- *   node scripts/translate-messages.mjs --locale es --package puck-page-manager
+ *   node scripts/translate-messages.mjs --locale es --package contentools-page-manager
  *   node scripts/translate-messages.mjs --locale es --dry-run
  *
  * Flags:

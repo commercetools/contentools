@@ -46,22 +46,22 @@ with `MCP_ACCESS_TOKEN`. Write tools are off unless `MCP_ENABLE_WRITES=true`.
 "depends on"):
 
 ```
-puck-types                 (base: shared types)
-puck-api                 -> puck-types
-puck-components          -> puck-api
-puck-version-history     -> puck-types
-puck-image-picker        -> puck-api, puck-types
-puck-theme-manager       -> puck-api, puck-types
-puck-editor              -> puck-api, puck-components, puck-version-history, puck-types
-puck-renderer            -> puck-api, puck-components, puck-types
-puck-page-manager        -> puck-api, puck-editor, puck-renderer, puck-version-history, puck-types
-puck-content-manager     -> puck-api, puck-editor, puck-renderer, puck-version-history, puck-types
+contentools-types                 (base: shared types)
+contentools-api                 -> contentools-types
+contentools-components          -> contentools-api
+contentools-version-history     -> contentools-types
+contentools-image-picker        -> contentools-api, contentools-types
+contentools-theme-manager       -> contentools-api, contentools-types
+contentools-editor              -> contentools-api, contentools-components, contentools-version-history, contentools-types
+contentools-renderer            -> contentools-api, contentools-components, contentools-types
+contentools-page-manager        -> contentools-api, contentools-editor, contentools-renderer, contentools-version-history, contentools-types
+contentools-content-manager     -> contentools-api, contentools-editor, contentools-renderer, contentools-version-history, contentools-types
 ```
 
-Read it as: `puck-types` is the base; `puck-api` adds the client and hooks; `puck-components` is the render-only
-(Nimbus-free) component layer; `puck-editor` composes the editor from it; `puck-renderer` renders for
-storefronts; the three managers (`puck-page-manager`, `puck-content-manager`, `puck-theme-manager`) are the
-router-aware screens. `puck-image-picker` (media library field) and `puck-version-history` are leaf packages that the editor and the managers use. Per-package details: [puck/README.md](../puck/README.md).
+Read it as: `contentools-types` is the base; `contentools-api` adds the client and hooks; `contentools-components` is the render-only
+(Nimbus-free) component layer; `contentools-editor` composes the editor from it; `contentools-renderer` renders for
+storefronts; the three managers (`contentools-page-manager`, `contentools-content-manager`, `contentools-theme-manager`) are the
+router-aware screens. `contentools-image-picker` (media library field) and `contentools-version-history` are leaf packages that the editor and the managers use. Per-package details: [puck/README.md](../puck/README.md).
 
 ## 3. Authentication
 

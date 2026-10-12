@@ -21,7 +21,7 @@
     "check:consumer": "tsc -p scripts/fixtures/consumer/tsconfig.esm.json && tsc -p scripts/fixtures/consumer/tsconfig.cjs.json && tsc -p scripts/fixtures/consumer/tsconfig.bundler.json",
     "verify": "yarn check:headers && yarn check:metadata && yarn build && yarn typecheck && yarn check:consumer && yarn lint && yarn test",
     "verify:pack": "node scripts/verify-metadata.mjs && node scripts/publish-packages.mjs",
-    "start:playground": "yarn workspace @commercetools-labs/puck-playground dev",
+    "start:playground": "yarn workspace @commercetools-labs/contentools-playground dev",
     "release:bump": "node scripts/bump-versions.mjs",
     "release:publish": "node scripts/publish-packages.mjs"
   },

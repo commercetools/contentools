@@ -10,7 +10,7 @@ import {
   buildApiUrl,
   executeHttpClientRequest,
 } from '@commercetools-frontend/application-shell-connectors';
-import type { PageManager } from '@commercetools-labs/puck-page-manager';
+import type { PageManager } from '@commercetools-labs/contentools-page-manager';
 
 /** The transport the puck managers accept (`PuckFetcher`: one request object in, a Response-like out). */
 export type ServiceFetcher = NonNullable<

@@ -5,9 +5,9 @@
  */
 
 import { Switch, Route, Redirect, useRouteMatch } from 'react-router-dom';
-import { ContentManager } from '@commercetools-labs/puck-content-manager';
-import { PageManager } from '@commercetools-labs/puck-page-manager';
-import { ThemeManager } from '@commercetools-labs/puck-theme-manager';
+import { ContentManager } from '@commercetools-labs/contentools-content-manager';
+import { PageManager } from '@commercetools-labs/contentools-page-manager';
+import { ThemeManager } from '@commercetools-labs/contentools-theme-manager';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { useBusinessUnit } from './contexts/business-unit';
 import { useService } from './contexts/service';

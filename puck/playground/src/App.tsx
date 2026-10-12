@@ -5,14 +5,14 @@
  */
 
 import React, { useState } from 'react';
-import { PageManager } from '@commercetools-labs/puck-page-manager';
-import { ThemeManager } from '@commercetools-labs/puck-theme-manager';
-import { ContentManager } from '@commercetools-labs/puck-content-manager';
-import { PuckRenderer } from '@commercetools-labs/puck-renderer';
+import { PageManager } from '@commercetools-labs/contentools-page-manager';
+import { ThemeManager } from '@commercetools-labs/contentools-theme-manager';
+import { ContentManager } from '@commercetools-labs/contentools-content-manager';
+import { PuckRenderer } from '@commercetools-labs/contentools-renderer';
 import type {
   PuckConnection,
   PuckFetcher,
-} from '@commercetools-labs/puck-types';
+} from '@commercetools-labs/contentools-types';
 
 // ---------------------------------------------------------------------------
 // Config from environment variables (.env file)
@@ -65,7 +65,7 @@ const ConfigWarning: React.FC = () => (
           <code className="rounded bg-slate-100 px-1 py-0.5 text-xs">.env</code> and set the service
           URL and business unit before using this app. To run against the bundled mock service:{' '}
           <code className="rounded bg-slate-100 px-1 py-0.5 text-xs">
-            yarn workspace @commercetools-labs/puck-playground mock
+            yarn workspace @commercetools-labs/contentools-playground mock
           </code>
         </p>
         <pre className="m-0 overflow-auto rounded border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">

@@ -1,7 +1,7 @@
 # Migrating to 1.0 (single tenant)
 
 The earlier 0.8.x packages (published under the previous package scope) spoke a protocol for many tenants: a `projectKey` prop, a per-tenant `jwtToken` string and a project header on every request.
-The `@commercetools-labs/puck-*` 1.0 packages serve exactly one commercetools project, so that concept is gone and replaced by one small connection object. This page is
+The `@commercetools-labs/contentools-*` 1.0 packages serve exactly one commercetools project, so that concept is gone and replaced by one small connection object. This page is
 the only place in the repository where the old names still appear.
 
 The packages are new under the `@commercetools-labs` scope and start at `1.0.0` (first as a `1.0.0-rc.N` release under the `next` tag), so the break is communicated here instead of by a major bump.
@@ -60,10 +60,10 @@ const page = await getPuckPageApi(client, 'home');
 
 * **Auth on more calls.** Preview reads, lists, reads with states, templates, media, product search and all writes need credentials; the client refuses such a call before sending anything when no `jwtToken`, `getAuthHeaders` or `fetcher` is configured (`PuckAuthError`, `PUCK_AUTH_REQUIRED`). Published page/content reads and theme reads stay public.
 * **Keys are encoded.** Keys placed in a URL path go through `encodeURIComponent`. The old code interpolated them raw, so a key containing `/` or `?` produced a wrong URL; that was a latent bug.
-* **Error messages.** `[puck-api] HTTP <status>: <message>` now prefers the `message` of the service error body. Errors are `PuckHttpError` / `PuckAuthError` instances with `status`, `body`, `code`, `correlationId`.
+* **Error messages.** `[contentools-api] HTTP <status>: <message>` now prefers the `message` of the service error body. Errors are `PuckHttpError` / `PuckAuthError` instances with `status`, `body`, `code`, `correlationId`.
 * **`useDatasource` without a provider** returns `{ data: null, loading: false, error: null }` instead of throwing, and without credentials stays idle (unless `publicDatasourceResolve`). Identical concurrent requests of one client share one call.
-* **Image picker.** `puck-image-picker` now depends on `puck-api` (one request pipeline instead of a duplicate). Pagination is cursor based: Previous/Next only, no page numbers. When the service has no media storage configured (HTTP 501) the picker shows a message and hides upload.
-* **Request headers.** `Content-Type: application/json` is sent only on requests with a JSON body; `x-source: puck-api` is always sent; no tenant header.
+* **Image picker.** `contentools-image-picker` now depends on `contentools-api` (one request pipeline instead of a duplicate). Pagination is cursor based: Previous/Next only, no page numbers. When the service has no media storage configured (HTTP 501) the picker shows a message and hides upload.
+* **Request headers.** `Content-Type: application/json` is sent only on requests with a JSON body; `x-source: contentools-api` is always sent; no tenant header.
 * **Renderer.** `PuckRenderer` needs `baseURL` and `businessUnitKey` (or an ancestor `PuckApiProvider`); `mode="preview"` without credentials renders "Preview requires authentication" and makes no request.
 
 ## SemVer policy

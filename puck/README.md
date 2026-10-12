@@ -2,7 +2,7 @@
 
 > **UNSUPPORTED - commercetools-labs.** Freely available, AS IS and UNSUPPORTED. See [LICENSE](../LICENSE). Not covered by commercetools support.
 
-A set of `@commercetools-labs/puck-*` packages that add a Puck-based visual page
+A set of `@commercetools-labs/contentools-*` packages that add a Puck-based visual page
 editor, content manager, theme manager and renderer to a commercetools project.
 This guide covers **how to consume the packages from a host application**.
 
@@ -17,30 +17,30 @@ Each package has its own README with install, usage, API and peer dependencies.
 
 | Package | Import | What it gives you |
 | --- | --- | --- |
-| [`@commercetools-labs/puck-page-manager`](packages/puck-page-manager/README.md) | `PageManager` | Page list + editor/preview routes |
-| [`@commercetools-labs/puck-content-manager`](packages/puck-content-manager/README.md) | `ContentManager` | Standalone content-block list + editor |
-| [`@commercetools-labs/puck-theme-manager`](packages/puck-theme-manager/README.md) | `ThemeManager`, `ImportContentTypes` | Design-token editor and content-type import |
-| [`@commercetools-labs/puck-renderer`](packages/puck-renderer/README.md) | `PuckRenderer`, `PuckDataRenderer`, `loadPuckData` | Storefront rendering (data-fetching / pure / server side) |
-| [`@commercetools-labs/puck-editor`](packages/puck-editor/README.md) | `PuckEditor`, `createDefaultPuckConfig`, built-in component factories | Raw editor + Puck config for custom compositions |
-| [`@commercetools-labs/puck-components`](packages/puck-components/README.md) | `defaultRenderConfig`, render fns | Nimbus-free component render layer shared by the editor + renderer ([rich-text theming variables](packages/puck-components/README.md#theming-rich-text-puck-rich-text-content)) |
-| [`@commercetools-labs/puck-api`](packages/puck-api/README.md) | `PuckApiProvider`, `createPuckClient`, hooks | Data layer (pages, contents, media, datasource, theme) |
-| [`@commercetools-labs/puck-version-history`](packages/puck-version-history/README.md) | `VersionHistoryButton`, hooks | Version history panel and diff |
-| [`@commercetools-labs/puck-image-picker`](packages/puck-image-picker/README.md) | `ImagePickerField`, `ImagePickerProvider` | Image picker with a media library |
-| [`@commercetools-labs/puck-types`](packages/puck-types/README.md) | types only | Shared TypeScript types |
+| [`@commercetools-labs/contentools-page-manager`](packages/contentools-page-manager/README.md) | `PageManager` | Page list + editor/preview routes |
+| [`@commercetools-labs/contentools-content-manager`](packages/contentools-content-manager/README.md) | `ContentManager` | Standalone content-block list + editor |
+| [`@commercetools-labs/contentools-theme-manager`](packages/contentools-theme-manager/README.md) | `ThemeManager`, `ImportContentTypes` | Design-token editor and content-type import |
+| [`@commercetools-labs/contentools-renderer`](packages/contentools-renderer/README.md) | `PuckRenderer`, `PuckDataRenderer`, `loadPuckData` | Storefront rendering (data-fetching / pure / server side) |
+| [`@commercetools-labs/contentools-editor`](packages/contentools-editor/README.md) | `PuckEditor`, `createDefaultPuckConfig`, built-in component factories | Raw editor + Puck config for custom compositions |
+| [`@commercetools-labs/contentools-components`](packages/contentools-components/README.md) | `defaultRenderConfig`, render fns | Nimbus-free component render layer shared by the editor + renderer ([rich-text theming variables](packages/contentools-components/README.md#theming-rich-text-puck-rich-text-content)) |
+| [`@commercetools-labs/contentools-api`](packages/contentools-api/README.md) | `PuckApiProvider`, `createPuckClient`, hooks | Data layer (pages, contents, media, datasource, theme) |
+| [`@commercetools-labs/contentools-version-history`](packages/contentools-version-history/README.md) | `VersionHistoryButton`, hooks | Version history panel and diff |
+| [`@commercetools-labs/contentools-image-picker`](packages/contentools-image-picker/README.md) | `ImagePickerField`, `ImagePickerProvider` | Image picker with a media library |
+| [`@commercetools-labs/contentools-types`](packages/contentools-types/README.md) | types only | Shared TypeScript types |
 
 Dependency graph (an arrow means "depends on"):
 
 ```
-puck-types                 (base)
-puck-api                 -> puck-types
-puck-components          -> puck-api
-puck-version-history     -> puck-types
-puck-image-picker        -> puck-api, puck-types
-puck-theme-manager       -> puck-api, puck-types
-puck-editor              -> puck-api, puck-components, puck-version-history, puck-types
-puck-renderer            -> puck-api, puck-components, puck-types
-puck-page-manager        -> puck-api, puck-editor, puck-renderer, puck-version-history, puck-types
-puck-content-manager     -> puck-api, puck-editor, puck-renderer, puck-version-history, puck-types
+contentools-types                 (base)
+contentools-api                 -> contentools-types
+contentools-components          -> contentools-api
+contentools-version-history     -> contentools-types
+contentools-image-picker        -> contentools-api, contentools-types
+contentools-theme-manager       -> contentools-api, contentools-types
+contentools-editor              -> contentools-api, contentools-components, contentools-version-history, contentools-types
+contentools-renderer            -> contentools-api, contentools-components, contentools-types
+contentools-page-manager        -> contentools-api, contentools-editor, contentools-renderer, contentools-version-history, contentools-types
+contentools-content-manager     -> contentools-api, contentools-editor, contentools-renderer, contentools-version-history, contentools-types
 ```
 
 `PageManager`, `ContentManager`, `ThemeManager`, `PuckEditor` and `PuckRenderer`
@@ -86,10 +86,10 @@ npm install slate@^0.123.0 slate-dom@^0.123.0 slate-history@^0.115.0 \
 Then install the packages you need:
 
 ```bash
-npm install @commercetools-labs/puck-page-manager \
-            @commercetools-labs/puck-content-manager \
-            @commercetools-labs/puck-theme-manager \
-            @commercetools-labs/puck-renderer
+npm install @commercetools-labs/contentools-page-manager \
+            @commercetools-labs/contentools-content-manager \
+            @commercetools-labs/contentools-theme-manager \
+            @commercetools-labs/contentools-renderer
 ```
 
 ---
@@ -128,13 +128,13 @@ const connection = {
 ```
 
 The connection is the same for every component (`PuckConnection` from
-`@commercetools-labs/puck-types`). There is no project key: one service serves one
+`@commercetools-labs/contentools-types`). There is no project key: one service serves one
 commercetools project, and `businessUnitKey` only scopes the content.
 
 ### Page manager
 
 ```tsx
-import { PageManager } from '@commercetools-labs/puck-page-manager';
+import { PageManager } from '@commercetools-labs/contentools-page-manager';
 
 export function PagesRoute() {
   return (
@@ -154,7 +154,7 @@ Props: `parentUrl` (required), the connection (`baseURL`, `businessUnitKey`,
 ### Content manager
 
 ```tsx
-import { ContentManager } from '@commercetools-labs/puck-content-manager';
+import { ContentManager } from '@commercetools-labs/contentools-content-manager';
 
 export function ContentRoute() {
   return <ContentManager {...connection} parentUrl="/content" defaultContentType="hero" />;
@@ -166,7 +166,7 @@ Props: same as `PageManager`, plus `defaultContentType?`.
 ### Theme manager
 
 ```tsx
-import { ThemeManager } from '@commercetools-labs/puck-theme-manager';
+import { ThemeManager } from '@commercetools-labs/contentools-theme-manager';
 
 export function ThemeRoute() {
   return <ThemeManager {...connection} />;
@@ -182,7 +182,7 @@ Render a published (or preview/draft) page or content item. `PuckRenderer`
 fetches the data itself:
 
 ```tsx
-import { PuckRenderer } from '@commercetools-labs/puck-renderer';
+import { PuckRenderer } from '@commercetools-labs/contentools-renderer';
 
 // Render a page by key (or by slug). Published content needs no token.
 <PuckRenderer
@@ -206,7 +206,7 @@ import { PuckRenderer } from '@commercetools-labs/puck-renderer';
 For SSR or when you already hold the Puck data, use the pure renderer:
 
 ```tsx
-import { PuckDataRenderer } from '@commercetools-labs/puck-renderer';
+import { PuckDataRenderer } from '@commercetools-labs/contentools-renderer';
 
 <PuckDataRenderer data={puckData} />;
 ```
@@ -229,7 +229,7 @@ you can restyle headings, links, lists, code, etc. from your own CSS:
 ```
 
 See the full variable reference in
-[`@commercetools-labs/puck-components` README](packages/puck-components/README.md#theming-rich-text-puck-rich-text-content).
+[`@commercetools-labs/contentools-components` README](packages/contentools-components/README.md#theming-rich-text-puck-rich-text-content).
 
 ### Custom Puck config
 
@@ -244,7 +244,7 @@ react-intl context (e.g. your host app's `<IntlProvider>`):
 ```tsx
 import { useMemo } from 'react';
 import { useIntl } from 'react-intl';
-import { createDefaultPuckConfig } from '@commercetools-labs/puck-editor';
+import { createDefaultPuckConfig } from '@commercetools-labs/contentools-editor';
 
 function PagesRoute() {
   const intl = useIntl();
@@ -293,7 +293,7 @@ lists, media, product search) needs credentials.
    anything shaped like a `Response`.
 
 ```tsx
-import type { PuckFetcher } from '@commercetools-labs/puck-types';
+import type { PuckFetcher } from '@commercetools-labs/contentools-types';
 
 // Implemented by the Contentools admin app (Merchant Center application kit).
 const fetcher: PuckFetcher = async ({ url, method, headers, body }) =>
@@ -318,7 +318,7 @@ const fetcher: PuckFetcher = async ({ url, method, headers, body }) =>
 ```
 
 Anything shaped like `fetch` adapts in one line with `fetcherFromFetch(fetch)`
-(exported from `puck-api`).
+(exported from `contentools-api`).
 
 **Public rendering and preview.** `PuckRenderer` and `PuckDataRenderer` work
 without any provider. Published product blocks use the `resolvedData` the service
@@ -336,8 +336,8 @@ the connection sets `publicDatasourceResolve` (mirror of the service flag
 **Server side rendering.** `createPuckClient` and `loadPuckData` are React-free:
 
 ```ts
-import { createPuckClient } from '@commercetools-labs/puck-api';
-import { loadPuckData } from '@commercetools-labs/puck-renderer';
+import { createPuckClient } from '@commercetools-labs/contentools-api';
+import { loadPuckData } from '@commercetools-labs/contentools-renderer';
 
 const client = createPuckClient({
   baseURL: process.env.CONTENTOOLS_URL!,
@@ -441,7 +441,7 @@ renderer. It runs against the bundled mock service (no real backend needed) or a
 ```bash
 yarn install
 cp playground/.env.example playground/.env
-yarn workspace @commercetools-labs/puck-playground mock   # mock service on http://localhost:8080/service
+yarn workspace @commercetools-labs/contentools-playground mock   # mock service on http://localhost:8080/service
 yarn start:playground                                      # http://localhost:5174
 ```
 

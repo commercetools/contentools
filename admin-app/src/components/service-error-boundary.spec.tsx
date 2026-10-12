@@ -21,13 +21,13 @@ describe('ServiceErrorBoundary', () => {
   it('shows the request failure with the caught message', async () => {
     renderApplication(
       <ServiceErrorBoundary>
-        <Boom message="[puck-api] HTTP 500: boom" />
+        <Boom message="[contentools-api] HTTP 500: boom" />
       </ServiceErrorBoundary>,
       {}
     );
     expect(
       await screen.findByText(
-        'The request to the service failed: [puck-api] HTTP 500: boom'
+        'The request to the service failed: [contentools-api] HTTP 500: boom'
       )
     ).toBeInTheDocument();
   });
@@ -35,7 +35,7 @@ describe('ServiceErrorBoundary', () => {
   it('maps HTTP 403 to the not-allowed notice', async () => {
     renderApplication(
       <ServiceErrorBoundary>
-        <Boom message="[puck-api] HTTP 403: forbidden" />
+        <Boom message="[contentools-api] HTTP 403: forbidden" />
       </ServiceErrorBoundary>,
       {}
     );

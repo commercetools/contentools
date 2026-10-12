@@ -73,7 +73,7 @@ const use = () => {
     '--out',
     join(localDir, '%s.tgz'),
   ]);
-  // Yarn 4 names them `@commercetools-labs-puck-api.tgz`; a leading `@` in a file: path confuses Yarn 1.
+  // Yarn 4 names them `@commercetools-labs-contentools-api.tgz`; a leading `@` in a file: path confuses Yarn 1.
   for (const file of readdirSync(localDir)) {
     if (file.startsWith('@')) renameSync(join(localDir, file), join(localDir, file.slice(1)));
   }

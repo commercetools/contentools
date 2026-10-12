@@ -14,7 +14,7 @@ From `puck/` (Yarn 4, `corepack enable`):
 yarn install --immutable
 yarn build                                                  # the playground resolves the packages from the workspace
 cp playground/.env.example playground/.env
-yarn workspace @commercetools-labs/puck-playground mock    # optional: mock service on http://localhost:8080/service
+yarn workspace @commercetools-labs/contentools-playground mock    # optional: mock service on http://localhost:8080/service
 yarn start:playground                                       # http://localhost:5174
 ```
 

@@ -19,7 +19,7 @@ How it fits together: [docs/architecture.md](docs/architecture.md).
 | `service/` | The content API (Express + TypeScript), a commercetools Connect `service` application served at `/service` |
 | `admin-app/` | A Merchant Center custom application (Connect `merchant-center-custom-application`) that hosts the editors |
 | `mcp/` | An MCP server (Connect `service` application served at `/mcp`) that exposes the content API to AI agents |
-| `puck/` | A Yarn workspace of ten npm packages (`@commercetools-labs/puck-*`) and a Vite playground |
+| `puck/` | A Yarn workspace of ten npm packages (`@commercetools-labs/contentools-*`) and a Vite playground |
 | `docs/` | Architecture, API reference, runbook |
 | `tools/` | Repository checks and helper scripts |
 | `connect.yaml` | The Connect definition for `service`, `mcp` and `admin-app` |
@@ -44,7 +44,7 @@ yarn start:playground
 ```
 
 No commercetools project yet? The playground also runs against a bundled mock service:
-`yarn workspace @commercetools-labs/puck-playground mock` (see [puck/playground/README.md](puck/playground/README.md)).
+`yarn workspace @commercetools-labs/contentools-playground mock` (see [puck/playground/README.md](puck/playground/README.md)).
 
 The playground shows the canonical wiring: tabs for the page manager, content manager, theme manager
 and a renderer panel.
@@ -56,15 +56,15 @@ lint, typecheck, test and build for every application and for `puck/`. Per-part 
 ## Using the packages
 
 ```bash
-yarn add @commercetools-labs/puck-page-manager @commercetools-labs/puck-renderer
+yarn add @commercetools-labs/contentools-page-manager @commercetools-labs/contentools-renderer
 yarn add react react-dom react-intl react-router-dom@5 @commercetools/nimbus @commercetools/nimbus-icons @chakra-ui/react
 ```
 
 The full peer-dependency list (Nimbus, Chakra UI, slate for rich text) is in [puck/README.md](puck/README.md).
 
 ```tsx
-import { PageManager } from '@commercetools-labs/puck-page-manager';
-import { PuckRenderer } from '@commercetools-labs/puck-renderer';
+import { PageManager } from '@commercetools-labs/contentools-page-manager';
+import { PuckRenderer } from '@commercetools-labs/contentools-renderer';
 
 const connection = {
   baseURL: 'https://<your-service-host>/service',
