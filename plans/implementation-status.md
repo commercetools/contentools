@@ -63,3 +63,10 @@ Per-spec detail: `plans/implementation-log/<spec>.md`. Updated by the coordinato
 * Graceful shutdown with in-flight requests untested; S3 and Cloudinary providers verified with mocks only.
 * Package READMEs use absolute GitHub URLs assuming `commercetools/contentools`.
 * `develop` is already public on `origin` and contains `plans/` and `openspec/changes/**` (internal source paths). Release plan publishes a clean single commit on `main`; decide whether to delete the `develop` branch (or its history) at launch.
+
+## Local `commercetools connect validate .` (2026-10-12, Docker running, CLI 0.0.17)
+
+* `service`: build OK, tests OK (58 suites / 669 tests inside the Connect container). `mcp`: build OK, tests OK (16 suites / 193 tests).
+* `admin-app`: **build FAILS as expected** until the 10 `@commercetools-labs/puck-*@1.0.0` packages are on npm (buildpack runs `yarn install --frozen-lockfile`; confirms Connect uses Yarn from the lockfile).
+* Fixes found by running it for real: (1) the Connect test container holds only the app folder, so service suites that read repo-root files (`connect.yaml`, `docs/`) are skipped there and still run in `yarn verify`; (2) jest workers were OOM-killed in the memory-limited containers (Docker Desktop 7.6 GB): `maxWorkers: 2`, `workerIdleMemoryLimit: 512MB`, ts-jest `isolatedModules` in service and mcp.
+* "Composition Analysis (Dependencies)" and "Code Analysis" were **skipped** by the CLI in every run, so the Trivy/`braces` question (Q-H8) is still open; `--skip` flag semantics need a look.
