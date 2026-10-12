@@ -8,6 +8,17 @@ Per-spec detail (and the many already-settled sub-questions) lives in
 `openspec/changes/<id>/questions.md`; this file is the consolidated list of things that are
 **genuinely yours to decide**.
 
+## FINAL RELEASE ANSWERS (recorded 2026-10-12)
+
+| Topic | Answer |
+| ----- | ------ |
+| Public commit message | May say "single-project rewrite of an internal multi-tenant implementation" |
+| Guard words | Exemption for guard sources and `admin-app/yarn.lock` accepted |
+| `develop` branch | Keep as a working branch (stays public; contains plans/ and openspec/changes) |
+| npm publish | Owner publishes the 10 puck packages himself |
+| Versions | **All packages start at `1.0.0`, no release candidate**, dist-tag `latest`; a later fix means `1.0.1` |
+| Connect test tag | Tag `v1.0.0` directly on the public repo |
+
 ## OWNER ANSWERS (recorded 2026-10-08) — these supersede the defaults below
 
 | ID | Answer |
