@@ -101,3 +101,10 @@ All 10 `@commercetools-labs/contentools-*@1.0.0` packages are on npm (each also 
 * `admin-app` jest: **25/25 pass** with the real packages, so the earlier 15 failures were local-puck dependency drift, not a code bug.
 * `yarn build` compiles (needs Connect's `ENTRY_POINT_URI_PATH`, `CUSTOM_APPLICATION_ID`, `APPLICATION_URL`, `CLOUD_IDENTIFIER` at compile-html).
 * `contentools-components@1.0.0` depends on `isomorphic-dompurify@^3.18.0`, which resolves to 3.23.0 (needs Node `^22.22.2`). `admin-app/package.json` pins `resolutions: isomorphic-dompurify 3.19.0` (engines `^22.13`). Consider narrowing the range to `~3.19.0` in the next puck release (1.0.1).
+
+## `connect validate` after the npm publish (2026-10-13, Docker 7.6 GB, CLI 0.0.17)
+
+* Full run (3 apps in parallel): `service` build+tests OK, `mcp` build+tests OK, `admin-app` frozen install OK but webpack build **killed (exit 137, OOM)** because three builds share Docker Desktop's 7.6 GB.
+* `admin-app` validated alone (scratch project with only its `connect.yaml` block, `--skip analysis`): **build OK**; tests first failed 5/25 because Connect's test container sets `ENTRY_POINT_URI_PATH` to a placeholder (`Build_Template`) and the tests read it. `jest.test.config.js` now pins `ENTRY_POINT_URI_PATH=contentools`; rerun: **build OK, tests 25/25, "Validation Completed Successfully"**.
+* To run the full three-app validate locally, raise Docker Desktop memory to 12 GB or more. Composition/Code analysis steps are still skipped by the CLI.
+* Labs `gate.mjs` on a fresh export after the rename: 716 files, 1 commit, 0 failure(s), 0 warning(s), CLEAR.
