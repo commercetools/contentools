@@ -1,0 +1,2 @@
+# Spec O requires this file to be empty.
+# Files still containing tenant/store terms, owned by a later spec. Format: <path or dir/>  # owner spec

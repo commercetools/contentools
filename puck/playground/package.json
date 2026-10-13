@@ -1,0 +1,51 @@
+{
+  "name": "@commercetools-labs/contentools-playground",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "mock": "node mock-server/server.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^3.36.0",
+    "@commercetools-labs/contentools-api": "workspace:^",
+    "@commercetools-labs/contentools-content-manager": "workspace:^",
+    "@commercetools-labs/contentools-editor": "workspace:^",
+    "@commercetools-labs/contentools-page-manager": "workspace:^",
+    "@commercetools-labs/contentools-renderer": "workspace:^",
+    "@commercetools-labs/contentools-theme-manager": "workspace:^",
+    "@commercetools-labs/contentools-types": "workspace:^",
+    "@commercetools/nimbus": "^3.2.0",
+    "@commercetools/nimbus-icons": "^3.2.0",
+    "@commercetools/nimbus-tokens": "^3.2.0",
+    "@emotion/react": "^11.14.0",
+    "@measured/puck": "^0.18.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-intl": "^10.1.1",
+    "react-router-dom": "^5",
+    "slate": "^0.123.0",
+    "slate-dom": "^0.123.0",
+    "slate-history": "^0.115.0",
+    "slate-hyperscript": "^0.115.0",
+    "slate-react": "^0.123.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^4",
+    "typescript": "^5.7.2",
+    "vite": "^6.4.3"
+  },
+  "resolutions": {
+    "@types/react-router": "<6",
+    "@types/react-router-dom": "<6",
+    "react-router-dom": "<6"
+  }
+}

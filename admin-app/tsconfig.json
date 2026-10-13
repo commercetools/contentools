@@ -1,0 +1,5 @@
+{
+  "extends": "@commercetools-frontend/application-config/tsconfig-mc-app.json",
+  "compilerOptions": { "jsx": "react-jsx", "preserveSymlinks": false, "skipLibCheck": true },
+  "include": ["src"]
+}

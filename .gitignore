@@ -1,0 +1,29 @@
+# dependencies and build output (no leading slash: matches in every app)
+node_modules
+build/
+dist/
+coverage/
+*.log
+*.tgz
+.DS_Store
+# Merchant Center build output of the admin app
+/admin-app/public/
+# scratch dirs
+/service/temp/
+/plans/evidence/
+.connect/
+# secrets: only the .example files are tracked
+.env
+.env.*
+!.env.example
+# yarn 4 (puck/)
+.yarn/cache
+.yarn/install-state.gz
+# local agent settings
+.claude/settings.local.json
+# local-only files (e.g. service/.env.e2e.local) and agent worktrees
+*.local
+.claude/
+
+# local verify logs
+.verify-logs/

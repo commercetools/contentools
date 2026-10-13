@@ -1,0 +1,10 @@
+# Questions (spec K). Each proceeds on the stated default.
+
+| ID | Question | Recommended default | Affects |
+| -- | -------- | ------------------- | ------- |
+| Q-K1 | Spec J must add an injectable `fetcher: (url, init?) => Promise<Response>` (default `fetch`) to `PageManager`, `ContentManager`, `ThemeManager` and the low-level `httpClient`. Without it the app cannot use MC `forward-to` (needs custom method/URL rewriting; SDK `actions.forwardTo` has no PUT). Is it OK to make this a hard J requirement? | Yes; `baseURL` stays the service base URL incl. `/service`; a `getAuthHeaders` hook is additionally fine for non-MC hosts | J, K |
+| Q-K2 | Keep the in-app sidebar (Pages / Items / Theme + BU selector) or move the three links to Merchant Center `submenuLinks`? | Keep the sidebar (BU selector needs a home); revisit after Q | K, L |
+| Q-K3 | Puck packages only ship `en` and `es` catalogs (`EnsureIntlProvider.tsx:35`). Owner wants app i18n en/de. Should J/I add a `de` catalog to the puck packages? | Yes, add `de` to every puck package catalog (J/I); until then puck chrome shows English under `de` | I, J, K |
+| Q-K4 | Service must (a) compare `req.session.projectKey` (forwarded claim) with its own `CTP_PROJECT_KEY` and reject others, (b) use `createSessionMiddleware({audience: <service origin>, audiencePolicy: 'forward-url-origin', issuer: CLOUD_IDENTIFIER})`, (c) answer 403 not 401 for permission failures (a 401 makes the shell retry once), (d) map `userPermissions` (`canView<Entry>` / `canManage<Entry>`) to read/write. Confirm for spec E. | Confirmed as stated | E, K |
+| Q-K5 | Default `entryPointUriPath` for the reference deployment: `contentools`. It must be unique per MC region; a collision with an existing custom application in the same region blocks registration. Use a different default (e.g. `contentools-labs`)? | `contentools` (override via `ENTRY_POINT_URI_PATH`) | K, L |
+| Q-K6 | Business-unit list comes from the MC GraphQL API (needs MC scope `view_business_units` in the app registration) rather than from the service. OK? | Yes | K, L |

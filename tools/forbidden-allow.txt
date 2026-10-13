@@ -1,0 +1,1 @@
+# Accepted hits. Format: <path> <term-id>  # reason. Must stay empty.

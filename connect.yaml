@@ -1,0 +1,148 @@
+deployAs:
+  - name: service
+    applicationType: service
+    endpoint: /service
+    scripts:
+      postDeploy: yarn connector:post-deploy
+      preUndeploy: yarn connector:pre-undeploy
+    configuration:
+      standardConfiguration:
+        - key: MAX_VERSIONS
+          description: "Maximum number of saved versions kept per page or content item; older versions are pruned on save."
+          required: false
+          default: "5"
+        - key: LOG_LEVEL
+          description: "Log level: error, warn, info or debug."
+          required: false
+          default: "info"
+        - key: CONTAINER_PREFIX
+          description: "Prefix added to every Custom Object container name; empty for production. Lets tests isolate data (for example contentools-test-). Changing it on a live deployment hides existing content."
+          required: false
+        - key: CORS_ALLOWED_ORIGINS
+          description: "Comma-separated exact browser origins allowed to call the service (storefronts). No default: empty allows no browser origin. The Merchant Center hop is server-to-server and needs no CORS."
+          required: false
+        - key: MC_REQUIRED_PERMISSION
+          description: "Optional Merchant Center permission a user must have for writes (for example canManageContentools). Empty means any user with access to the project."
+          required: false
+        - key: PUBLIC_DATASOURCE_RESOLVE
+          description: "true makes resolving the built-in product-by-sku and products-by-sku datasources public (rate limited). Default false."
+          required: false
+          default: "false"
+        - key: PUBLIC_RESOLVE_MAX_PER_MINUTE
+          description: "Global rate limit per minute for public datasource resolve."
+          required: false
+          default: "120"
+        - key: MEDIA_STORAGE_PROVIDER
+          description: "Media storage backend: none, gcp, aws or cloudinary. With none the upload and media-library endpoints answer 501."
+          required: false
+          default: "none"
+        - key: MEDIA_PATH_PREFIX
+          description: "Object key prefix for uploaded media, without leading or trailing slash."
+          required: false
+          default: "contentools/media"
+        - key: MEDIA_MAX_UPLOAD_BYTES
+          description: "Largest accepted upload in bytes (1024 to 26214400)."
+          required: false
+          default: "10485760"
+        - key: MEDIA_ALLOWED_MIME_TYPES
+          description: "Comma-separated allowed upload content types. Add image/svg+xml only if you accept the risk."
+          required: false
+          default: "image/jpeg,image/png,image/gif,image/webp,image/avif,application/pdf"
+        - key: MEDIA_PUBLIC_BASE_URL
+          description: "Optional https base URL (CDN) that serves the bucket; empty uses the provider public URL."
+          required: false
+        - key: MEDIA_GCP_BUCKET
+          description: "Bucket name; required when MEDIA_STORAGE_PROVIDER is gcp."
+          required: false
+        - key: MEDIA_AWS_BUCKET
+          description: "Bucket name; required when MEDIA_STORAGE_PROVIDER is aws."
+          required: false
+        - key: MEDIA_AWS_REGION
+          description: "AWS region of the bucket."
+          required: false
+          default: "us-east-1"
+        - key: MEDIA_AWS_ENDPOINT
+          description: "Optional S3-compatible endpoint URL (for example a MinIO server); empty means Amazon S3."
+          required: false
+        - key: MEDIA_CLOUDINARY_CLOUD_NAME
+          description: "Cloud name; required when MEDIA_STORAGE_PROVIDER is cloudinary."
+          required: false
+      securedConfiguration:
+        - key: SERVICE_API_TOKEN
+          description: "Static bearer token (at least 32 characters) for server-to-server callers such as the MCP application. Empty disables token authentication; Merchant Center session tokens still work."
+          required: false
+        - key: MEDIA_GCP_SERVICE_ACCOUNT_KEY_B64
+          description: "Service-account JSON key, base64 on one line; required when MEDIA_STORAGE_PROVIDER is gcp."
+          required: false
+        - key: MEDIA_AWS_ACCESS_KEY_ID
+          description: "Access key id; required when MEDIA_STORAGE_PROVIDER is aws."
+          required: false
+        - key: MEDIA_AWS_SECRET_ACCESS_KEY
+          description: "Secret access key; required when MEDIA_STORAGE_PROVIDER is aws."
+          required: false
+        - key: MEDIA_CLOUDINARY_API_KEY
+          description: "API key; required when MEDIA_STORAGE_PROVIDER is cloudinary."
+          required: false
+        - key: MEDIA_CLOUDINARY_API_SECRET
+          description: "API secret; required when MEDIA_STORAGE_PROVIDER is cloudinary."
+          required: false
+  - name: mcp
+    applicationType: service
+    endpoint: /mcp
+    scripts:
+      postDeploy: yarn connector:post-deploy
+    configuration:
+      standardConfiguration:
+        - key: CONTENT_SERVICE_URL
+          description: "External URL of the contentools service application, ending in /service (https, no trailing slash)."
+          required: true
+        - key: DEFAULT_BUSINESS_UNIT_KEY
+          description: "Business unit used when a tool call omits businessUnitKey."
+          required: false
+          default: "default"
+        - key: MCP_ENABLE_WRITES
+          description: "true registers the 20 mutating tools; they act with the full authority of SERVICE_API_TOKEN."
+          required: false
+          default: "false"
+        - key: MCP_TOOL_GROUPS
+          description: "all, or comma-separated: pages,contents,templates,configuration,datasources,products,media,content-types."
+          required: false
+          default: "all"
+        - key: MCP_ALLOWED_ORIGINS
+          description: "Comma-separated browser origins allowed to call /mcp; empty allows only non-browser clients."
+          required: false
+        - key: MCP_REQUEST_TIMEOUT_MS
+          description: "Timeout in milliseconds for each call from a tool to the service."
+          required: false
+          default: "15000"
+      securedConfiguration:
+        - key: MCP_ACCESS_TOKEN
+          description: "Bearer token(s) MCP clients must send; a comma-separated list allows rotation; each at least 32 characters."
+          required: true
+        - key: SERVICE_API_TOKEN
+          description: "Static token the content service accepts (same value as the service application's SERVICE_API_TOKEN); at least 32 characters."
+          required: true
+  - name: admin-app
+    applicationType: merchant-center-custom-application
+    configuration:
+      standardConfiguration:
+        - key: CUSTOM_APPLICATION_ID
+          description: "The Application ID the Merchant Center shows after the custom application is registered."
+          required: true
+        - key: ENTRY_POINT_URI_PATH
+          description: "The entry point URI path the custom application is registered with (unique per region, 2-64 chars, lowercase alphanumerics and hyphens)."
+          required: true
+          default: "contentools"
+        - key: CONTENTOOLS_SERVICE_URL
+          description: "https URL of the service application, ending in /service. Not known on the first deployment: pass a placeholder such as https://pending.invalid/service, then redeploy with the real URL."
+          required: true
+inheritAs:
+  apiClient:
+    scopes:
+      - manage_key_value_documents
+      - view_products
+  configuration:
+    standardConfiguration:
+      - key: CLOUD_IDENTIFIER
+        description: "Merchant Center cloud identifier of the project's region (gcp-eu, gcp-us, gcp-au, aws-eu, aws-us); the admin-app's MC API host and the issuer of the forwarded tokens verified by the service."
+        required: true

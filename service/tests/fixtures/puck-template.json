@@ -1,0 +1,12 @@
+{
+  "key": "landing-template",
+  "businessUnitKey": "test-bu",
+  "name": "Landing template",
+  "kind": "page",
+  "puckData": {
+    "content": [{ "type": "HeroBanner", "props": { "id": "hero-1", "title": "Template title" } }],
+    "root": { "props": {} }
+  },
+  "createdAt": "2026-01-01T00:00:00.000Z",
+  "updatedAt": "2026-01-01T00:00:00.000Z"
+}

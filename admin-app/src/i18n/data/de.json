@@ -1,0 +1,12 @@
+{
+  "Contentools.businessUnit": "Geschäftseinheit",
+  "Contentools.nav.items": "Inhalte",
+  "Contentools.nav.pages": "Seiten",
+  "Contentools.nav.theme": "Design",
+  "Contentools.notAllowed": "Dazu fehlt Ihnen die Berechtigung. Bitten Sie eine Administratorin oder einen Administrator um die Manage-Berechtigung.",
+  "Contentools.requestFailed": "Die Anfrage an den Service ist fehlgeschlagen: {message}",
+  "Contentools.serviceNotConfigured": "Die Service-URL ist nicht konfiguriert. Setzen Sie CONTENTOOLS_SERVICE_URL (https, endet auf /service) in der Deployment-Konfiguration und führen Sie ein Redeploy durch.",
+  "Contentools.sidebar.collapse": "Einklappen",
+  "Contentools.sidebar.collapseTitle": "Seitenleiste einklappen",
+  "Contentools.sidebar.expand": "Seitenleiste ausklappen"
+}

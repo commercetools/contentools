@@ -1,0 +1,40 @@
+# Explore notes: q-end-to-end-acceptance
+
+Working note. Source = `/Users/behnam/code/cms` (read-only); target = `/Users/behnam/code/commercetools-labs/contentools` (only `plans/` + `openspec/` exist at authoring time).
+
+## 1. What exists today for verification
+
+* Source e2e: `/Users/behnam/code/cms/service/e2e/` (jest, `*.e2e.ts` per legacy and puck area, `helpers/http.ts`, `constants.ts`, `README.md`). It obtains a JWT from `POST /service/authenticate-project` and sends `x-project-key` - both removed. Only `puck-page.e2e.ts`, `puck-content.e2e.ts`, `configuration.e2e.ts`, `datasource.e2e.ts`, `file.e2e.ts` are relevant. Spec B/F own the rewritten jest e2e; **this spec is the system-level acceptance run on top of them**, driven by a curl script + Chrome connector + owner-assisted MC checks. It does not replace unit/integration tests.
+* Source playground `/Users/behnam/code/cms/puck/puck-react-test/src/App.tsx`: four tabs (`pages`, `contents`, `renderer`, `theme`), paths `/`, `/content*`, `/renderer*`, `/theme*` (lines 55-65), env `VITE_BASE_URL`, `VITE_PROJECT_KEY`, `VITE_BUSINESS_UNIT_KEY`, `VITE_JWT_TOKEN`, `VITE_LOCALE` (lines 10-17). After spec J/I the project-key var is gone and the token var is replaced by the auth injection of J: Q reads the real `.env.example`.
+* UI strings usable as Chrome snapshot anchors (English catalogs): `VersionHistory.showHistory` "Show version history", `VersionHistory.savedVersions` "Saved versions", `VersionHistory.apply` "Apply", `VersionHistory.revert` "Revert", `VersionHistory.previewingVersion` "Previewing: {timestamp}", `VersionHistory.backToCurrent` "Back to Current", `VersionHistory.applyThisVersion` "Apply this Version", `PageManager.statusPublished` "Published", `PageManager.templateLabel` "Template" (files `puck/packages/puck-version-history/src/intl/en.json`, `puck-page-manager/src/intl/en.json`). The implementer must re-read the catalogs after spec I/K (strings may change).
+* Page API shapes (verified in `service/src/routes/puck-page.route.ts` and `controllers/puck-page.controller.ts` lines 224-270): `POST /:bu/puck-pages` body `{ "value": { "name", "slug", "puckData"?, "meta"? } }` -> **201** with the custom-object wrapper `{ id, version, container, key, value, states }`; the **key is server-generated** (`puck-page-<uuid>`), so scripts must read `.key` from the response. Update `PUT .../:key` body `{ "value": {...} }` -> 200 (saves a draft and a version entry). Publish `PUT .../states/published[?clearDraft=true]` -> 200. Revert `DELETE .../states/draft` -> 200 (body = state). Delete `DELETE .../:key` -> **204**. Slug query `POST .../published|preview/puck-pages/query` body `{ "query": "slug = \"/home\"" }` (400 if missing, 404 if none). Template create body `{ "value": { name, kind: "page"|"content", puckData } }` -> 201 (`puck-template.route.ts` 63-90); no PUT.
+* Hero component props (`puck/packages/puck-components/src/components/Hero.tsx`): `title`, `subtitle`, `image`. Puck data example: `{"content":[{"type":"Hero","props":{"id":"Hero-1","title":"...","subtitle":"..."}}],"root":{"props":{}}}`. Re-check the component names after spec I.
+* Version/pruning: `MAX_VERSIONS` (default 5) in `service/src/constants.ts` line 9.
+
+## 2. Platform facts that shape the plan
+
+* **Merchant Center `forward-to` only accepts https targets** (docs: "Integrate with your own API - Local development using a secure tunnel": "using the `/proxy/forward-to` endpoint ... with a target URL pointing to `http` is not allowed. Only `https` targets"). Required headers: `Accept-version`, `X-Forward-To`, `X-Forward-To-Audience-Policy`, `X-Project-Key`. Two audience policies: `forward-url-full-path` (default, `aud` = origin + forwarded path) and `forward-url-origin` (`aud` = origin). Spec E (design 1b): the admin app sends `forward-url-origin`; the service accepts `aud` = origin of `CONNECT_SERVICE_URL` and also the full-path form. Consequence: MC checks need either the deployed `service` (Connect sandbox, https) or an https tunnel (ngrok / cloudflared) to the local service with `CONNECT_SERVICE_URL` set to the tunnel URL ending in `/service`. The plan uses the **deployed sandbox** for MC checks and local for everything else; the tunnel is the documented fallback.
+* Local run commands (Connect skill `connect-cli.md` Step 4): `commercetools connect validate`, `connect application build|start|test`; the generated scripts also expose `npm run build|start|start:dev|test` and `connector:post-deploy` / `connector:pre-undeploy`. `postDeploy` locally = `npm run connector:post-deploy` with the injected env set manually.
+* Sandbox deployment type scales to zero (~15 s cold start); deployment can take ~15 min; `deployment logs` (CLI) for evidence (`deployment-installation.md` Patterns 2, 4, 7).
+* MC session is SSO/2FA: only a human can log in (plans/03 "Limit"; manual step M-04). MC checks are therefore "owner-assisted".
+* MCP over HTTP (spec M): JSON-RPC 2.0 over Streamable HTTP; a client must send `Accept: application/json, text/event-stream`; methods `initialize`, `notifications/initialized`, `tools/list`, `tools/call`. Exact path/port/auth from spec M's README.
+
+## 3. Test-data isolation (from plans/03-testing-strategy.md)
+
+Containers prefixed `contentools-test-`, never a non-sandbox project (guard `E2E_ALLOW_PROJECT_KEY`). The service reads container names from env (`PUCK_PAGE_CONTAINER`, `PUCK_PAGE_STATE_CONTAINER`, `PUCK_PAGE_VERSION_CONTAINER`, `PUCK_CONTENT_CONTAINER`, `PUCK_CONTENT_STATE_CONTAINER`, `PUCK_CONTENT_VERSION_CONTAINER`, `PUCK_TEMPLATE_CONTAINER`, `CONFIGURATION_CONTAINER`; `service/src/constants.ts`), so the acceptance run overrides them all with the test prefix and cleanup = delete every custom object in those containers. Verify the override names still exist after spec D/F (`grep -n "CONTAINER" service/src/constants.ts`). Datasource storage (Firestore in the source, `datasource.route.ts` lines ~328-420) becomes custom objects in spec F; its container name must also be prefixed - Q reads F's constant.
+* Media has no delete route. Uploaded test files stay in the bucket: use a bucket prefix / dedicated test bucket (M-02) and delete the prefix manually or by lifecycle rule.
+
+## 4. Risks
+
+1. Puck drag-and-drop through the Chrome `drag` tool may not trigger Puck's pointer-event sensors. Fallback (task 4.4): seed the page body via `PUT` with Hero data then edit text in the editor, and test drag as best effort.
+2. Autosave debounce (`autoSaveDebounceMs`, default 1500 ms in `PuckEditor`) - waits needed before asserting persisted state.
+3. Cold start of the sandbox deployment makes the first request ~15 s: warm up with `GET /service/health`.
+4. Real MC JWTs cannot be minted in scripts: the negative matrix covers forged tokens; the positive MC-JWT path is only provable in the MC run.
+5. Public-repo hygiene: evidence contains project keys / URLs. It lives in `plans/evidence/` (kept out of the published repo, Q-09); the redaction helper must be used for anything pasted elsewhere.
+
+## 5. Alignment with E/F/G/H (after their completion)
+
+* Access policy (E design section 4): public = health/status, published page/content reads and queries, configuration reads; protected = everything else including draft list, preview, templates, product search, datasource management and media library; `POST /datasource/:key/test` public only with `PUBLIC_DATASOURCE_RESOLVE=true` for the two built-in keys. The acceptance script asserts exactly this (AC02-13..18, AC06-pub).
+* Error body (D/E): `{message, statusCode, correlationId, code?, errors?}`; no stack.
+* Route statuses from F design section 2 (73 routes): create 201, delete 204 (templates, pages, contents, configuration, datasource), states/versions 200, content-type import 200 on both `/:bu/content-type/import` and `/content-type/import`.
+* `service/`, `admin-app/` and `mcp/` are Yarn 1 classic projects (own committed `yarn.lock`, `yarn install --frozen-lockfile`); `puck/` is Yarn 4.5.1. No `package-lock.json` anywhere (owner decision).

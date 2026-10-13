@@ -1,0 +1,9 @@
+{
+  "key": "welcome-banner",
+  "businessUnitKey": "test-bu",
+  "name": "Welcome banner",
+  "contentType": "banner",
+  "data": { "title": "Welcome", "body": "Sample body" },
+  "createdAt": "2026-01-01T00:00:00.000Z",
+  "updatedAt": "2026-01-01T00:00:00.000Z"
+}
