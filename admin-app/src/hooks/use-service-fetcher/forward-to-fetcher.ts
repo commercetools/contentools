@@ -18,6 +18,30 @@ export type ServiceFetcher = NonNullable<
 >;
 
 /**
+ * A 2xx whose body is not JSON never comes from the service (a tunnel interstitial, a proxy error page).
+ * Puck's client would resolve it to `undefined` and a list view would crash on it, so answer with an error
+ * response instead: puck turns it into a typed error with a readable message.
+ */
+export const requireJsonBody = async (res: Response): Promise<Response> => {
+  if (!res.ok || res.status === 204) return res;
+  const contentType = res.headers.get('content-type') ?? '';
+  if (contentType.includes('application/json')) return res;
+  if ((await res.clone().text()).trim() === '') return res;
+  return new Response(
+    JSON.stringify({
+      message: `Expected a JSON response from the service but received ${
+        contentType || 'no content type'
+      }. Check that CONTENTOOLS_SERVICE_URL reaches the service and not a tunnel or proxy page.`,
+    }),
+    {
+      status: 502,
+      statusText: 'Bad Gateway',
+      headers: { 'content-type': 'application/json' },
+    }
+  );
+};
+
+/**
  * Sends a puck request through the Merchant Center `forward-to` proxy.
  * The gateway verifies the logged-in user, then calls the service with a short-lived signed JWT.
  * Non-2xx responses are returned as they are: puck's client turns them into typed errors.
@@ -57,4 +81,4 @@ export const forwardToFetch: ServiceFetcher = ({
         version: 'v2',
       },
     }
-  );
+  ).then(requireJsonBody);

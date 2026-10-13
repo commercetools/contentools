@@ -25,7 +25,15 @@ const config = {
     },
   },
   // Ends up in the public window.app; it is not secret.
-  additionalEnv: { serviceUrl: '${env:CONTENTOOLS_SERVICE_URL}' },
+  additionalEnv: {
+    serviceUrl: '${env:CONTENTOOLS_SERVICE_URL}',
+    // Local development only: the service's SERVICE_API_TOKEN, sent when the service URL is local (no proxy
+    // there, so no Merchant Center session). Optional, and never taken into a production build.
+    devServiceToken:
+      process.env.NODE_ENV === 'production'
+        ? ''
+        : (process.env.CONTENTOOLS_DEV_SERVICE_TOKEN ?? ''),
+  },
   oAuthScopes: {
     view: ['view_business_units'],
     manage: ['manage_key_value_documents'],

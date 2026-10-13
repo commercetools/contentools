@@ -107,4 +107,42 @@ describe('forwardToFetch', () => {
     expect(forbidden.status).toBe(403);
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
+
+  it('turns a 2xx non-JSON body (tunnel or proxy page) into a 502 error response', async () => {
+    fetchMock.mockResolvedValue(
+      new Response('<html>interstitial</html>', {
+        status: 200,
+        headers: { 'content-type': 'text/html' },
+      })
+    );
+    const res = await forwardToFetch({
+      url: SERVICE_URL,
+      method: 'GET',
+      headers: {},
+    });
+    expect(res.status).toBe(502);
+    expect(await res.json()).toEqual({
+      message: expect.stringContaining(
+        'Expected a JSON response from the service but received text/html'
+      ),
+    });
+  });
+
+  it('keeps 204 and empty-body responses untouched', async () => {
+    fetchMock.mockResolvedValueOnce(new Response(null, { status: 204 }));
+    const none = await forwardToFetch({
+      url: SERVICE_URL,
+      method: 'DELETE',
+      headers: {},
+    });
+    expect(none.status).toBe(204);
+
+    fetchMock.mockResolvedValueOnce(new Response('', { status: 200 }));
+    const empty = await forwardToFetch({
+      url: SERVICE_URL,
+      method: 'DELETE',
+      headers: {},
+    });
+    expect(empty.status).toBe(200);
+  });
 });

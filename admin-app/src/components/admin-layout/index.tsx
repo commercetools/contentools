@@ -4,7 +4,7 @@
  * Freely available, AS IS and UNSUPPORTED. See LICENSE.
  */
 
-import { useMemo, useState, type ReactNode } from 'react';
+import { Fragment, useMemo, useState, type ReactNode } from 'react';
 import { NavLink, useRouteMatch } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import {
@@ -134,10 +134,10 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             {collapsed ? (
               <ChevronRight />
             ) : (
-              <>
+              <Fragment>
                 <ChevronLeft />
                 <span>{intl.formatMessage(messages.collapse)}</span>
-              </>
+              </Fragment>
             )}
           </button>
         </aside>
