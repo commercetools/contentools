@@ -134,8 +134,8 @@ deployAs:
           required: true
           default: "contentools"
         - key: CONTENTOOLS_SERVICE_URL
-          description: "https URL of the service application, ending in /service. Empty on the first deployment; set it with a redeploy once the service URL is known."
-          required: false
+          description: "https URL of the service application, ending in /service. Not known on the first deployment: pass a placeholder such as https://pending.invalid/service, then redeploy with the real URL."
+          required: true
 inheritAs:
   apiClient:
     scopes:

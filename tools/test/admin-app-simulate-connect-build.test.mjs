@@ -35,7 +35,7 @@ test('the build environment carries only the Connect variables and the canary se
     'HOME',
     'PATH',
   ]);
-  assert.equal('CONTENTOOLS_SERVICE_URL' in buildEnv(''), false);
+  assert.equal(buildEnv().CONTENTOOLS_SERVICE_URL, 'https://pending.invalid/service');
 });
 
 const fixture = (appJson, extra = '') => {

@@ -128,6 +128,7 @@ commercetools connect connectorstaged preview --key contentools --deployment-key
   --configuration CLOUD_IDENTIFIER=<cloud-id> \
   --configuration admin-app.CUSTOM_APPLICATION_ID=<application-id> \
   --configuration admin-app.ENTRY_POINT_URI_PATH=contentools \
+  --configuration admin-app.CONTENTOOLS_SERVICE_URL=https://pending.invalid/service \
   --configuration service.SERVICE_API_TOKEN=<token> \
   --configuration mcp.MCP_ACCESS_TOKEN=<mcp-token> \
   --configuration mcp.SERVICE_API_TOKEN=<token> \
@@ -182,7 +183,7 @@ Configuration keys (generated from `connect.yaml`; the READMEs of each applicati
 | `SERVICE_API_TOKEN` | mcp | yes | yes | - | Static token the content service accepts (same value as the service application's SERVICE_API_TOKEN); at least 32 characters. |
 | `CUSTOM_APPLICATION_ID` | admin-app | no | yes | - | The Application ID the Merchant Center shows after the custom application is registered. |
 | `ENTRY_POINT_URI_PATH` | admin-app | no | yes | `contentools` | The entry point URI path the custom application is registered with (unique per region, 2-64 chars, lowercase alphanumerics and hyphens). |
-| `CONTENTOOLS_SERVICE_URL` | admin-app | no | no | - | https URL of the service application, ending in /service. Empty on the first deployment; set it with a redeploy once the service URL is known. |
+| `CONTENTOOLS_SERVICE_URL` | admin-app | yes | no | - | https URL of the service application, ending in /service. Unknown on the first deployment: pass a placeholder such as `https://pending.invalid/service`, then redeploy with the real URL. |
 | `CLOUD_IDENTIFIER` | all (shared) | no | yes | - | Merchant Center cloud identifier of the project's region (gcp-eu, gcp-us, gcp-au, aws-eu, aws-us); the admin-app's MC API host and the issuer of the forwarded tokens verified by the service. |
 
 Provided by Connect, never configured by you: `CTP_CLIENT_ID`, `CTP_CLIENT_SECRET`, `CTP_SCOPE`,

@@ -17,7 +17,6 @@ application registration (see the repository docs), and a running `service` app 
 | Key | Meaning |
 | --- | --- |
 | `CLOUD_IDENTIFIER` | Region of the project: `gcp-eu`, `gcp-us`, `gcp-au`, `aws-eu`, `aws-us` |
-| `CTP_INITIAL_PROJECT_KEY` | Project opened by `yarn start` (local development only) |
 | `ENTRY_POINT_URI_PATH` | Registered path, unique per region (default `contentools`) |
 | `CUSTOM_APPLICATION_ID` | Id shown after registering the application |
 | `APPLICATION_URL` | Provided by Connect at deploy time; any https URL for a local build |
@@ -76,7 +75,7 @@ Connect runs `yarn install --frozen-lockfile` and `yarn build` in this folder an
 | --- | --- | --- | --- | --- |
 | `CUSTOM_APPLICATION_ID` | `admin-app` block | standard | yes | Application ID shown after registering the custom application |
 | `ENTRY_POINT_URI_PATH` | `admin-app` block | standard | yes (default `contentools`) | Registered entry point path, unique per region |
-| `CONTENTOOLS_SERVICE_URL` | `admin-app` block | standard | no | https URL of the `service` application, ending in `/service` |
+| `CONTENTOOLS_SERVICE_URL` | `admin-app` block | standard | yes | https URL of the `service` application, ending in `/service`; first pass: placeholder `https://pending.invalid/service` |
 | `CLOUD_IDENTIFIER` | shared (`inheritAs.configuration`) | standard | yes, no default | Cloud identifier of the project region; also the issuer the service verifies |
 
 Provided by Connect: `APPLICATION_URL` (do not declare it). `CONNECT_SERVICE_URL` is injected only into
@@ -97,7 +96,7 @@ Placeholders are in angle brackets. Region names: MC `gcp-eu` = Connect `europe-
 | - | ---- | ---------------- |
 | 1 | Register the custom application (name `Contentools`, URL `https://example.com`, entry path `contentools`, View scope `view_business_units`, Manage scope `manage_key_value_documents`, menu label `Contentools`, link permissions View and Manage); copy the Application ID | Merchant Center, organization, Custom Applications |
 | 2 | Create the Connector from the repository tag | `commercetools connect connectorstaged create --key contentools --name "Contentools" --repository-url <repository-url> --repository-tag <tag> --creator-email <email> --supported-regions <connect-region> --integration-types other` |
-| 3 | First deployment (preview shown; sandbox/production need `connectorstaged publish` and `deployment create`) | `commercetools connect connectorstaged preview --key contentools --deployment-key <deployment-key> --region <connect-region> --configuration CLOUD_IDENTIFIER=<cloud-id> --configuration admin-app.CUSTOM_APPLICATION_ID=<id> --configuration admin-app.ENTRY_POINT_URI_PATH=contentools --configuration service.<KEY>=<value> ...` |
+| 3 | First deployment (preview shown; sandbox/production need `connectorstaged publish` and `deployment create`) | `commercetools connect connectorstaged preview --key contentools --deployment-key <deployment-key> --region <connect-region> --configuration CLOUD_IDENTIFIER=<cloud-id> --configuration admin-app.CUSTOM_APPLICATION_ID=<id> --configuration admin-app.ENTRY_POINT_URI_PATH=contentools --configuration admin-app.CONTENTOOLS_SERVICE_URL=https://pending.invalid/service --configuration service.<KEY>=<value> ...` |
 | 4 | Wait for `Deployed`, read the `admin-app` and `service` URLs | `commercetools connect deployment describe --key <deployment-key>` |
 | 5 | Second pass: give the app the service URL (all keys again; add `--updateConnector` only when the tag changed) | `commercetools connect deployment redeploy --key <deployment-key> --configuration CLOUD_IDENTIFIER=<cloud-id> --configuration admin-app.CUSTOM_APPLICATION_ID=<id> --configuration admin-app.ENTRY_POINT_URI_PATH=contentools --configuration admin-app.CONTENTOOLS_SERVICE_URL=<service-url> --configuration service.<KEY>=<value> ...` |
 | 6 | Replace the placeholder Application URL with the `admin-app` URL | Merchant Center registration, or `config:sync` (below) |

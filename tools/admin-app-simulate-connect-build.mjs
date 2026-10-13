@@ -27,7 +27,7 @@ const skipInstall = args.includes('--skip-install');
 const CANARY = 'canary-secret-value';
 
 /** The environment Connect gives an MC application: nothing inherited from a developer .env. */
-export const buildEnv = (serviceUrlValue = '') => ({
+export const buildEnv = (serviceUrlValue = 'https://pending.invalid/service') => ({
   PATH: process.env.PATH,
   HOME: process.env.HOME,
   ENTRY_POINT_URI_PATH: 'contentools',
@@ -36,7 +36,7 @@ export const buildEnv = (serviceUrlValue = '') => ({
   APPLICATION_URL: 'https://admin-app-canary.example.com',
   // Connect inherits shared secrets into every application; none may reach the bundle.
   CTP_CLIENT_SECRET: CANARY,
-  ...(serviceUrlValue ? { CONTENTOOLS_SERVICE_URL: serviceUrlValue } : {}),
+  CONTENTOOLS_SERVICE_URL: serviceUrlValue,
 });
 
 // Hosts the Application Shell adds to the default policy (feature flags, error reporting, fonts, the MC API)

@@ -18,15 +18,14 @@ const config = {
   env: {
     // Local development only (`yarn start`). Read directly: a ${env:} placeholder throws when the variable
     // is missing, and Connect never provides CTP_INITIAL_PROJECT_KEY to the production build.
-    development: { initialProjectKey: process.env.CTP_INITIAL_PROJECT_KEY ?? '' },
+    development: { initialProjectKey: '${env:CTP_INITIAL_PROJECT_KEY }' },
     production: {
       applicationId: '${env:CUSTOM_APPLICATION_ID}',
       url: '${env:APPLICATION_URL}',
     },
   },
-  // Read directly: a ${env:} placeholder throws when unset, and the first deployment has no service URL yet.
-  // The value ends up in the public window.app; it is not secret.
-  additionalEnv: { serviceUrl: process.env.CONTENTOOLS_SERVICE_URL ?? '' },
+  // Ends up in the public window.app; it is not secret.
+  additionalEnv: { serviceUrl: '${env:CONTENTOOLS_SERVICE_URL}' },
   oAuthScopes: {
     view: ['view_business_units'],
     manage: ['manage_key_value_documents'],

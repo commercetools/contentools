@@ -15,17 +15,12 @@ import ServiceNotConfigured from '../components/service-not-configured';
 type ServiceValue = { serviceUrl: string; fetcher: ServiceFetcher };
 const ServiceContext = createContext<ServiceValue | undefined>(undefined);
 
-export const normalizeServiceUrl = (raw: unknown): string | null => {
-  if (typeof raw !== 'string') return null;
-  const url = raw.trim().replace(/\/+$/, '');
-  return /^https:\/\/[^\s/]+(\/.*)?$/.test(url) ? url : null;
-};
 
 export const ServiceProvider = ({ children }: { children: ReactNode }) => {
   const raw = useApplicationContext(
     (ctx) => (ctx.environment as { serviceUrl?: string }).serviceUrl
   );
-  const serviceUrl = normalizeServiceUrl(raw);
+  const serviceUrl = raw;
   const value = useMemo(
     () => (serviceUrl ? { serviceUrl, fetcher: forwardToFetch } : undefined),
     [serviceUrl]
