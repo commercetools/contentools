@@ -33,6 +33,12 @@ const reasonOf = (err: unknown): string => {
   return 'Error';
 };
 
+const isUniformAccessError = (err: unknown): boolean =>
+  typeof err === 'object' &&
+  err !== null &&
+  (err as { code?: unknown }).code === 400 &&
+  /uniform bucket-level access/i.test(String((err as Error).message));
+
 export async function createGcpProvider(
   cfg: GcpMediaConfig
 ): Promise<StorageProvider> {
@@ -61,14 +67,24 @@ export async function createGcpProvider(
       const custom: Record<string, string> = {};
       if (input.title) custom.title = input.title;
       if (input.description) custom.description = input.description;
-      await bucket.file(input.key).save(input.body, {
+      const options = {
         resumable: false,
         contentType: input.contentType,
         metadata: {
           cacheControl: 'public, max-age=31536000, immutable',
           ...(Object.keys(custom).length > 0 && { metadata: custom }),
         },
-      });
+      };
+      const file = bucket.file(input.key);
+      try {
+        // Objects are served from their public URL, so make each one publicly readable.
+        await file.save(input.body, { ...options, public: true });
+      } catch (err) {
+        // A bucket with uniform bucket-level access rejects per-object ACLs: access is then governed by the
+        // bucket's IAM policy (allUsers as objectViewer), so store the object without the flag.
+        if (!isUniformAccessError(err)) throw err;
+        await file.save(input.body, options);
+      }
       return {
         key: input.key,
         url: urlFor(input.key),

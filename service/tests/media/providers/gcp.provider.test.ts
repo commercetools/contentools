@@ -23,6 +23,7 @@ const state = {
   getFilesCalls: 0,
   getMetadataCalls: 0,
   connectivityError: undefined as Error | undefined,
+  saveError: undefined as (Error & { code?: number }) | undefined,
 };
 
 jest.mock('@google-cloud/storage', () => {
@@ -39,6 +40,7 @@ jest.mock('@google-cloud/storage', () => {
     }
     async save(body: Buffer, options: Record<string, unknown>): Promise<void> {
       state.saveOptions.push(options);
+      if (options.public && state.saveError) throw state.saveError;
       const meta = options.metadata as
         { metadata?: Record<string, unknown> } | undefined;
       state.objects.set(this.name, {
@@ -102,6 +104,7 @@ const cfg: GcpMediaConfig = {
 const makeHarness = async (): Promise<ProviderHarness> => {
   state.objects.clear();
   state.saveOptions = [];
+  state.saveError = undefined;
   state.getFilesCalls = 0;
   state.getMetadataCalls = 0;
   state.connectivityError = undefined;
@@ -129,7 +132,39 @@ const makeHarness = async (): Promise<ProviderHarness> => {
 describeStorageProviderContract('gcp', makeHarness);
 
 describe('gcp provider specifics', () => {
-  it('does not use per-object public ACLs and stores custom metadata', async () => {
+  it('retries without the public flag on a uniform bucket-level access bucket', async () => {
+    const h = await makeHarness();
+    state.saveError = Object.assign(
+      new Error(
+        'Cannot insert legacy ACL for an object when uniform bucket-level access is enabled.'
+      ),
+      { code: 400 }
+    );
+    await h.provider.put({
+      key: 'p/a/2.png',
+      body: Buffer.from('x'),
+      contentType: 'image/png',
+    });
+    expect(state.saveOptions).toHaveLength(2);
+    expect(state.saveOptions[0]).toHaveProperty('public', true);
+    expect(state.saveOptions[1]).not.toHaveProperty('public');
+    expect(state.objects.has('p/a/2.png')).toBe(true);
+  });
+
+  it('does not swallow other upload errors', async () => {
+    const h = await makeHarness();
+    state.saveError = Object.assign(new Error('boom'), { code: 500 });
+    await expect(
+      h.provider.put({
+        key: 'p/a/3.png',
+        body: Buffer.from('x'),
+        contentType: 'image/png',
+      })
+    ).rejects.toThrow('boom');
+    expect(state.saveOptions).toHaveLength(1);
+  });
+
+  it('makes the object public and stores custom metadata', async () => {
     const h = await makeHarness();
     const stored = await h.provider.put({
       key: 'p/a/1.png',
@@ -137,8 +172,8 @@ describe('gcp provider specifics', () => {
       contentType: 'image/png',
       title: 'T',
     });
-    expect(state.saveOptions[0]).not.toHaveProperty('public');
     expect(state.saveOptions[0]).toMatchObject({
+      public: true,
       resumable: false,
       contentType: 'image/png',
     });
