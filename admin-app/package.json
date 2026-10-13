@@ -23,6 +23,9 @@
     "check:i18n": "node scripts/check-i18n.mjs",
     "verify": "yarn typecheck && yarn lint && yarn test && yarn check:pins && yarn check:deps && yarn check:i18n && yarn build"
   },
+  "resolutions": {
+    "isomorphic-dompurify": "3.19.0"
+  },
   "dependencies": {
     "@apollo/client": "3.12.4",
     "@chakra-ui/react": "3.36.1",

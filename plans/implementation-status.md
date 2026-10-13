@@ -92,3 +92,12 @@ Not verified (automation limits): Puck drag-and-drop of a block into the canvas 
 Done across code, docs, scripts, package folders (`puck/packages/contentools-*`), the Postman/docs checks and the workspace name. Verified: `puck` `yarn verify` (118 tests), publish dry run lists the 10 new names (all free on npm), `check:forbidden`, `check:hygiene`, `check:spdx`, `check:connect`, `docs:check`, `test:tools`.
 
 **Open finding (not caused by the rename):** `admin-app` jest tests fail 15 of 25 ("Page unauthorized"/missing text) on a fresh local install that re-resolved dependencies without the lockfile (local-puck mode). The same failure reproduces with the pre-rename sources, so it is dependency drift or an environment/permissions-context difference vs. the install the K spec verified. Investigate when `admin-app` gets its real lockfile (after the npm publish): run `yarn install --frozen-lockfile` with the committed lock and re-run `yarn verify`.
+
+## npm publish done (2026-10-13): admin-app now installs from the registry
+
+All 10 `@commercetools-labs/contentools-*@1.0.0` packages are on npm (each also carries a registry placeholder `0.0.0-stage`, harmless). Metadata took a few minutes to propagate (`yarn cache clean` helps).
+
+* `admin-app/yarn.lock` now has the puck entries; `yarn install --frozen-lockfile` passes.
+* `admin-app` jest: **25/25 pass** with the real packages, so the earlier 15 failures were local-puck dependency drift, not a code bug.
+* `yarn build` compiles (needs Connect's `ENTRY_POINT_URI_PATH`, `CUSTOM_APPLICATION_ID`, `APPLICATION_URL`, `CLOUD_IDENTIFIER` at compile-html).
+* `contentools-components@1.0.0` depends on `isomorphic-dompurify@^3.18.0`, which resolves to 3.23.0 (needs Node `^22.22.2`). `admin-app/package.json` pins `resolutions: isomorphic-dompurify 3.19.0` (engines `^22.13`). Consider narrowing the range to `~3.19.0` in the next puck release (1.0.1).
