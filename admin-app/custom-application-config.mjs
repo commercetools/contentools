@@ -16,9 +16,11 @@ const config = {
   entryPointUriPath: '${env:ENTRY_POINT_URI_PATH}',
   cloudIdentifier: '${env:CLOUD_IDENTIFIER}',
   env: {
-    // Local development only (`yarn start`). Read directly: a ${env:} placeholder throws when the variable
-    // is missing, and Connect never provides CTP_INITIAL_PROJECT_KEY to the production build.
-    development: { initialProjectKey: '${env:CTP_INITIAL_PROJECT_KEY }' },
+    // Local development only (`yarn start`). Read from process.env, not a ${env:} placeholder: a placeholder
+    // throws when the variable is missing (its name is trimmed, so a trailing space does not avoid that), and
+    // Connect never provides CTP_INITIAL_PROJECT_KEY to the production build. The schema requires the key, so
+    // it falls back to an empty string there; it is only used by `yarn start`.
+    development: { initialProjectKey: process.env.CTP_INITIAL_PROJECT_KEY ?? '' },
     production: {
       applicationId: '${env:CUSTOM_APPLICATION_ID}',
       url: '${env:APPLICATION_URL}',
