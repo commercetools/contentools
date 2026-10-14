@@ -20,7 +20,9 @@ const config = {
     // throws when the variable is missing (its name is trimmed, so a trailing space does not avoid that), and
     // Connect never provides CTP_INITIAL_PROJECT_KEY to the production build. The schema requires the key, so
     // it falls back to an empty string there; it is only used by `yarn start`.
-    development: { initialProjectKey: process.env.CTP_INITIAL_PROJECT_KEY ?? '' },
+    development: {
+      initialProjectKey: process.env.CTP_INITIAL_PROJECT_KEY ?? '',
+    },
     production: {
       applicationId: '${env:CUSTOM_APPLICATION_ID}',
       url: '${env:APPLICATION_URL}',
@@ -34,18 +36,19 @@ const config = {
     devServiceToken:
       process.env.NODE_ENV === 'production'
         ? ''
-        : (process.env.CONTENTOOLS_DEV_SERVICE_TOKEN ?? ''),
+        : process.env.CONTENTOOLS_DEV_SERVICE_TOKEN ?? '',
   },
-    headers: {
+  headers: {
     csp: {
-
-      'script-src': [
-        'cdn.jsdelivr.net',
-        'blob:',
+      'connect-src': [
+        '*.commercetools.app',
+        '*.commercetools.com',
         "'unsafe-eval'",
       ],
+      'script-src': ['cdn.jsdelivr.net', 'blob:', "'unsafe-eval'"],
       'style-src': ['cdn.jsdelivr.net', 'rsms.me'],
       'font-src': ['cdn.jsdelivr.net', 'rsms.me'],
+      'frame-src': [],
     },
   },
   oAuthScopes: {
