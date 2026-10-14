@@ -7,7 +7,7 @@
 import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import { setupServer } from 'msw/node';
-import { afterAll, afterEach, beforeAll } from 'vitest';
+import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 
 /** One msw server for all tests; register per-test handlers with `server.use(...)`. Unhandled requests fail the test. */
 export const server = setupServer();
@@ -16,5 +16,6 @@ beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 afterEach(() => {
   cleanup(); // Testing Library only auto-cleans when vitest globals are on
   server.resetHandlers();
+  vi.restoreAllMocks(); // vitest 4 reuses an existing spy, so restore to keep spies from leaking between tests
 });
 afterAll(() => server.close());

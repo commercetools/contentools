@@ -9,8 +9,10 @@ import { SEMVER } from './versions.mjs';
 /** Pure: next release candidate for the base version, given existing tag names (`v1.0.0-rc.0`, ...). */
 export function nextRc(version, tags) {
   const base = version.replace(/-.*$/, '').replace(/\+.*$/, '');
-  const re = new RegExp(`^v${base.replace(/\./g, '\\.')}-rc\\.(\\d+)$`);
-  const nums = tags.map((t) => re.exec(t)).filter(Boolean).map((m) => Number(m[1]));
+  const prefix = `v${base}-rc.`;
+  const nums = tags
+    .filter((t) => t.startsWith(prefix) && /^\d+$/.test(t.slice(prefix.length)))
+    .map((t) => Number(t.slice(prefix.length)));
   return `${base}-rc.${nums.length ? Math.max(...nums) + 1 : 0}`;
 }
 

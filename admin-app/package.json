@@ -24,7 +24,9 @@
     "verify": "yarn typecheck && yarn lint && yarn test && yarn check:pins && yarn check:deps && yarn check:i18n && yarn build"
   },
   "resolutions": {
-    "isomorphic-dompurify": "3.19.0"
+    "isomorphic-dompurify": "3.19.0",
+    "**/@measured/puck/uuid": "^11.1.1",
+    "**/sockjs/uuid": "^11.1.1"
   },
   "dependencies": {
     "@apollo/client": "3.12.4",
