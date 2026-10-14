@@ -7,23 +7,23 @@
 import { screen } from '@commercetools-frontend/application-shell/test-utils';
 import { renderApplication } from '../test-utils';
 import { PERMISSIONS } from '../constants';
-import { normalizeServiceUrl, ServiceProvider, useService } from './service';
+import { isLocalServiceUrl, ServiceProvider, useService } from './service';
 
 const Probe = () => {
   const { serviceUrl } = useService();
   return <div data-testid="service-url">{serviceUrl}</div>;
 };
 
-describe('normalizeServiceUrl', () => {
+describe('isLocalServiceUrl', () => {
   it.each([
-    ['https://a.b/service/', 'https://a.b/service'],
-    ['  https://a.b/service  ', 'https://a.b/service'],
-    ['http://localhost:8080/service', null],
-    ['', null],
-    [undefined, null],
-    [42, null],
+    ['http://localhost:8080/service', true],
+    ['https://127.0.0.1/service', true],
+    ['  http://localhost  ', true],
+    ['https://a.b/service', false],
+    ['https://localhost.evil.example/service', false],
+    ['', false],
   ])('%p -> %p', (input, expected) => {
-    expect(normalizeServiceUrl(input)).toBe(expected);
+    expect(isLocalServiceUrl(input)).toBe(expected);
   });
 });
 
@@ -54,16 +54,16 @@ describe('ServiceProvider', () => {
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 
-  it('shows the not-configured notice for a non-https URL', async () => {
+  it('accepts a local http URL for development', async () => {
     renderApplication(
       <ServiceProvider>
         <Probe />
       </ServiceProvider>,
       { environment: { serviceUrl: 'http://localhost:8080/service' } }
     );
-    expect(
-      await screen.findByText(/service URL is not configured/i)
-    ).toBeInTheDocument();
+    expect(await screen.findByTestId('service-url')).toHaveTextContent(
+      'http://localhost:8080/service'
+    );
   });
 });
 
