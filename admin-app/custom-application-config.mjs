@@ -36,6 +36,18 @@ const config = {
         ? ''
         : (process.env.CONTENTOOLS_DEV_SERVICE_TOKEN ?? ''),
   },
+    headers: {
+    csp: {
+
+      'script-src': [
+        'cdn.jsdelivr.net',
+        'blob:',
+        "'unsafe-eval'",
+      ],
+      'style-src': ['cdn.jsdelivr.net', 'rsms.me'],
+      'font-src': ['cdn.jsdelivr.net', 'rsms.me'],
+    },
+  },
   oAuthScopes: {
     view: ['view_business_units'],
     manage: ['manage_key_value_documents'],
