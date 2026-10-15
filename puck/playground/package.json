@@ -47,5 +47,6 @@
     "@types/react-router": "<6",
     "@types/react-router-dom": "<6",
     "react-router-dom": "<6"
-  }
+  },
+  "license": "MIT"
 }

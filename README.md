@@ -1,13 +1,22 @@
 # Contentools
 
-> **commercetools-labs reference code. Freely available under the MIT license, AS IS and
-> UNSUPPORTED:** commercetools offers no support, maintenance or warranty for it. See
-> [SUPPORT.md](SUPPORT.md) and [LICENSE](LICENSE).
+> **commercetools-labs reference code.** Freely available under the MIT license, shared as-is and
+> not supported by commercetools. See [SUPPORT.md](SUPPORT.md) and [LICENSE](LICENSE).
 
-A visual page builder for commercetools. Merchants compose **pages** and reusable **content
-items** with the [Puck](https://puckeditor.com/) editor, manage a **media library**, apply a
-**theme**, keep **draft / published** states with **version history**, and render the result in any
-storefront. It is built for one commercetools project: the one the Connect deployment is installed in.
+**Let merchants build and publish storefront pages visually, with their content kept in commercetools.**
+
+Storefront content usually means a developer for every new landing page, or a separate CMS to run
+alongside commerce. This project is for merchants who want to own their pages, and for the
+developers who wire those pages into a storefront.
+
+Merchants compose **pages** and reusable **content items** with the [Puck](https://puckeditor.com/)
+editor inside the Merchant Center, manage a **media library**, apply a **theme**, and keep
+**draft / published** states with **version history**. Any storefront can then render the result
+through a small content API (an MCP server also exposes it to AI agents). It is built for one
+commercetools project: the one the Connect deployment is installed in.
+
+When it works, a merchant edits a page, publishes it, and the storefront shows it, with no release.
+
 
 What each part does, with pointers to the code: [FEATURES.md](FEATURES.md).
 How it fits together: [docs/architecture.md](docs/architecture.md).

@@ -1,14 +1,23 @@
 # Support
 
-This repository is **commercetools-labs reference code. It is unsupported.**
+Thanks for taking a look at this project. It is commercetools-labs reference code: shared in the
+hope that it is useful, and **unsupported**.
 
-It is freely available under the MIT license ([LICENSE](LICENSE)), AS IS, without warranty of any
-kind. commercetools offers no support, maintenance, service-level agreement or guaranteed fixes
-for it, through any channel: commercetools Support, your account team or this repository.
+In practice that means:
 
-- **Questions and bugs:** open a GitHub issue. Someone may answer; nobody is obliged to.
-- **Security problems:** do not open an issue; see [SECURITY.md](SECURITY.md).
-- **Production use:** you own it. Review the code, run its checks against your own project
-  ([README.md](README.md), [INSTALL.md](INSTALL.md)) and keep your copy up to date yourself.
-- **commercetools products:** questions about Composable Commerce, the Merchant Center or
-  Connect themselves go to commercetools Support as usual, not to this repository.
+- It is freely available under the MIT license ([LICENSE](LICENSE)) and is provided as-is, without
+  warranty.
+- It isn't covered by commercetools Support, your account team or any service-level agreement, so
+  we can't promise replies or fixes.
+- Issues and pull requests are welcome, and we'll take a look when we can.
+
+## If you need help
+
+- **Questions and bugs:** open a GitHub issue. Another reader or a maintainer may well have an
+  answer, though we can't commit to one.
+- **Security problems:** please don't open a public issue; see [SECURITY.md](SECURITY.md).
+- **Using it in production:** feel free to fork it and adapt it to your needs. Once it's in
+  production it's yours, so review the code, run its checks against your own project
+  ([README.md](README.md), [INSTALL.md](INSTALL.md)) and keep your copy up to date.
+- **commercetools products:** for questions about Composable Commerce, the Merchant Center or
+  Connect themselves, the community and commercetools Support are the right place, as usual.
