@@ -1,10 +1,4 @@
 #!/usr/bin/env node
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Static guard for the `admin-app` block of the root connect.yaml (Merchant Center custom application).
 //   node tools/check-admin-app-connect.mjs [path-to-connect.yaml]
 // Rules: no endpoint/scripts/securedConfiguration, no APPLICATION_URL key (Connect provides it),

@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 import { SEMVER } from './versions.mjs';
 
 /** Pure: next release candidate for the base version, given existing tag names (`v1.0.0-rc.0`, ...). */

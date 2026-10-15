@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // node forge-jwt.mjs none|unknown-key|expired|wrong-issuer|wrong-audience  -> prints a (deliberately invalid) JWT
 import { createHmac } from 'node:crypto';
 const b64 = (o) => Buffer.from(typeof o === 'string' ? o : JSON.stringify(o)).toString('base64url');

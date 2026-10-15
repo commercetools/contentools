@@ -1,10 +1,4 @@
 #!/usr/bin/env node
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Keeps the configuration tables of the documentation in step with connect.yaml.
 // Zero dependencies: connect.yaml lists its keys as `- key: NAME` lines, which is all this reads.
 

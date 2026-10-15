@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 import CustomError from '../errors/custom.error';
 
 const CLAUSE = /^\s*(\w+)\s*=\s*"((?:[^"\\]|\\.)*)"\s*(?:AND\s+|$)/i;

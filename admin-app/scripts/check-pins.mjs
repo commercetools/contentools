@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Guards the committed package.json: lockstep Merchant Center versions, no local specifiers, Yarn only.
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';

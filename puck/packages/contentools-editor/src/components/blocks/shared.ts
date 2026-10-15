@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Editor-side shared helpers for content blocks.
 //
 // The render/data helpers (getProductName, resolveProductLink, colors, types,

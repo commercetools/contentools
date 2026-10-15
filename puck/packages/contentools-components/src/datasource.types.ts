@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 /**
  * Datasource value types — Nimbus-free so both the render layer (this package)
  * and the editor's `DatasourceField` widget can share them without the widget's

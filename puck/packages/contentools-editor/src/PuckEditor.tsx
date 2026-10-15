@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { Puck, type Config, type Data } from '@measured/puck';

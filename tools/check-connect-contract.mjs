@@ -1,10 +1,4 @@
 #!/usr/bin/env node
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Static (no Docker) checks of the root connect.yaml and the app folders.
 // `commercetools connect validate .` stays the authority; `yarn verify --connect` runs it.
 //   node tools/check-connect-contract.mjs [<repo root>]

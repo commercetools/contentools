@@ -1,10 +1,4 @@
 #!/usr/bin/env node
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Deletes leftover live-e2e custom objects (containers starting with `contentools-test-`) from the SANDBOX project.
 // Zero dependencies. Needs the same E2E_* variables as service/e2e (see service/e2e/README.md).
 

@@ -1,10 +1,4 @@
 #!/usr/bin/env node
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Release preflight: strict verify, lockstep versions, dist-tag, clean git tree. Publishes nothing.
 //   node tools/release/preflight.mjs [--skip-verify]   (--skip-verify exists for tests and drift checks only)
 import { spawnSync } from 'node:child_process';

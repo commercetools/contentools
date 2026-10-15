@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 export type TokenFactory = (kind: string) => Promise<string | undefined>;
 
 export const authRejectionCases = ['missing', 'malformed', 'alg-none', 'wrong-signature', 'wrong-issuer', 'wrong-audience', 'expired'] as const;

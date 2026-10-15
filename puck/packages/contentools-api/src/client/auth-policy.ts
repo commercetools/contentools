@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 /** Name of every raw API function; the request pipeline looks the auth policy up by this name. */
 export type PuckOp =
   | 'listPuckPagesApi'

@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // core.json (extracted), en.json and de.json have the same keys, no empty values, and de is translated.
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';

@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 /** The single list of container env vars and their suffixes. If a spec renames a container env var, update ONLY this file. */
 export const CONTAINER_ENV: Record<string, string> = {
   PUCK_PAGE_CONTAINER: 'puck-page',

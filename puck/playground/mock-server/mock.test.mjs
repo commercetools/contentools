@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Contract tests for the mock service. They use the BUILT contentools-api (run `yarn build` first), so the
 // mock cannot drift from the client: the protected routes are compared with PUCK_AUTH_POLICY.
 

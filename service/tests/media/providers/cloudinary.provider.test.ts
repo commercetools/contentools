@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 import { Writable } from 'node:stream';
 import type { CloudinaryMediaConfig } from '../../../src/media/config';
 import { createCloudinaryProvider } from '../../../src/media/providers/cloudinary.provider';

@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Type-resolution fixture: imports one symbol from each published package
 // through its public entry, the way an ESM consumer would.
 import type { PuckData } from '@commercetools-labs/contentools-types';

@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 const MIME_PATTERN = /^[a-z]+\/[a-z0-9.+-]+$/;
 
 /** Throws a plain Error (without echoing the entry) when an entry is malformed. */

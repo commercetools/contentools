@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Every dependency is imported from src or justified in scripts/deps-allowlist.json; every import is declared.
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { builtinModules } from 'node:module';

@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Checks the publishable metadata of every package under puck/packages:
 // names, lockstep version, license, repository fields, files, exports,
 // workspace ranges, README banner and undeclared imports. Also checks that

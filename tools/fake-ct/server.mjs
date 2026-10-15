@@ -1,10 +1,4 @@
 #!/usr/bin/env node
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Standalone fake commercetools API (token + custom objects + product search), in memory, zero dependencies.
 // Run with: node --experimental-strip-types tools/fake-ct/server.mjs   (or `yarn dev:fake-ct`)
 import { createServer } from 'node:http';

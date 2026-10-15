@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 import { Switch, Route, Redirect, useRouteMatch } from 'react-router-dom';
 import { ContentManager } from '@commercetools-labs/contentools-content-manager';
 import { PageManager } from '@commercetools-labs/contentools-page-manager';

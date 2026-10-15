@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Dependency-free mock of the Contentools service, for the playground and for tests.
 // It follows the client contract of the Puck packages (routes, auth policy, error envelope),
 // not the real implementation. Development tool: never deployed, never published.

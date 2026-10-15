@@ -1,10 +1,4 @@
 #!/usr/bin/env node
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Builds admin-app the way Connect does: a clean environment holding only what connect.yaml declares
 // plus APPLICATION_URL, then inspects the generated public/ output.
 //

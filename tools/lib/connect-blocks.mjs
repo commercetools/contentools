@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 /**
  * Split connect.yaml text into { apps: [{name, applicationType, endpoint, keys, scripts, start}], inherit, inheritCount }.
  * Supported subset: the `deployAs:` list written with two-space indentation (`  - name: x`), scalar `key: value`

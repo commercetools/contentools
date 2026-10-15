@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Runs BEFORE test files import the app (jest `setupFiles`). Fake values only.
 Object.assign(process.env, {
   NODE_ENV: 'test',

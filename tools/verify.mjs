@@ -1,10 +1,4 @@
 #!/usr/bin/env node
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // One command for every local gate (there is no hosted CI in this project).
 //   node tools/verify.mjs [--only a,b] [--skip a,b] [--fail-fast] [--install] [--connect] [--strict]
 import { spawnSync } from 'node:child_process';

@@ -1,10 +1,4 @@
 #!/usr/bin/env node
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Documentation lint. Zero dependencies. Prints `file:line: message` and exits 1 on any problem.
 //   (a) README.md lines 1-10 carry UNSUPPORTED, SUPPORT.md and LICENSE
 //   (b) no forbidden wording in any markdown file (allow list: tools/docs-lint-allow.json)

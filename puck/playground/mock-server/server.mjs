@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // CLI for the mock service: node mock-server/server.mjs [--port 8080] [--origin http://localhost:5174]
 // Environment: MOCK_SERVICE_TOKEN (default dev-token), MOCK_MEDIA=none, MOCK_MEDIA_MAX,
 // MOCK_PUBLIC_DATASOURCE_RESOLVE=true.

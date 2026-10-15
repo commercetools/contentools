@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 import { loadMediaConfig } from '../../src/media/config';
 import { createMediaService } from '../../src/media/media.service';
 import { StorageUnavailableError } from '../../src/media/errors';

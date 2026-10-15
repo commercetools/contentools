@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Develop admin-app against the puck packages in this repository before they are published to npm.
 //
 //   node tools/admin-app-use-local-puck.mjs            build puck, pack every package, install the tarballs

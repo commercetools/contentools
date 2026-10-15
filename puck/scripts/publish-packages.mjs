@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Maintainer runbook (local, no CI; run from puck/):
 //   1. node scripts/bump-versions.mjs <patch|minor|major|x.y.z[-rc.N]>   (lockstep)
 //   2. yarn install --immutable && yarn verify                           (all gates green)

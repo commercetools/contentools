@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Own file on purpose: the verifier caches the key set per issuer for the process lifetime, so the
 // outage must be the first thing this module registry sees (a cached key would still verify).
 import request from 'supertest';

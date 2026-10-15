@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 import { useCallback, useState } from 'react';
 import type { PuckData } from '@commercetools-labs/contentools-types';
 import type { VersionEntry } from '../types';

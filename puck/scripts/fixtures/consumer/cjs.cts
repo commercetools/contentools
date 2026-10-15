@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Same imports for a CommonJS consumer (require-side `types` condition).
 import type { PuckData } from '@commercetools-labs/contentools-types';
 import { PuckApiProvider } from '@commercetools-labs/contentools-api';

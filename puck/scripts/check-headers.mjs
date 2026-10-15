@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Verifies (and with --fix adds) the SPDX header on every source file of the
 // puck workspace. --fix never touches a file whose first 2000 characters
 // mention "copyright"; those need a header by hand (mirrors the repo tool).

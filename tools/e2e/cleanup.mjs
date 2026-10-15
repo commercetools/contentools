@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Delete every custom object whose container starts with the acceptance prefix. Usage (Node 22, no dependencies):
 //   E2E_ALLOW_PROJECT_KEY=<same project key> CONTAINER_PREFIX=contentools-test-q-<runid>- node tools/e2e/cleanup.mjs [--dry-run]
 // Also accepts CONTAINERS=a,b,c (explicit names). Reads CTP_* or E2E_CTP_* variables.

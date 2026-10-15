@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Jest maps the three puck manager packages to this file (see jest.test.config.js): they are ESM-only and
 // pull in the whole editor, which the Merchant Center jest preset cannot transform. Each stand-in prints the
 // props it receives so tests can assert how the app wires the managers.

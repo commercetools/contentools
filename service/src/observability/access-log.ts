@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 import type { Request, RequestHandler } from 'express';
 import { SERVICE_MOUNT } from '../routes/mount';
 import { getLogger } from '../utils/logger.utils';

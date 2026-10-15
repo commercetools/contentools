@@ -1,10 +1,4 @@
 #!/usr/bin/env node
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Compares the requests of the Postman collection with the route table of docs/api-reference.md.
 // Zero dependencies. Exit 1 when the two sets differ.
 

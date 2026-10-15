@@ -1,10 +1,4 @@
 #!/usr/bin/env node
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // usage: node tools/release/tag.mjs <version | --next-rc> [--execute]
 // Dry run by default. --execute creates a local annotated tag after preflight and a typed confirmation.
 // This script NEVER pushes: the owner runs `git push origin <tag>` (checkpoint CP-3).

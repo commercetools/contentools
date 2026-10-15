@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Lockstep version bump for all puck packages (and the playground).
 // Usage: node scripts/bump-versions.mjs <patch|minor|major|x.y.z[-pre.N]> [--dry-run]
 import { readFileSync, writeFileSync } from 'node:fs';

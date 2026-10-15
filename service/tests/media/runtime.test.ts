@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 const awsConstructed = jest.fn();
 jest.mock('@aws-sdk/client-s3', () => {
   class S3Client {

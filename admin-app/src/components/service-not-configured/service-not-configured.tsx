@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 import { FormattedMessage } from 'react-intl';
 import { Card, Text } from '@commercetools/nimbus';
 import messages from '../../i18n/messages';

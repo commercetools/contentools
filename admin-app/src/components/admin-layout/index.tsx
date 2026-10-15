@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 import { Fragment, useMemo, useState, type ReactNode } from 'react';
 import { NavLink, useRouteMatch } from 'react-router-dom';
 import { useIntl } from 'react-intl';

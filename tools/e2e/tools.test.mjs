@@ -1,9 +1,3 @@
-/*
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2026 commercetools GmbH and the commercetools-labs contributors
- * Freely available, AS IS and UNSUPPORTED. See LICENSE.
- */
-
 // Offline checks of the acceptance tooling (no network, no sandbox). Run: node --test tools/e2e/tools.test.mjs
 import { spawnSync } from 'node:child_process';
 import assert from 'node:assert/strict';
