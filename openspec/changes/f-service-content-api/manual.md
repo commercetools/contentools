@@ -1,5 +1,0 @@
-# Manual steps discovered by f-service-content-api
-
-* M-F1 (optional, task 12.2): provide `service/.env.e2e` (git-ignored) for the live sandbox smoke: `CTP_API_URL, CTP_AUTH_URL, CTP_PROJECT_KEY, CTP_CLIENT_ID, CTP_CLIENT_SECRET, CTP_SCOPE`, `CONTAINER_PREFIX=contentools-test-`, `E2E_ALLOW_PROJECT_KEY=<same project key>`, `SERVICE_API_TOKEN=<32+ chars>`. The API client needs scopes `manage_key_value_documents` and `view_products` (see plans/manual-steps.md M-01; `view_business_units` and `view_stores` are NOT needed by the service).
-* M-F2: Product Search must be activated on the project (Merchant Center > Settings > Project settings > Search / "Product Search" enablement, depending on the project's plan) for the picker and datasources to return results; otherwise those features degrade with a clear 502 / `resolvedData: null`.
-* M-F3: if anyone used custom datasources in the old Firestore-backed service, re-create them with `POST /service/datasource/<key>` (no automatic migration; fresh repository).
